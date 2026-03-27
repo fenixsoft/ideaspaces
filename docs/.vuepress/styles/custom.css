@@ -1,0 +1,154 @@
+/* IdeaSpaces 自定义样式 */
+
+:root {
+  --c-brand: #2563EB;
+  --c-brand-light: #EFF6FF;
+  --c-border: #E4E4E7;
+  --c-text: #18181B;
+  --c-text-light: #71717A;
+  --c-bg: #FFFFFF;
+  --c-bg-light: #FAFAFA;
+}
+
+/* 图注样式 - 只包含 em 的段落居中显示 */
+.theme-default-content p > em:only-child {
+  display: block;
+  text-align: center;
+  color: #71717A;
+  font-size: 14px;
+  margin-top: -0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* 图片居中 - 只包含图片的段落居中显示 */
+.theme-default-content p > img:only-child {
+  display: block;
+  margin: 1rem auto;
+}
+
+/* 表格宽度占满 */
+.theme-default-content table {
+  width: 100%;
+  display: table;
+}
+
+/* 可运行代码块样式 - 与 pencil 设计稿一致 */
+.runnable-code-block {
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #282C34;
+}
+
+.runnable-code-block pre {
+  margin: 0;
+  padding: 16px;
+  background: transparent;
+}
+
+.runnable-code-block pre code {
+  font-family: 'Fira Code', 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #ABB2BF;
+}
+
+/* 代码块头部 */
+.runnable-code-block .code-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  background: #21252B;
+}
+
+.runnable-code-block .code-lang {
+  font-size: 12px;
+  font-weight: 500;
+  color: #ABB2BF;
+}
+
+/* 工具栏样式 - 与 pencil 设计稿一致 */
+.runnable-code-block .toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 8px 16px;
+  background: #1E1E1E;
+  border-top: 1px solid #333333;
+}
+
+.runnable-code-block .run-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  background: #3EAF7C;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.runnable-code-block .run-btn:hover:not(:disabled) {
+  background: #4CAF89;
+}
+
+.runnable-code-block .run-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.runnable-code-block .gpu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  background: #2563EB;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.runnable-code-block .gpu-btn:hover:not(:disabled) {
+  background: #3B82F6;
+}
+
+.runnable-code-block .sandbox-status {
+  font-size: 12px;
+  color: #4EC9B0;
+}
+
+/* 输出区域样式 - 与 pencil 设计稿一致 */
+.runnable-code-block .output-area {
+  padding: 12px 16px;
+  background: #1E1E1E;
+  border-top: 1px solid #333333;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4EC9B0;
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.runnable-code-block .output-area.error {
+  color: #f48771;
+}
+
+.runnable-code-block .output-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #888888;
+  margin-bottom: 4px;
+}

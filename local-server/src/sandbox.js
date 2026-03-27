@@ -17,7 +17,7 @@ const SANDBOX_CONFIG = {
 /**
  * 检查 GPU 是否可用
  */
-async function checkGPUAvailable() {
+export async function checkGPUAvailable() {
   try {
     // 尝试运行 nvidia-smi
     const result = await runCommand('nvidia/cuda:11.8-base', ['nvidia-smi', '-L'])

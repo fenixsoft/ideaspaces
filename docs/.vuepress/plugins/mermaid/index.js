@@ -17,7 +17,12 @@ export default {
       const lang = token.info.trim().toLowerCase()
 
       if (lang === 'mermaid') {
-        return `<div class="mermaid">${code}</div>`
+        // 转义 HTML 特殊字符，保留原始代码用于调试
+        const escapedCode = code
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+        return `<pre class="mermaid"><code>${escapedCode}</code></pre>`
       }
 
       return defaultFence(tokens, idx, options, env, self)

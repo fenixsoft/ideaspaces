@@ -22,8 +22,8 @@ export const runnableCodePlugin = (options = {}) => {
     },
 
     extendsMarkdown: (md) => {
-      // 自定义 fence 规则处理 runnable 代码块
-      const defaultFence = md.renderer.rules.fence
+      // 保存当前的 fence 规则（可能是其他插件已经处理过的，如 Prism.js）
+      const rawFence = md.renderer.rules.fence
 
       md.renderer.rules.fence = (tokens, idx, options, env, self) => {
         const token = tokens[idx]
@@ -38,20 +38,34 @@ export const runnableCodePlugin = (options = {}) => {
           // 生成唯一 ID
           const id = `runnable-${idx}-${Date.now()}`
 
-          // 返回自定义 HTML
+          // 调用原始 fence 规则获取高亮后的 HTML
+          // 这会保留 Prism.js 等插件添加的语法高亮
+          const highlightedHtml = rawFence(tokens, idx, options, env, self)
+
+          // 解析高亮后的 HTML，提取代码内容
+          // 高亮结果通常是 <div class="language-xxx">...<pre>...</pre>...</div> 或 <pre>...</pre>
+          let codeHtml = highlightedHtml
+
+          // 如果返回的是包装过的 div，提取内部内容
+          const divMatch = highlightedHtml.match(/^<div class="[^"]*"[^>]*>([\s\S]*)<\/div>$/)
+          if (divMatch) {
+            codeHtml = divMatch[1]
+          }
+
+          // 返回自定义 HTML，保留原有的高亮结构
           return `<div class="runnable-code-block" data-lang="${language}" data-gpu="${useGpu}" data-code="${encodeURIComponent(code)}">
   <div class="code-area">
-    <pre><code class="language-${language}">${md.utils.escapeHtml(code)}</code></pre>
+    ${codeHtml}
   </div>
   <div class="toolbar">
     <button class="run-btn" data-target="${id}">▶ Run</button>
-    ${useGpu ? '<button class="run-btn gpu-btn" data-target="${id}" data-gpu="true">▶ Run on GPU</button>' : ''}
+    ${useGpu ? `<button class="run-btn gpu-btn" data-target="${id}" data-gpu="true">▶ Run on GPU</button>` : ''}
   </div>
   <div class="output-area" id="${id}"></div>
 </div>`
         }
 
-        return defaultFence(tokens, idx, options, env, self)
+        return rawFence(tokens, idx, options, env, self)
       }
     },
 

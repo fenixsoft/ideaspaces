@@ -38,3 +38,7 @@ coverage/
 *.bak
 *.tmp
 .cache/
+
+# Playwright CLI
+.playwright/
+.playwright-cli/

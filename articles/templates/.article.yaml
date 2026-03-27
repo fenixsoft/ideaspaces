@@ -1,0 +1,27 @@
+# 文章元数据模板
+# 复制此文件到新文章目录并填写
+
+name: ""                    # 文章唯一标识（kebab-case）
+title: ""                   # 文章标题
+status: proposed            # exploring | proposed | composing | reviewing | verified | published
+created: ""                 # 创建日期 YYYY-MM-DD
+updated: ""                 # 更新日期 YYYY-MM-DD
+
+# 目标读者
+audience:
+  level: intermediate       # beginner | intermediate | advanced
+  background: []            # 前置知识列表
+
+# 文章配置
+config:
+  needExperiments: true     # 是否需要实验代码
+  targetLength: 3000        # 目标字数
+  categories: []            # 分类标签
+
+# 审核历史
+reviewHistory: []
+
+# 标记
+flags:
+  needsUserConfirmation: false
+  confirmationReason: null

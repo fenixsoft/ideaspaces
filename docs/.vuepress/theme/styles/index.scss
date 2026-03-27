@@ -1,0 +1,393 @@
+// IdeaSpaces 自定义主题样式
+// 扩展默认主题样式，覆盖相关变量
+
+// ==================== CSS 变量覆盖 ====================
+:root {
+  // 品牌色 - 与 pencil 设计稿一致
+  --vp-c-accent: #2563EB;
+  --vp-c-accent-bg: #2563EB;
+  --vp-c-accent-hover: #3B82F6;
+  --vp-c-accent-soft: #EFF6FF;
+
+  // 背景色
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #FAFAFA;
+
+  // 文字色 - 与 pencil 设计稿一致
+  --vp-c-text: #18181B;
+  --vp-c-text-mute: #71717A;
+  --vp-c-text-subtle: #ABB2BF;
+
+  // 边框色 - 与 pencil 设计稿一致
+  --vp-c-border: #E4E4E7;
+  --vp-c-gutter: #E4E4E7;
+
+  // 内容宽度
+  --content-width: 90%;
+
+  // 代码块颜色
+  --code-bg: #282C34;
+  --code-header-bg: #21252B;
+  --code-toolbar-bg: #1E1E1E;
+  --code-text: #ABB2BF;
+  --code-output: #4EC9B0;
+  --code-run-btn: #3EAF7C;
+  --code-gpu-btn: #2563EB;
+}
+
+// ==================== 全局样式 ====================
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ==================== 导航栏样式 ====================
+.vp-navbar {
+  background: var(--vp-c-bg);
+  border-bottom: 1px solid var(--vp-c-border);
+
+  .vp-navbar-brand {
+    .vp-navbar-title {
+      font-weight: 600;
+      color: var(--vp-c-text);
+    }
+  }
+
+  .vp-navbar-items {
+    .vp-navbar-item {
+      a {
+        color: var(--vp-c-text-mute);
+        font-weight: 500;
+
+        &:hover,
+        &.route-link-active {
+          color: var(--vp-c-accent);
+        }
+      }
+    }
+  }
+}
+
+// ==================== 侧边栏样式 ====================
+.vp-sidebar {
+  background: var(--vp-c-bg);
+  border-right: 1.5px solid var(--vp-c-border);
+  padding: 24px 16px;
+
+  // 侧边栏标题 - 与 pencil 设计稿一致
+  .vp-sidebar-group {
+    .vp-sidebar-group-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--vp-c-text-mute);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin-bottom: 16px;
+    }
+  }
+
+  // 侧边栏项目 - 与 pencil 设计稿一致
+  .vp-sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin: 4px 0;
+    border-radius: 8px;
+    color: var(--vp-c-text-mute);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--vp-c-text);
+      background: var(--vp-c-bg-alt);
+    }
+
+    &.active {
+      color: var(--vp-c-accent);
+      font-weight: 500;
+      background: var(--vp-c-accent-soft);
+    }
+  }
+}
+
+// ==================== 页面内容样式 ====================
+// 注意：默认主题使用 .theme-default-content 类
+// 标题间距由默认主题的 normalize.scss 控制，使用 --header-offset 变量
+
+.theme-default-content {
+  // 优化后的 padding：减少两端空白和顶部空白
+  padding: 32px 64px;
+
+  // 文章标题 - 与 pencil 设计稿一致
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--vp-c-text);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  // 章节标题 - 与 pencil 设计稿一致
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--vp-c-text);
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--vp-c-text);
+    margin-bottom: 12px;
+  }
+
+  // 段落样式 - 与 pencil 设计稿一致
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    font-size: 16px;
+    color: var(--vp-c-text);
+  }
+
+  // 链接样式
+  a:not(.header-anchor) {
+    color: var(--vp-c-accent);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // 列表样式
+  ul, ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    font-size: 16px;
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  // 引用块样式
+  blockquote {
+    margin: 1rem 0;
+    padding: 1rem 1.5rem;
+    border-left: 4px solid var(--vp-c-accent);
+    background: var(--vp-c-bg-alt);
+    border-radius: 0 0.75rem 0.75rem 0;
+    color: var(--vp-c-text-mute);
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  // 行内代码样式
+  :not(pre) > code {
+    padding: 0.2rem 0.5rem;
+    background: var(--vp-c-accent-soft);
+    border-radius: 0.25rem;
+    font-family: 'Fira Code', 'SF Mono', Monaco, Consolas, monospace;
+    font-size: 0.875em;
+    color: var(--vp-c-accent);
+  }
+
+  // 代码块样式 - 与 pencil 设计稿一致
+  pre {
+    margin: 1rem 0;
+    padding: 0;
+    background: var(--code-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    code {
+      display: block;
+      padding: 16px;
+      background: transparent;
+      font-family: 'Fira Code', 'SF Mono', Monaco, Consolas, monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--code-text);
+      overflow-x: auto;
+    }
+  }
+
+  // 表格样式
+  table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    th, td {
+      padding: 12px 16px;
+      border: 1px solid var(--vp-c-border);
+      text-align: left;
+    }
+
+    th {
+      background: var(--vp-c-bg-alt);
+      font-weight: 600;
+      color: var(--vp-c-text);
+    }
+
+    td {
+      background: var(--vp-c-bg);
+    }
+
+    tr:hover td {
+      background: var(--vp-c-bg-alt);
+    }
+  }
+
+  // 图片样式
+  img {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin: 1rem 0;
+  }
+
+  // 水平分割线
+  hr {
+    border: none;
+    height: 1.5px;
+    background: var(--vp-c-border);
+    margin: 2rem 0;
+  }
+}
+
+// ==================== 首页样式 ====================
+.vp-home {
+  .vp-home-hero {
+    padding: 5rem 3rem;
+    text-align: center;
+
+    .vp-home-hero-image {
+      max-width: 12.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .vp-home-hero-title {
+      font-size: 3rem;
+      font-weight: 600;
+      color: var(--vp-c-text);
+      margin-bottom: 1rem;
+    }
+
+    .vp-home-hero-description {
+      font-size: 1.25rem;
+      color: var(--vp-c-text-mute);
+      margin-bottom: 2rem;
+    }
+  }
+
+  .vp-home-features {
+    padding: 3rem;
+    background: var(--vp-c-bg-alt);
+
+    .vp-home-feature {
+      padding: 1.5rem;
+      background: var(--vp-c-bg);
+      border-radius: 0.75rem;
+      border: 1px solid var(--vp-c-border);
+
+      .vp-home-feature-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--vp-c-text);
+        margin-bottom: 0.5rem;
+      }
+
+      .vp-home-feature-details {
+        font-size: 0.875rem;
+        color: var(--vp-c-text-mute);
+        line-height: 1.6;
+      }
+    }
+  }
+}
+
+// ==================== 页面导航样式 ====================
+.vp-page-nav {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--vp-c-border);
+
+  a {
+    color: var(--vp-c-text-mute);
+
+    &:hover {
+      color: var(--vp-c-accent);
+    }
+  }
+}
+
+// ==================== 页脚样式 ====================
+.vp-page-meta {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--vp-c-border);
+  color: var(--vp-c-text-mute);
+  font-size: 0.875rem;
+}
+
+// ==================== 响应式样式 ====================
+@media (max-width: 959px) {
+  .theme-default-content {
+    padding: 32px 48px !important;
+  }
+}
+
+@media (max-width: 719px) {
+  .theme-default-content {
+    padding: 32px 32px !important;
+
+    h1 {
+      font-size: 28px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 15px;
+    }
+  }
+
+  .vp-home {
+    .vp-home-hero {
+      padding: 3rem 1.5rem;
+
+      .vp-home-hero-title {
+        font-size: 2rem;
+      }
+
+      .vp-home-hero-description {
+        font-size: 1rem;
+      }
+    }
+
+    .vp-home-features {
+      padding: 1.5rem;
+    }
+  }
+}
+
+@media (max-width: 419px) {
+  .theme-default-content {
+    padding: 24px 16px !important;
+  }
+}

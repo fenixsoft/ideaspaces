@@ -1,0 +1,44 @@
+# 文章元数据
+
+name: linear-algebra-vectors-matrices
+title: 向量与矩阵运算基础
+status: published
+created: 2026-03-25
+updated: 2026-03-26
+publishedDate: 2026-03-26
+version: 1.1
+changeLog:
+  - date: 2026-03-26
+    changes: "更新引言章节内容"
+path: docs/linear-algebra-vectors-matrices/
+
+# 目标读者
+audience:
+  level: intermediate
+  background:
+    - Python 编程基础
+    - 大学数学（微积分、线性代数）基础
+    - 对机器学习有初步了解
+
+# 文章配置
+config:
+  needExperiments: true
+  targetLength: 20000
+  categories:
+    - 机器学习数学基础
+    - 线性代数
+    - Python实践
+
+# 系列信息
+series:
+  name: ml-math-fundamentals
+  order: 1
+  total: 10
+
+# 审核历史
+reviewHistory: []
+
+# 标记
+flags:
+  needsUserConfirmation: false
+  confirmationReason: null
