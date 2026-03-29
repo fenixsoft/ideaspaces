@@ -34,11 +34,6 @@ npm-debug.log*
 # Test coverage
 coverage/
 
-# Misc
-*.bak
-*.tmp
-.cache/
-
-# Playwright CLI
-.playwright/
+# Playwright CLI (用于测试)
 .playwright-cli/
+
