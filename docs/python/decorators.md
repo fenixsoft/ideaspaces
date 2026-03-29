@@ -2,6 +2,8 @@
 title: 装饰器详解
 date: 2024-03-24
 tags: [python, advanced]
+issue:
+  number: 1
 ---
 
 # Python 装饰器详解

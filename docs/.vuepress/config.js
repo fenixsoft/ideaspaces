@@ -5,6 +5,7 @@ import runnableCodePlugin from './plugins/runnable-code/index.js'
 import mathPlugin from './plugins/math/index.js'
 import emphasisFixPlugin from './plugins/emphasis-fix/index.js'
 import wordCountPlugin from './plugins/word-count/index.js'
+import commentsPlugin from './plugins/comments/index.js'
 import ideaspacesTheme from './theme/index.js'
 
 const __dirname = getDirname(import.meta.url)
@@ -79,7 +80,12 @@ export default {
     // LaTeX 数学公式
     mathPlugin,
     // 字数统计
-    wordCountPlugin
+    wordCountPlugin,
+    // GitHub Issues 评论系统
+    commentsPlugin({
+      repo: 'fenixsoft/ideaspaces',
+      clientId: process.env.GITHUB_CLIENT_ID || ''
+    })
   ],
 
   // 打包器配置

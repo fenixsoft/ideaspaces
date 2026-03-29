@@ -19,8 +19,17 @@
       </a>
     </div>
 
+    <!-- 无 Issue 关联时的提示 -->
+    <div v-if="!issueNumber" class="comments-placeholder">
+      <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <p class="placeholder-text">评论区正在准备中...</p>
+      <p class="placeholder-hint">您可以在 <a :href="repoIssuesUrl" target="_blank" rel="noopener">GitHub Issues</a> 中参与讨论</p>
+    </div>
+
     <!-- 加载状态 -->
-    <div v-if="loading" class="comments-loading">
+    <div v-else-if="loading" class="comments-loading">
       加载评论中...
     </div>
 
@@ -143,6 +152,11 @@ const issueUrl = computed(() => {
   if (issueNumber.value) {
     return `https://github.com/${repoInfo.value.owner}/${repoInfo.value.repo}/issues/${issueNumber.value}`
   }
+  return `https://github.com/${repoInfo.value.owner}/${repoInfo.value.repo}/issues`
+})
+
+const repoIssuesUrl = computed(() => {
+  if (!repoInfo.value.owner || !repoInfo.value.repo) return ''
   return `https://github.com/${repoInfo.value.owner}/${repoInfo.value.repo}/issues`
 })
 
@@ -424,6 +438,40 @@ onUnmounted(() => {
   &:hover {
     text-decoration: underline;
   }
+}
+
+.comments-placeholder {
+  text-align: center;
+  padding: 2rem;
+  background: #FAFAFA;
+  border-radius: 12px;
+}
+
+.placeholder-icon {
+  width: 32px;
+  height: 32px;
+  stroke: #A1A1AA;
+  margin-bottom: 12px;
+}
+
+.placeholder-text {
+  color: #71717A;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.placeholder-hint {
+  color: #A1A1AA;
+  font-size: 13px;
+}
+
+.placeholder-hint a {
+  color: #2563EB;
+  text-decoration: none;
+}
+
+.placeholder-hint a:hover {
+  text-decoration: underline;
 }
 
 .comments-loading {

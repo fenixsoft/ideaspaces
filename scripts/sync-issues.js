@@ -1,9 +1,9 @@
 /**
  * Issue 同步脚本
- * 自动为新文章创建 GitHub Issue
+ * 自动为新文章创建 GitHub Issue，并回写编号到文章 frontmatter
  */
 
-import { readFileSync, readdirSync, statSync } from 'fs'
+import { readFileSync, readdirSync, statSync, writeFileSync } from 'fs'
 import { join, relative } from 'path'
 import { execSync } from 'child_process'
 
@@ -65,6 +65,54 @@ function parseValue(value) {
   if (value === 'false') return false
   if (!isNaN(value)) return Number(value)
   return value
+}
+
+/**
+ * 更新 frontmatter，添加 issue.number 字段
+ */
+function updateFrontmatterWithIssueNumber(filePath, issueNumber) {
+  const content = readFileSync(filePath, 'utf-8')
+
+  // 匹配 frontmatter
+  const match = content.match(/^(---\n[\s\S]*?\n---)/)
+  if (!match) {
+    console.log(`  ⚠️  无法解析 frontmatter，跳过回写`)
+    return false
+  }
+
+  const frontmatterBlock = match[1]
+
+  // 检查是否已有 issue 字段
+  if (frontmatterBlock.includes('issue:')) {
+    // 检查是否已有 number 字段
+    if (/issue:\s*\n\s*number:/.test(frontmatterBlock)) {
+      // 替换已有的 number
+      const updatedFrontmatter = frontmatterBlock.replace(
+        /(issue:\s*\n\s*number:\s*)\d+/,
+        `$1${issueNumber}`
+      )
+      const newContent = content.replace(frontmatterBlock, updatedFrontmatter)
+      writeFileSync(filePath, newContent, 'utf-8')
+    } else {
+      // 在 issue: 后添加 number
+      const updatedFrontmatter = frontmatterBlock.replace(
+        /(issue:\s*\n)/,
+        `$1  number: ${issueNumber}\n`
+      )
+      const newContent = content.replace(frontmatterBlock, updatedFrontmatter)
+      writeFileSync(filePath, newContent, 'utf-8')
+    }
+  } else {
+    // 没有 issue 字段，在 frontmatter 结尾添加
+    const updatedFrontmatter = frontmatterBlock.replace(
+      /\n---$/,
+      `\nissue:\n  number: ${issueNumber}\n---`
+    )
+    const newContent = content.replace(frontmatterBlock, updatedFrontmatter)
+    writeFileSync(filePath, newContent, 'utf-8')
+  }
+
+  return true
 }
 
 /**
@@ -132,7 +180,7 @@ async function createIssue(title, labels) {
 }
 
 /**
- * 搜索现有 Issue
+ * 搜索已存在的 Issue
  */
 async function findIssue(title) {
   const token = process.env.GITHUB_TOKEN
@@ -193,7 +241,12 @@ async function main() {
       const existingIssue = await findIssue(issueTitle)
 
       if (existingIssue) {
-        console.log(`✓ ${frontmatter.title} -> Issue #${existingIssue.number} (已存在)`)
+        console.log(`✓ ${frontmatter.title} -> Issue #${existingIssue.number} (已存在，回写编号)`)
+        // 回写编号到 frontmatter
+        const updated = updateFrontmatterWithIssueNumber(file, existingIssue.number)
+        if (updated) {
+          console.log(`  ✓ 已更新 frontmatter: issue.number = ${existingIssue.number}`)
+        }
         continue
       }
 
@@ -202,6 +255,12 @@ async function main() {
 
       if (newIssue) {
         console.log(`✓ ${frontmatter.title} -> Issue #${newIssue.number} (已创建)`)
+
+        // 回写编号到 frontmatter
+        const updated = updateFrontmatterWithIssueNumber(file, newIssue.number)
+        if (updated) {
+          console.log(`  ✓ 已更新 frontmatter: issue.number = ${newIssue.number}`)
+        }
       }
 
     } catch (error) {
