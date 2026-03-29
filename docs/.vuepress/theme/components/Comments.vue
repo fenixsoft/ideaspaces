@@ -609,9 +609,4 @@ onUnmounted(() => {
   width: 14px;
   height: 14px;
 }
-
-.github-icon {
-  width: 16px;
-  height: 16px;
-}
 </style>
