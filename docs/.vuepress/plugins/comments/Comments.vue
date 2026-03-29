@@ -25,7 +25,7 @@ const initGitalk = () => {
     body: location.href,
     labels: ['Gitalk', 'Comment'],
     distractionFreeMode: false,
-    proxy: 'https://cros.icyfenix.cn/callback?code={code}',
+    proxy: 'https://cros.icyfenix.cn/?code={code}',
     createIssueManually: false,
     pagerDirection: 'last',
     enableHotKey: true

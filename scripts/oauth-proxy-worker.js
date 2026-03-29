@@ -1,11 +1,8 @@
 /**
  * GitHub OAuth 代理 - 腾讯云云函数
  *
- * 部署步骤：
- * 1. 登录腾讯云控制台，进入云函数 SCF
- * 2. 创建新函数，选择 Node.js 运行环境
- * 3. 上传此代码文件
- * 4. 配置触发器（API 网关），获得访问 URL
+ * 支持 CORS 跨域请求
+ * 所有请求都在根路径处理，避免 API 网关路径匹配问题
  */
 
 const express = require('express')
@@ -14,13 +11,33 @@ const app = express()
 // 中间件
 app.use(express.json())
 
-// CORS 头
+// CORS 配置 - 允许多个域名
+const ALLOWED_ORIGINS = [
+  'https://ai.icyfenix.cn',
+  'https://fenixsoft.github.io',
+  'http://localhost:8080',
+  'http://localhost:8081',
+  'http://localhost:3001'
+]
+
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
+  const origin = req.headers.origin
+
+  // 检查是否在允许列表中
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin)
+  } else {
+    // 允许所有域名（开发环境）
+    res.header('Access-Control-Allow-Origin', '*')
+  }
+
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-  res.header('Access-Control-Allow-Headers', 'Content-Type')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  res.header('Access-Control-Max-Age', '86400') // 预检请求缓存 24 小时
+
+  // 预检请求直接返回
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200)
+    return res.sendStatus(204)
   }
   next()
 })
@@ -31,49 +48,16 @@ const OAUTH_CONFIG = {
   clientSecret: 'f93311c59cbe51af671a3aa95af64028d4d7d1d3'
 }
 
-// 健康检查
-app.get('/', (req, res) => {
-  res.json({ status: 'ok', service: 'github-oauth-proxy' })
-})
+// 根路径处理所有请求
+app.all('/', async (req, res) => {
+  const code = req.query.code || req.body?.code
 
-// OAuth token 交换
-app.get('/callback', async (req, res) => {
-  const { code } = req.query
-
+  // 无 code 时返回健康检查
   if (!code) {
-    return res.status(400).json({ error: 'Missing code parameter' })
+    return res.json({ status: 'ok', service: 'github-oauth-proxy' })
   }
 
-  try {
-    const response = await fetch('https://github.com/login/oauth/access_token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        client_id: OAUTH_CONFIG.clientId,
-        client_secret: OAUTH_CONFIG.clientSecret,
-        code: code
-      })
-    })
-
-    const data = await response.json()
-    res.json(data)
-  } catch (error) {
-    console.error('OAuth proxy error:', error)
-    res.status(500).json({ error: error.message })
-  }
-})
-
-// POST 方式也支持（某些客户端使用 POST）
-app.post('/callback', async (req, res) => {
-  const { code } = req.body
-
-  if (!code) {
-    return res.status(400).json({ error: 'Missing code parameter' })
-  }
-
+  // 有 code 时进行 OAuth token 交换
   try {
     const response = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
@@ -101,6 +85,7 @@ if (require.main === module) {
   const port = process.env.PORT || 9000
   app.listen(port, () => {
     console.log(`OAuth proxy running at http://localhost:${port}`)
+    console.log(`Allowed origins: ${ALLOWED_ORIGINS.join(', ')}`)
   })
 }
 
