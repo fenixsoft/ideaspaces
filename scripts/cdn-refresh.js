@@ -19,8 +19,8 @@ async function refreshCDN() {
   }
 
   try {
-    // 动态导入腾讯云 SDK
-    const tencentcloud = await import('tencentcloud-sdk-nodejs')
+    // 动态导入腾讯云 CDN SDK
+    const tencentcloud = await import('tencentcloud-sdk-nodejs-cdn')
     const CdnClient = tencentcloud.cdn.v20180606.Client
 
     // 创建客户端
