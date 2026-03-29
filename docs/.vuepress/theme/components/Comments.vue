@@ -32,7 +32,7 @@ const props = defineProps({
   },
   proxy: {
     type: String,
-    default: 'http://cros.icyfenix.cn/callback?code={code}'
+    default: 'https://cros.icyfenix.cn/callback?code={code}'
   }
 })
 
