@@ -10,10 +10,7 @@
     <!-- 自定义页面底部：文章元信息 + 评论 -->
     <template #page-content-bottom>
       <ArticleFooter />
-      <Comments
-        :repo="commentsRepo"
-        :client-id="commentsClientId"
-      />
+      <Comments />
     </template>
   </DefaultLayout>
 </template>
@@ -26,10 +23,6 @@ import ArticleFooter from '../components/ArticleFooter.vue'
 
 const frontmatter = usePageFrontmatter()
 const pageTags = computed(() => frontmatter.value?.tags || [])
-
-// 评论组件配置
-const commentsRepo = 'fenixsoft/ideaspaces'
-const commentsClientId = typeof __COMMENTS_CLIENT_ID__ !== 'undefined' ? __COMMENTS_CLIENT_ID__ : ''
 </script>
 
 <style>
