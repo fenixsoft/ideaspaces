@@ -36,7 +36,7 @@ const props = defineProps({
   }
 })
 
-// 生成 Gitalk 实例
+// 生成 Gitalk 实例（只在客户端执行）
 const initGitalk = () => {
   const gitalk = new Gitalk({
     clientID: props.clientId,

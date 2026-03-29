@@ -13,26 +13,23 @@ import 'gitalk/dist/gitalk.css'
 const route = useRoute()
 const commentsContainer = ref(null)
 
-// Gitalk 配置
-const gitalkConfig = {
-  clientID: 'Ov23liQbtfoZGMcsU9VV',
-  repo: 'ideaspaces',
-  owner: 'fenixsoft',
-  admin: ['fenixsoft'],
-  id: location.pathname,
-  title: document.title,
-  body: location.href,
-  labels: ['Gitalk', 'Comment'],
-  distractionFreeMode: false,
-  proxy: 'http://cros.icyfenix.cn/callback?code={code}',
-  createIssueManually: false,
-  pagerDirection: 'last',
-  enableHotKey: true
-}
-
-// 初始化 Gitalk
+// 初始化 Gitalk（只在客户端执行）
 const initGitalk = () => {
-  const gitalk = new Gitalk(gitalkConfig)
+  const gitalk = new Gitalk({
+    clientID: 'Ov23liQbtfoZGMcsU9VV',
+    repo: 'ideaspaces',
+    owner: 'fenixsoft',
+    admin: ['fenixsoft'],
+    id: location.pathname,
+    title: document.title,
+    body: location.href,
+    labels: ['Gitalk', 'Comment'],
+    distractionFreeMode: false,
+    proxy: 'http://cros.icyfenix.cn/callback?code={code}',
+    createIssueManually: false,
+    pagerDirection: 'last',
+    enableHotKey: true
+  })
   gitalk.render('gitalk-container')
 }
 

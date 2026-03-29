@@ -35,9 +35,9 @@ jobs:
         run: npm ci
 
       - name: Build VuePress site
-        run: 
+        run: |
           npm run build
-          echo "ai.icyfenix.cn" >> .vuepress/dist/CNAME
+          echo "ai.icyfenix.cn" >> docs/.vuepress/dist/CNAME
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
