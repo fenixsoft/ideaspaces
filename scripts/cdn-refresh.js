@@ -40,7 +40,7 @@ async function refreshCDN() {
     // 全站刷新
     console.log(`🚀 正在刷新 CDN: https://${cdnDomain}/`)
 
-    const result = await client.PurgePathsCache({
+    const result = await client.PurgePathCache({
       Paths: [`https://${cdnDomain}/`],
       FlushType: 'flush'
     })
