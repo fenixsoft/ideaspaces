@@ -44,7 +44,6 @@ export default {
             { text: '矩阵基础', link: '/linear-algebra-vectors-matrices/03-matrices' },
             { text: '数据处理实践', link: '/linear-algebra-vectors-matrices/04-numpy' },
             { text: '应用场景', link: '/linear-algebra-vectors-matrices/05-applications' },
-            { text: '总结与练习', link: '/linear-algebra-vectors-matrices/06-summary' },
           ]
         }
       ],

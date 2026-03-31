@@ -5,6 +5,31 @@
 import katex from 'katex'
 import { path } from 'vuepress/utils'
 
+/**
+ * 处理 HTML 标签内的数学公式
+ * markdown-it 将 HTML 标签视为原始 HTML，不解析内部的 Markdown 内容
+ * 此函数使用后处理方式，对已渲染的 HTML 中的 $...$ 进行解析
+ */
+const processMathInHtml = (html) => {
+  // 处理行内公式 $...$（排除已渲染的 katex 内容）
+  // 使用正则匹配不在 katex 相关标签内的 $...$
+  return html.replace(/\$([^$\n]+)\$/g, (match, content) => {
+    // 检查是否在 katex 标签内（避免重复处理）
+    // 由于是全局替换，这里只是简单处理
+    if (!content.trim()) return match
+    try {
+      return katex.renderToString(content, {
+        throwOnError: false,
+        displayMode: false,
+        strict: "ignore"
+      })
+    } catch (e) {
+      console.warn('KaTeX inline render error in HTML:', e.message)
+      return match
+    }
+  })
+}
+
 export default {
   name: 'vuepress-plugin-math-katex',
 
@@ -157,6 +182,20 @@ export default {
         return `<span class="katex-error">$${content}$</span>`
       }
     }
+
+    // 处理 HTML 块内的数学公式
+    // markdown-it 将 HTML 标签视为原始内容，不解析内部的 Markdown
+    // 这里我们在 core ruler 中添加一个规则，在解析完成后处理 HTML 块内的 $...$
+    md.core.ruler.push('process_math_in_html', (state) => {
+      for (const token of state.tokens) {
+        // 处理 html_block 和 html_inline 类型的 token
+        if (token.type === 'html_block' || token.type === 'html_inline') {
+          if (token.content && token.content.includes('$')) {
+            token.content = processMathInHtml(token.content)
+          }
+        }
+      }
+    })
   },
 
   // 客户端只需要加载 CSS

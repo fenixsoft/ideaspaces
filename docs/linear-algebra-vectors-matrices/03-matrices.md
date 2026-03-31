@@ -63,11 +63,31 @@ print(f"元素 a[0,1]: {A[0, 1]}")  # 2（第 0 行第 1 列，0-indexed）
     - 数乘结合律：$c(\mathbf{AB}) = (c\mathbf{A})\mathbf{B} = \mathbf{A}(c\mathbf{B})$
     - 分配律：$\mathbf{A}(\mathbf{B} + \mathbf{C}) = \mathbf{AB} + \mathbf{AC}$
 
-    但是，矩阵乘法不满足交换律，一般情况下，$\mathbf{AB} \neq \mathbf{BA}$。甚至于 $\mathbf{BA}$ 都未必是一个合法的结果，它未必能满足内维匹配要求。
+    但是，矩阵乘法不满足交换律，一般情况下，$\mathbf{AB} \neq \mathbf{BA}$。甚至于 $\mathbf{BA}$ 都未必是一个合法的结果，它未必能满足内维匹配要求。下面是一个 $3 \times 2$ 矩阵与 $2 \times 3$ 矩阵相乘的具体示例，结果为 $3 \times 3$ 矩阵：
 
-从代数角度看，矩阵乘法运算过程固定却极其繁琐，可是它的几何意义却十分简洁，就是连续的两次线性变换（见本章的线性变换一节），这人类理解矩阵乘法的捷径，代数公式是上帝留给计算机去使用的。
+$$\mathbf{A} = \begin{pmatrix}
+1 & 2 \\
+3 & 4 \\
+5 & 6
+\end{pmatrix}, \quad
+\mathbf{B} = \begin{pmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{pmatrix}, \quad
+\mathbf{AB} = \begin{pmatrix}
+1 \cdot 1 + 2 \cdot 4 & 1 \cdot 2 + 2 \cdot 5 & 1 \cdot 3 + 2 \cdot 6 \\
+3 \cdot 1 + 4 \cdot 4 & 3 \cdot 2 + 4 \cdot 5 & 3 \cdot 3 + 4 \cdot 6 \\
+5 \cdot 1 + 6 \cdot 4 & 5 \cdot 2 + 6 \cdot 5 & 5 \cdot 3 + 6 \cdot 6
+\end{pmatrix}
+= \begin{pmatrix}
+9 & 12 & 15 \\
+19 & 26 & 33 \\
+29 & 40 & 51
+\end{pmatrix}$$
 
-另外，在讲解 [向量内积](02-vectors.md#内积与投影）时提到过，向量、矩阵的乘法根据上下文可能有不同含义，要注意通过符号写法区分。矩阵乘法的写法就是“$\mathbf{AB}$”，这里并不是像初等代数乘法那般中间省略了乘号。如果在文献中看到 $\mathbf{A} * \mathbf{B}$ 或者 $\mathbf{A} \odot \mathbf{B}$，所指的其实是矩阵的 Hadamard 积（逐元素乘积），它是指两个维度完全一样的矩阵，对应位置的元素组个相乘，形成另一个维度一样的矩阵： $(\mathbf{A} \odot \mathbf{B}){ij} = a{ij} \cdot b_{ij} \quad (1 \leq i \leq m,\ 1 \leq j \leq n)$
+从代数角度看，矩阵乘法运算过程是一系列繁琐的加、乘法运算，可是它的几何意义却十分简洁，就是连续的 $\mathbf{A}$、$\mathbf{B}$ 两次线性变换（见本文的[线性变换](#线性变换的几何直观)一节），这人类理解矩阵乘法的捷径，代数公式是上帝留给计算机去使用的。
+
+另外，在讲解[向量内积](02-vectors.md#内积与投影)时提到过，向量、矩阵的乘法根据上下文可能有不同含义，要注意通过符号写法区分。矩阵乘法的写法就是“$\mathbf{AB}$”，这里并不是像初等代数乘法那般中间省略了乘号。如果在文献中看到 $\mathbf{A} * \mathbf{B}$ 或者 $\mathbf{A} \odot \mathbf{B}$，所指的其实是矩阵的 Hadamard 积（逐元素乘积），它是指两个维度完全一样的矩阵，对应位置的元素组个相乘，形成另一个维度一样的矩阵： $(\mathbf{A} \odot \mathbf{B}){ij} = a{ij} \cdot b_{ij} \quad (1 \leq i \leq m,\ 1 \leq j \leq n)$
 
 ## 矩阵的转置和逆
 
@@ -82,6 +102,19 @@ print(f"元素 a[0,1]: {A[0, 1]}")  # 2（第 0 行第 1 列，0-indexed）
 
     尤其是第 4 条性质，是后续学习误差方向传播算法时的理论依据，$(\mathbf{AB})^T = \mathbf{B}^T\mathbf{A}^T$ 确保了反向传播时梯度能够正确地"逆流"回每一层，保持维度匹配，这是自动微分和深度学习框架（PyTorch、TensorFlow）能够高效计算梯度的数学基础。
 
+    以下是一个 $3 \times 3$ 矩阵与其转置的具体示例，可以看到，原矩阵的第一行 $(1, 2, 3)$ 变成了转置矩阵的第一列，第二行 $(4, 5, 6)$ 变成了第二列，第三行 $(7, 8, 9)$ 变成了第三列，实现了行列互换。
+
+    $$\mathbf{A} = \begin{pmatrix}
+    1 & 2 & 3 \\
+    4 & 5 & 6 \\
+    7 & 8 & 9
+    \end{pmatrix}, \quad
+    \mathbf{A}^T = \begin{pmatrix}
+    1 & 4 & 7 \\
+    2 & 5 & 8 \\
+    3 & 6 & 9
+    \end{pmatrix}$$
+
 - **矩阵的求逆（Inverse）** 是一种"撤销"原矩阵的线性变换，回到原始状态的操作。对于方阵 $\mathbf{A}$，如果存在矩阵 $\mathbf{B}$ 使得：$\mathbf{AB} = \mathbf{BA} = \mathbf{I}$，则称 $\mathbf{A}$ 可逆（Invertible），$\mathbf{B}$ 称为 $\mathbf{A}$ 的逆矩阵，记为 $\mathbf{A}^{-1}$。逆矩阵具备如下性质：
 
     - $(\mathbf{A}^{-1})^{-1} = \mathbf{A}$（撤销的撤销 = 原样。就像"取消撤销"就是回到最初的样子）
@@ -89,7 +122,26 @@ print(f"元素 a[0,1]: {A[0, 1]}")  # 2（第 0 行第 1 列，0-indexed）
     - $(\mathbf{A}^T)^{-1} = (\mathbf{A}^{-1})^T$（转置和求逆可以交换顺序）
     - $(c\mathbf{A})^{-1} = \frac{1}{c}\mathbf{A}^{-1} , c \neq 0$（放大 $c$ 倍的变换操作，其逆就是缩小到原来的 $\frac{1}{c}$）
 
-    不是所有操作都可以撤销，不是所有方阵都可逆。矩阵可逆的条件，需要同时满足行列式不为零（$\det(\mathbf{A}) \neq 0$）、满秩（对于 $n \times n$ 方阵有 $\text{rank}(\mathbf{A}) = n$）和所有特征值都不为零这三个条件的方阵才可逆。当矩阵不可逆或索性就不是方阵时，可以使用 **伪逆（Pseudoinverse）** 获得一个最接近的近似解。伪逆记为 $\mathbf{A}^+ = (\mathbf{A}^T \mathbf{A})^{-1} \mathbf{A}^T$（当 $\mathbf{A}^T \mathbf{A}$ 可逆时）。这个公式的含义是先通过 $\mathbf{A}^T \mathbf{A}$ 将 $m \times n$ 矩阵裁剪成 $n \times n$ 方阵，把多余的信息过滤掉，保留核心结构。然后在此基础上找到一个最接近的逆，最后乘以 $\mathbf{A}^T$ 映射回原始空间。伪逆具备如下性质：
+    以下是一个 $2 \times 2$ 矩阵与其逆矩阵的具体示例：
+
+    $$\mathbf{A} = \begin{pmatrix}
+    2 & 1 \\
+    5 & 3
+    \end{pmatrix}, \quad
+    \mathbf{A}^{-1} = \begin{pmatrix}
+    3 & -1 \\
+    -5 & 2
+    \end{pmatrix}, \quad
+    \mathbf{A} \mathbf{A}^{-1} = \begin{pmatrix}
+    2 \cdot 3 + 1 \cdot (-5) & 2 \cdot (-1) + 1 \cdot 2 \\
+    5 \cdot 3 + 3 \cdot (-5) & 5 \cdot (-1) + 3 \cdot 2
+    \end{pmatrix}
+    = \begin{pmatrix}
+    1 & 0 \\
+    0 & 1
+    \end{pmatrix} = \mathbf{I}_2$$
+
+    不是所有操作都可以撤销，不是所有方阵都可逆。矩阵可逆的条件，需要同时满足行列式不为零（$\det(\mathbf{A}) \neq 0$）、满秩（对于 $n \times n$ 方阵有 $\text{rank}(\mathbf{A}) = n$）和所有特征值都不为零这三个条件的方阵才可逆。当矩阵不可逆或索性就不是方阵时，可以使用**伪逆（Pseudoinverse）**获得一个最接近的近似解。伪逆记为 $\mathbf{A}^+ = (\mathbf{A}^T \mathbf{A})^{-1} \mathbf{A}^T$（当 $\mathbf{A}^T \mathbf{A}$ 可逆时）。这个公式的含义是先通过 $\mathbf{A}^T \mathbf{A}$ 将 $m \times n$ 矩阵裁剪成 $n \times n$ 方阵，把多余的信息过滤掉，保留核心结构。然后在此基础上找到一个最接近的逆，最后乘以 $\mathbf{A}^T$ 映射回原始空间。伪逆具备如下性质：
 
     - $\mathbf{A}\mathbf{A}^+\mathbf{A} = \mathbf{A}$
     - $\mathbf{A}^+\mathbf{A}\mathbf{A}^+ = \mathbf{A}^+$
@@ -127,7 +179,7 @@ print(f"元素 a[0,1]: {A[0, 1]}")  # 2（第 0 行第 1 列，0-indexed）
 
 ## 线性变换的几何直观
 
-假设你有一张印在橡皮膜上的照片，对它进行的各种操作：拉伸、旋转、剪切、翻转。只要不把膜弄皱（保持直线还是直线），不把膜撕裂（保持相邻的点仍然相邻），那么这些操作本质上就都算是线性变换。从代数角度看，线性变换是“一个矩阵乘以一个向量得到另一个向量”，虽然从代数公式可以准确地计算出结果，但是并不容易理解矩阵里的数字到底代表什么？每个数字与向量元素的运算又代表了什么？所以，我们继续从几何直观上寻找突破口。
+假设你有一张印在橡皮膜上的照片，对它进行的各种操作：拉伸、旋转、剪切、翻转。只要不把膜弄皱（保持直线还是直线），不把膜撕裂（保持相邻的点仍然相邻），那么这些操作本质上就都算是线性变换。从代数角度看，线性变换是”一个矩阵乘以一个向量得到另一个向量”，虽然从代数公式可以准确地计算出结果，但是并不容易理解矩阵里的数字到底代表什么？每个数字与向量元素的运算又代表了什么？所以，我们继续从几何直观上寻找突破口。
 
 想象你站在原点，面前是坐标系和许多向量，每个向量 $\mathbf{v}$ 就像从原点出发的一支箭，指向空间中的某个位置。现在，你要把这整片空间中所有的向量进行"变形"——譬如沿着 x 轴拉长，沿着 y 轴方向压扁、再整体旋转 30 度，该怎么描述这个变形操作？一个有价值的洞察是你完全不需要为每个向量独立描述一套操作，只要知道基向量发生了什么变化（拉伸、旋转等），就能确定整个空间中所有向量共同的变形方式，因为一旦空间坐标轴的发生变化，这些向量都会同步被改变。从最简单的在二维平面出发，原来的基向量是 $\mathbf{e}_1 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$（沿 x 轴的单位向量）和 $\mathbf{e}_2 = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$（沿 y 轴的单位向量）。
 
@@ -145,6 +197,10 @@ $$\begin{pmatrix} a & b \\ c & d \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatr
   - 第二列 $\begin{pmatrix} 1 \\ 1 \end{pmatrix}$：y 轴被"倾斜"了（从 $(0,1)$ 搬到 $(1,1)$）
 
 这就像是把一张正方形网格，先沿 x 方向拉伸，再向右上方剪切。如果平面中原来一个单位正方形（由 $(0,0), (1,0), (1,1), (0,1)$ 围成），现在它就变成平行四边形了。
+
+![线性变换：正方形变平行四边形](./assets/linear_transformation.png)
+
+*图：线性变换样例 - 正方形变平行四边形*
 
 至此，我们可以总结代数公式与几何直观的联系了：矩阵乘法中的每个元素 $a_{ij}$，描述的是“第 $j$ 个基向量对第 $i$ 个坐标轴的贡献”。第一行 $a, b$ 控制的是新向量的 x 坐标由哪些基向量的原始分量贡献；第二行 $c, d$ 控制的是 y 坐标。这样，几何上的"拉伸、旋转、剪切"就转化成了代数上的"乘法与加法"。矩阵的每一列代表一个基向量变换后的新位置，整个空间就像一张被拉伸、旋转或剪切的橡皮布，而矩阵记录了每个坐标轴"搬到哪里去了"。
 
@@ -217,3 +273,118 @@ print(f"四阶张量 shape: {tensor_4d.shape}")  # (10, 28, 28, 3)
 这些概念紧密相连、层层递进：矩阵运算是操作的手段，逆矩阵是还原的工具，特殊矩阵是简化的利器，线性变换是几何的本质，张量则是维度的升华。掌握矩阵的代数运算与几何直观的双重理解，将为后续学习特征分解、奇异值分解以及神经网络优化算法奠定坚实基础。
 
 下一章将介绍如何使用 Python 和 NumPy 进行实际的矩阵操作。
+
+## 练习题
+
+1. 为什么矩阵乘法不满足交换律？从线性变换的角度如何理解？
+    <details>
+    <summary>参考答案</summary>
+    矩阵乘法表示线性变换的复合。$\mathbf{AB}$ 表示先应用 $\mathbf{B}$ 变换，再应用 $\mathbf{A}$ 变换；而 $\mathbf{BA}$ 表示先应用 $\mathbf{A}$ 变换，再应用 $\mathbf{B}$ 变换。
+
+    例如，设 $\mathbf{A}$ 为旋转 90° 的变换，$\mathbf{B}$ 为沿 x 轴拉伸 2 倍的变换。先旋转再拉伸，与先拉伸再旋转，最终结果不同——变换顺序的改变会导致结果不同，这正是矩阵乘法不可交换的几何解释。
+    </details>
+
+1. 计算矩阵 $\mathbf{A} = \begin{pmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{pmatrix}$ 的转置 $\mathbf{A}^T$，并验证 $(\mathbf{A}^T)^T = \mathbf{A}$。
+    <details>
+    <summary>参考答案</summary>
+    转置：
+    $\mathbf{A}^T = \begin{pmatrix} 1 & 4 \\ 2 & 5 \\ 3 & 6 \end{pmatrix}$
+
+    验证：
+    $(\mathbf{A}^T)^T = \begin{pmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{pmatrix} = \mathbf{A}$
+
+    转置操作将原矩阵的行变成列、列变成行。原矩阵 $2 \times 3$ 变成 $3 \times 2$，再转置一次又回到 $2 \times 3$，这正是"转置的转置等于原矩阵"的性质体现。
+    </details>
+
+1. 计算矩阵 $\mathbf{A} = \begin{pmatrix} 4 & 7 \\ 2 & 6 \end{pmatrix}$ 的逆矩阵 $\mathbf{A}^{-1}$，并验证 $\mathbf{A}\mathbf{A}^{-1} = \mathbf{I}$。
+    <details>
+    <summary>参考答案</summary>
+    对于 $2 \times 2$ 矩阵 $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$，逆矩阵公式为 $\frac{1}{ad-bc}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}$。
+
+    计算行列式：$\det(\mathbf{A}) = 4 \times 6 - 7 \times 2 = 24 - 14 = 10$
+
+    由于行列式不为零，矩阵可逆：
+    $\mathbf{A}^{-1} = \frac{1}{10}\begin{pmatrix} 6 & -7 \\ -2 & 4 \end{pmatrix} = \begin{pmatrix} 0.6 & -0.7 \\ -0.2 & 0.4 \end{pmatrix}$
+
+    验证：
+    $\mathbf{A}\mathbf{A}^{-1} = \begin{pmatrix} 4 & 7 \\ 2 & 6 \end{pmatrix}\begin{pmatrix} 0.6 & -0.7 \\ -0.2 & 0.4 \end{pmatrix} = \begin{pmatrix} 2.4-1.4 & -2.8+2.8 \\ 1.2-1.2 & -1.4+2.4 \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$
+    </details>
+
+1. 解释为什么矩阵 $\mathbf{A} = \begin{pmatrix} 1 & 2 \\ 2 & 4 \end{pmatrix}$ 不可逆，并从几何角度说明其含义。
+    <details>
+    <summary>参考答案</summary>
+    代数角度：行列式 $\det(\mathbf{A}) = 1 \times 4 - 2 \times 2 = 0$，行列式为零故不可逆。
+
+    几何角度：观察矩阵的第二行是第一行的 2 倍，这意味着线性变换将二维平面"压扁"成一维直线。具体来说，任何向量 $(x, y)$ 经过这个变换后都落在同一条直线 $y' = 2x'$ 上。
+
+    信息丢失的直观理解：就像把一张二维的照片完全压扁成一维的线条，所有垂直于该线条方向的信息都丢失了，无法通过逆向操作恢复原始的二维信息。
+    </details>
+
+1. 计算矩阵 $\mathbf{A} = \begin{pmatrix} 1 & 2 \\ 3 & 6 \end{pmatrix}$ 的伪逆 $\mathbf{A}^+$，并解释伪逆的作用。
+    <details>
+    <summary>参考答案</summary>
+    使用伪逆公式 $\mathbf{A}^+ = (\mathbf{A}^T \mathbf{A})^{-1} \mathbf{A}^T$：
+
+    $\mathbf{A}^T \mathbf{A} = \begin{pmatrix} 1 & 3 \\ 2 & 6 \end{pmatrix}\begin{pmatrix} 1 & 2 \\ 3 & 6 \end{pmatrix} = \begin{pmatrix} 10 & 20 \\ 20 & 40 \end{pmatrix}$
+
+    注意 $\mathbf{A}^T \mathbf{A}$ 的行列式仍为零，需要使用其他方法（如 SVD）计算伪逆。实际计算得到：
+    $\mathbf{A}^+ = \frac{1}{50}\begin{pmatrix} 1 & 3 \\ 2 & 6 \end{pmatrix}$
+
+    伪逆的作用：当矩阵不可逆时，伪逆提供最小二乘意义下的最优近似解。在实际应用中，伪逆可用于求解超定方程组（方程数多于变量数）的最优解，如线性回归问题。
+    </details>
+
+1. 验证矩阵 $\mathbf{Q} = \begin{pmatrix} \frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}} \\ \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \end{pmatrix}$ 是正交矩阵，并解释其几何意义。
+    <details>
+    <summary>参考答案</summary>
+    正交矩阵需要满足 $\mathbf{Q}^T \mathbf{Q} = \mathbf{I}$：
+
+    $\mathbf{Q}^T = \begin{pmatrix} \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\ -\frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \end{pmatrix}$
+
+    $\mathbf{Q}^T \mathbf{Q} = \begin{pmatrix} \frac{1}{2}+\frac{1}{2} & -\frac{1}{2}+\frac{1}{2} \\ -\frac{1}{2}+\frac{1}{2} & \frac{1}{2}+\frac{1}{2} \end{pmatrix} = \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix} = \mathbf{I}$
+
+    几何意义：这是一个旋转 45° 的变换矩阵。正交矩阵的特殊性质是保持向量长度和角度不变——向量经过旋转后，其模长不变，与其他向量的夹角也不变。这就是为什么正交矩阵在坐标变换、信号处理等领域如此重要。
+    </details>
+
+1. 给定线性变换矩阵 $\mathbf{A} = \begin{pmatrix} 2 & 0 \\ 0 & 0.5 \end{pmatrix}$，描述这个变换对二维平面的作用，并计算向量 $(1, 1)$ 变换后的位置。
+    <details>
+    <summary>参考答案</summary>
+    变换描述：这是一个对角矩阵，表示沿坐标轴方向的独立缩放。第一列 $(2, 0)$ 表示 x 轴单位向量被拉伸到原来的 2 倍；第二列 $(0, 0.5)$ 表示 y 轴单位向量被压缩到原来的一半。
+
+    变换后的平面：原来单位正方形 $[0,1] \times [0,1]$ 变成长方形 $[0,2] \times [0,0.5]$。
+
+    计算变换：
+    $\mathbf{A}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 2 & 0 \\ 0 & 0.5 \end{pmatrix}\begin{pmatrix} 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 2 \times 1 + 0 \times 1 \\ 0 \times 1 + 0.5 \times 1 \end{pmatrix} = \begin{pmatrix} 2 \\ 0.5 \end{pmatrix}$
+
+    向量 $(1, 1)$ 被变换到 $(2, 0.5)$，x 坐标放大 2 倍，y 坐标缩小一半。
+    </details>
+
+1. 解释为什么神经网络中权重矩阵通常是矩形（非方阵）而非方阵，并举例说明。
+    <details>
+    <summary>参考答案</summary>
+    神经网络的权重矩阵 $\mathbf{W}$ 通常连接不同维度的层：如果输入层有 $n$ 个神经元，输出层有 $m$ 个神经元，则权重矩阵为 $m \times n$（非方阵）。
+
+    例如：输入层 784 维（28×28 像素图像），隐藏层 128 维，权重矩阵为 $128 \times 784$。这个矩阵将 784 维输入"压缩"到 128 维。
+
+    非方阵的意义：
+    - **降维**：当 $m < n$ 时，矩阵起到压缩信息的作用（如编码器）
+    - **升维**：当 $m > n$ 时，矩阵扩展特征空间（如解码器）
+    - **信息重构**：不同维度之间的变换让网络学习更丰富的特征表示
+
+    这也是为什么神经网络能够进行特征提取和维度变换——通过非方阵权重矩阵实现信息的压缩、重构和抽象。
+    </details>
+
+1. 计算三阶张量（形状为 $(2, 3, 4)$）的元素总数、维度数，并解释其在图像处理中可能代表什么数据。
+    <details>
+    <summary>参考答案</summary>
+    元素总数：$2 \times 3 \times 4 = 24$
+
+    维度数：3（三阶张量）
+
+    图像处理中的含义：这个张量可以表示 2 张大小为 $3 \times 4$ 的灰度图像，或者 1 张 $3 \times 4$ 的 2 通道图像（如某些卫星遥感数据的两个波段）。
+
+    更常见的情况：
+    - 形状 $(H, W, C)$：一张彩色图像，$H$ 为高度，$W$ 为宽度，$C=3$ 为 RGB 通道
+    - 形状 $(N, H, W, C)$：批量图像数据，$N$ 为批次大小（如训练时一次处理 32 张图）
+
+    张量的多维结构让深度学习框架能够高效处理批量数据、多通道特征等复杂结构。
+    </details>

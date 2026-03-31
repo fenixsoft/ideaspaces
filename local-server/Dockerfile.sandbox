@@ -16,6 +16,8 @@ RUN sed -i 's|http://archive.ubuntu.com|http://mirrors.aliyun.com|g' /etc/apt/so
     && apt-get update && apt-get install -y \
     software-properties-common \
     curl \
+    fonts-wqy-microhei \
+    fonts-noto-cjk \
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt-get update && apt-get install -y \
     python3.11 \
@@ -46,11 +48,13 @@ RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple \
 RUN pip install --no-cache-dir \
     torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
-# 创建工作目录
-WORKDIR /workspace
-
 # 复制 Kernel 执行器
 COPY local-server/src/kernel_runner.py /workspace/kernel_runner.py
+
+# 配置 matplotlib 中文字体支持
+RUN mkdir -p ~/.config/matplotlib && \
+    printf "font.family: sans-serif\nfont.sans-serif: WenQuanYi Micro Hei, Noto Sans CJK SC, DejaVu Sans\naxes.unicode_minus: False\n" > ~/.config/matplotlib/matplotlibrc && \
+    rm -rf ~/.cache/matplotlib
 
 # 设置默认命令
 CMD ["python3"]

@@ -97,30 +97,27 @@ for i, sim in enumerate(similarities[0]):
 graph LR
     A[第 1 章 引言] -->|理解重要性| B[第 2 章 向量基础]
     B -->|运算与几何意义| C[第 3 章 矩阵基础]
-    C -->|线性变换与矩阵运算| D[第 4 章 Python 实践]
+    C -->|线性变换与矩阵运算| D[第 4 章 数据处理实践]
     D -->|NumPy 数组操作| E[第 5 章 应用场景]
-    E -->|机器学习应用| F[第 6 章 总结]
 
     classDef styleA fill:#e1f5fe,stroke:#01579b
     classDef styleB fill:#e8f5e9,stroke:#1b5e20
     classDef styleC fill:#fff3e0,stroke:#e65100
     classDef styleD fill:#f3e5f5,stroke:#4a148c
     classDef styleE fill:#fce4ec,stroke:#880e4f
-    classDef styleF fill:#e0f2f1,stroke:#004d40
 
     class A styleA
     class B styleB
     class C styleC
     class D styleD
     class E styleE
-    class F styleF
 ```
 
 - **第 2 章：向量基础**将深入讲解向量的定义、加法、数乘、内积、范数等核心概念，并通过几何图示建立直观理解。
 
 - **第 3 章：矩阵基础**将介绍矩阵的运算规则、特殊矩阵类型，以及最重要的概念——线性变换，揭示矩阵乘法的几何意义。
 
-- **第 4 章：Python 实践**将使用 NumPy 库实现上述运算，通过代码加深理解，掌握向量化编程的技巧。
+- **第 4 章：数据处理实践**将使用 NumPy 库实现上述运算，通过代码加深理解，掌握向量化编程的技巧。
 
 - **第 5 章：应用场景**将结合图像处理、文本分析、特征提取等实际案例，展示线性代数如何解决真实问题。
 

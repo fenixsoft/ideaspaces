@@ -57,9 +57,15 @@ if (typeof document !== 'undefined' && !document.getElementById(styleId)) {
   min-height: 60px;
 }
 
+/* 编辑模式下的样式 */
 .runnable-code-block pre.runnable-editable:focus {
   background: #1e1e1e;
   box-shadow: inset 0 0 0 2px rgba(62, 175, 124, 0.3);
+}
+
+/* 非编辑模式下隐藏光标 */
+.runnable-code-block pre.runnable-editable code[data-editing="false"] {
+  caret-color: transparent;
 }
 
 .runnable-code-block  code {
@@ -362,10 +368,21 @@ function initCodeBlock(block) {
   const lineNumbersDivs = codeArea.querySelectorAll('.line-numbers')
   lineNumbersDivs.forEach(div => div.remove())
 
-  // 让 code 元素可编辑
+  // 让 code 元素可编辑（但默认不显示焦点样式）
   codeElement.contentEditable = 'true'
   codeElement.spellcheck = false
+  codeElement.dataset.editing = 'false'
   preElement.classList.add('runnable-editable')
+
+  // 点击时进入编辑模式
+  codeElement.addEventListener('focus', () => {
+    codeElement.dataset.editing = 'true'
+  })
+
+  // 失焦时退出编辑模式
+  codeElement.addEventListener('blur', () => {
+    codeElement.dataset.editing = 'false'
+  })
 
   // 处理 Tab 和 Enter 键输入
   codeElement.addEventListener('keydown', (e) => {

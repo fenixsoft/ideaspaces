@@ -15,6 +15,8 @@ RUN sed -i 's|http://deb.debian.org|http://mirrors.aliyun.com|g' /etc/apt/source
     curl \
     libgl1 \
     libglib2.0-0 \
+    fonts-wqy-microhei \
+    fonts-noto-cjk \
     && rm -rf /var/lib/apt/lists/*
 
 # 升级 pip - 使用清华 PyPI 镜像
@@ -33,15 +35,17 @@ RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple \
     ipykernel \
     jupyter_client
 
-# 安装 PyTorch (CPU 版本) - 使用清华镜像
-RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple \
+# 安装 PyTorch (CPU 版本) - 使用 PyTorch 官方镜像
+RUN pip install --no-cache-dir \
     torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-
-# 创建工作目录
-WORKDIR /workspace
 
 # 复制 Kernel 执行器
 COPY local-server/src/kernel_runner.py /workspace/kernel_runner.py
+
+# 配置 matplotlib 中文字体支持
+RUN mkdir -p ~/.config/matplotlib && \
+    printf "font.family: sans-serif\nfont.sans-serif: WenQuanYi Micro Hei, Noto Sans CJK SC, DejaVu Sans\naxes.unicode_minus: False\n" > ~/.config/matplotlib/matplotlibrc && \
+    rm -rf ~/.cache/matplotlib
 
 # 设置默认命令
 CMD ["python3"]
