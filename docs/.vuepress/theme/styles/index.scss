@@ -47,6 +47,15 @@ body {
   background: var(--vp-c-bg);
   border-bottom: 1px solid var(--vp-c-border);
 
+  // 导航栏右侧按钮顺序调整
+  .vp-navbar-items-wrapper {
+    // 使用 flexbox order 属性调整顺序
+    // 默认 order: 0，数值越大越靠后
+    .navbar-settings {
+      order: 2;  // 设置按钮在最右边
+    }
+  }
+
   .vp-navbar-brand {
     .vp-navbar-title {
       font-weight: 600;
@@ -73,28 +82,36 @@ body {
 .vp-sidebar {
   background: var(--vp-c-bg);
   border-right: 1.5px solid var(--vp-c-border);
-  padding: 24px 16px;
+  padding: 0;
 
-  // 侧边栏标题 - 与 pencil 设计稿一致
-  .vp-sidebar-group {
-    .vp-sidebar-group-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--vp-c-text-mute);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 0 12px;
-      margin-bottom: 16px;
+  // 顶级分类标题 - 粗体显示
+  .vp-sidebar-item.vp-sidebar-heading {
+    font-size: 14px;
+    font-weight: 700;  // 粗体
+    color: var(--vp-c-text);
+    margin-top: 7px;
+
+    // 移除 uppercase 样式
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  // 子菜单容器 - 每级缩进 1em（1个字宽度）
+  .vp-sidebar-children {
+    padding-left: 1em;  // 缩进1个字宽度
+
+    // 嵌套的子菜单继续缩进
+    .vp-sidebar-children {
+      padding-left: 1em;
     }
   }
 
-  // 侧边栏项目 - 与 pencil 设计稿一致
-  .vp-sidebar-item {
+  // 侧边栏项目
+  .vp-sidebar-item:not(.vp-sidebar-heading) {
     display: flex;
     align-items: center;
-    padding: 12px;
-    margin: 4px 0;
-    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 0;
     color: var(--vp-c-text-mute);
     font-size: 14px;
     font-weight: 400;
@@ -110,6 +127,11 @@ body {
       font-weight: 500;
       background: var(--vp-c-accent-soft);
     }
+  }
+
+  // 覆盖默认主题的二级菜单 padding 样式
+  .vp-sidebar-children .vp-sidebar-children .vp-sidebar-item:not(.vp-sidebar-heading) {
+    padding: 7px 12px;
   }
 }
 

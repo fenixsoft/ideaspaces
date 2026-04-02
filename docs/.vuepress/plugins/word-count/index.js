@@ -1,49 +1,30 @@
 /**
  * 字数统计插件
+ * 参考 awesome-fenix 的 read-time 插件实现
  * 在构建时计算 Markdown 文章的字数，支持中英文混合统计
  */
-import { readFile } from 'node:fs/promises'
+
+// 全局字数统计对象（构建时收集所有页面的字数）
+const globalWords = {}
 
 /**
  * 预处理 Markdown 内容，移除语法标记
- * @param {string} content Markdown 源内容
- * @returns {string} 处理后的纯文本
  */
 function preprocessMarkdown(content) {
   if (!content) return ''
 
   let text = content
 
-  // 移除 fenced code blocks (```lang ... ```)
   text = text.replace(/```[\s\S]*?```/g, '')
-
-  // 移除行内代码 (`code`)
   text = text.replace(/`[^`]+`/g, '')
-
-  // 移除 LaTeX 行内公式 ($formula$) - 需要小心处理避免误删
-  // 只匹配明确的 $...$ 公式，不匹配货币符号
   text = text.replace(/\$([^\$\n]+?)\$/g, '')
-
-  // 移除 LaTeX 块级公式 ($$formula$$)
   text = text.replace(/\$\$[\s\S]*?\$\$/g, '')
-
-  // 移除链接 [text](url)
   text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-
-  // 移除图片 ![alt](url)
   text = text.replace(/!\[[^\]]*\]\([^)]+\)/g, '')
-
-  // 移除标题标记 (# ## ### 等)
   text = text.replace(/^#{1,6}\s+/gm, '')
-
-  // 移除粗体/斜体标记 (** ***, _ _)
   text = text.replace(/\*\*?([^*]+)\*\*?/g, '$1')
   text = text.replace(/__?([^_]+)__?/g, '$1')
-
-  // 移除 HTML 标签
   text = text.replace(/<[^>]+>/g, '')
-
-  // 移除 frontmatter (--- ... ---)
   text = text.replace(/^---[\s\S]*?---/m, '')
 
   return text
@@ -51,28 +32,17 @@ function preprocessMarkdown(content) {
 
 /**
  * 计算字数（支持中英文混合）
- * 基于 icyfenix.cn 的 fnGetCpmisWords 算法
- * @param {string} str 纯文本内容
- * @returns {number} 字数
+ * 基于 awesome-fenix 的 fnGetCpmisWords 算法
  */
 function countWords(str) {
   if (!str) return 0
 
   let sLen = 0
   try {
-    // 将空白符（空格、换行、全角空格）替换为占位符
     str = str.replace(/(\r\n+|\s+|　+)/g, '龘')
-
-    // 英文字符（ASCII）标记为 'm'
     str = str.replace(/[\x00-\xff]/g, 'm')
-
-    // 连续英文合并为一个单词
     str = str.replace(/m+/g, '*')
-
-    // 移除占位符
     str = str.replace(/龘+/g, '')
-
-    // 返回字数（中文按字符，英文按单词）
     sLen = str.length
   } catch (e) {
     console.error('字数统计出错:', e)
@@ -82,50 +52,75 @@ function countWords(str) {
 }
 
 /**
- * VuePress 插件：字数统计
+ * VuePress 2 插件：字数统计
  */
 const wordCountPlugin = (options = {}) => {
   return {
     name: 'vuepress-plugin-word-count',
 
-    // VuePress v2: 使用 onInitialized 钩子读取源文件
-    onInitialized: async (app) => {
+    // VuePress 2: 使用 onInitialized 钩子收集所有页面字数
+    async onInitialized(app) {
+      // 第一遍：收集所有页面的字数
       for (const page of app.pages) {
-        const frontmatter = page.frontmatter
+        let wordCount = 0
 
         // 如果 frontmatter 中已有 wordCount，使用预设值
-        if (frontmatter && frontmatter.wordCount) {
-          page.data.wordCount = frontmatter.wordCount
-          continue
-        }
-
-        // 通过 filePath 读取原始 Markdown 内容
-        let rawContent = ''
-        if (page.filePath) {
-          try {
-            rawContent = await readFile(page.filePath, 'utf-8')
-          } catch (e) {
-            // 读取失败时使用 page.content 作为 fallback
-            rawContent = page.content || ''
-          }
+        if (page.frontmatter?.wordCount) {
+          wordCount = page.frontmatter.wordCount
         } else {
-          rawContent = page.content || ''
+          // 计算字数
+          const content = page.content || ''
+          if (content) {
+            const plainText = preprocessMarkdown(content)
+            wordCount = countWords(plainText)
+          }
         }
 
-        if (!rawContent) {
-          page.data.wordCount = 0
-          continue
-        }
-
-        // 预处理 Markdown
-        const plainText = preprocessMarkdown(rawContent)
-
-        // 计算字数
-        const wordCount = countWords(plainText)
-
-        // 存入 page data
+        globalWords[page.path] = wordCount
         page.data.wordCount = wordCount
       }
+
+      // 第二遍：将 globalWords 注入到每个页面（用于页面级别显示）
+      for (const page of app.pages) {
+        page.data.readingTime = {
+          words: page.data.wordCount,
+          minutes: page.data.wordCount / 500,
+          globalWords: { ...globalWords }  // 复制一份，确保每个页面都有完整数据
+        }
+      }
+    },
+
+    // 提供客户端配置文件，将 globalWords 注入到 Vue 应用
+    clientConfigFile(app) {
+      // 构建 wordCountData 结构 {path: {title, wordCount}}
+      const wordCountData = {}
+      for (const page of app.pages) {
+        wordCountData[page.path] = {
+          title: page.title,
+          wordCount: page.data.wordCount || 0
+        }
+      }
+
+      // 写入数据文件
+      app.writeTemp(
+        'word-count/data.js',
+        `export const wordCountData = ${JSON.stringify(wordCountData)}`
+      )
+
+      // 写入客户端配置文件，通过 provide 注入数据
+      app.writeTemp(
+        'word-count/client.js',
+        `import { defineClientConfig } from 'vuepress/client'
+import { wordCountData } from './data.js'
+
+export default defineClientConfig({
+  enhance({ app }) {
+    app.provide('wordCountData', wordCountData)
+  }
+})`
+      )
+
+      return app.dir.temp('word-count/client.js')
     }
   }
 }

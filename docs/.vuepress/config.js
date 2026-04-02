@@ -8,6 +8,7 @@ import emphasisFixPlugin from './plugins/emphasis-fix/index.js'
 import wordCountPlugin from './plugins/word-count/index.js'
 import commentsPlugin from './plugins/comments/index.js'
 import ideaspacesTheme from './theme/index.js'
+import { searchProPlugin } from 'vuepress-plugin-search-pro'
 
 const __dirname = getDirname(import.meta.url)
 
@@ -27,45 +28,55 @@ export default {
 
     // 导航栏
     navbar: [
-      { text: '首页', link: '/' },
-      { text: '线性代数', link: '/linear/introduction' },
-      { text: '微积分', link: '/calculus/' },
+      { text: '目录', link: '/SUMMARY' },
+      { text: 'GitHub', link: 'https://github.com/fenixsoft/ideaspaces' },
     ],
 
-    // 侧边栏 - 使用简单的链接列表，让 VuePress 自动添加页面标题
-    sidebar: {
-      '/linear/': [
-        {
-          text: '向量与矩阵运算基础',
-          collapsible: true,
-          children: [
-            { text: '引言', link: '/linear/introduction' },
-            { text: '向量基础', link: '/linear/vectors' },
-            { text: '矩阵基础', link: '/linear/matrices' },
-            { text: '数据处理实践', link: '/linear/numpy' },
-            { text: '应用场景', link: '/linear/applications' },
-          ]
-        }
-      ],
-      '/calculus/': [
-        {
-          text: '微积分基础',
-          collapsible: true,
-          children: [
-            { text: '概述', link: '/calculus/' },
-            { text: '引言：微积分是变化与累积的语言', link: '/calculus/01-introduction' },
-            { text: '基础概念：极限、导数与微分', link: '/calculus/02-derivative' },
-            { text: '进阶概念：多元函数与优化基础', link: '/calculus/03-gradient' },
-            { text: 'NumPy实践：微积分计算', link: '/calculus/04-numpy-practice' },
-            { text: '应用场景：微积分在机器学习中的实践', link: '/calculus/05-applications' },
-          ]
-        }
-      ],
-    }
+    // 侧边栏 - 统一显示所有菜单，默认全部展开
+    sidebar: [
+      {
+        text: '目录',
+        collapsible: false,
+        link: 'SUMMARY'
+      },
+      {
+        text: '机器学习的数学基础',
+        collapsible: false,
+        children: [
+          {
+            text: '线性代数',
+            collapsible: false,
+            children: [
+              { text: '引言：机器学习的语言', link: '/linear/introduction' },
+              { text: '向量基础', link: '/linear/vectors' },
+              { text: '矩阵基础', link: '/linear/matrices' },
+              { text: '数据处理实践', link: '/linear/numpy' },
+              { text: '应用场景', link: '/linear/applications' },
+            ]
+          },
+          {
+            text: '微积分',
+            collapsible: false,
+            children: [
+              { text: '引言：变化与累积', link: '/calculus/01-introduction' },
+              { text: '极限、导数与微分', link: '/calculus/02-derivative' },
+              { text: '多元函数与复合基础', link: '/calculus/03-gradient' },
+              { text: '微积分计算实践', link: '/calculus/04-numpy-practice' },
+              { text: '应用场景', link: '/calculus/05-applications' },
+            ]
+          }
+        ]
+      },  
+    ]
   }),
 
   // 插件配置
   plugins: [
+    // 搜索功能
+    searchProPlugin({
+      // 禁用索引热度排序
+      hotReload: true,
+    }),
     // Git 信息（更新时间）
     gitPlugin(),
     // 修复中文括号后粗体标记问题
@@ -85,8 +96,18 @@ export default {
     })
   ],
 
-  // 打包器配置
-  bundler: viteBundler(),
+  // 打包器配置 - 抑制 Sass if-function 弃用警告
+  bundler: viteBundler({
+    viteOptions: {
+      css: {
+        preprocessorOptions: {
+          scss: {
+            silenceDeprecations: ['if-function']
+          }
+        }
+      }
+    }
+  }),
 
   // 开发服务器配置
   devServer: {
