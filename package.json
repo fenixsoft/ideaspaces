@@ -24,7 +24,7 @@
   "license": "MIT",
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.19",
-    "@vuepress/plugin-git": "^2.0.0-rc.66",
+    "@vuepress/plugin-git": "2.0.0-rc.66",
     "@vuepress/plugin-prismjs": "2.0.0-rc.66",
     "@vuepress/plugin-register-components": "2.0.0-rc.66",
     "@vuepress/theme-default": "2.0.0-rc.66",
@@ -45,5 +45,9 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "overrides": {
+    "vuepress": "2.0.0-rc.19",
+    "@vuepress/helper": "2.0.0-rc.66"
   }
 }
