@@ -2,6 +2,7 @@ import { viteBundler } from '@vuepress/bundler-vite'
 import { gitPlugin } from '@vuepress/plugin-git'
 import { getDirname, path } from 'vuepress/utils'
 import { registerComponentsPlugin } from '@vuepress/plugin-register-components'
+import { mediumZoomPlugin } from '@vuepress/plugin-medium-zoom'
 import mermaidPlugin from './plugins/mermaid/index.js'
 import runnableCodePlugin from './plugins/runnable-code/index.js'
 import mathPlugin from './plugins/math/index.js'
@@ -27,6 +28,12 @@ export default {
   theme: ideaspacesTheme({
     // 禁用颜色模式切换按钮
     colorModeSwitch: false,
+
+    // 配置主题插件
+    themePlugins: {
+      // 禁用默认的 medium-zoom，使用自定义配置
+      mediumZoom: false
+    },
 
     // 导航栏
     navbar: [
@@ -84,6 +91,10 @@ export default {
     // 自动注册 components 目录下的组件
     registerComponentsPlugin({
       componentsDir: path.resolve(__dirname, './components'),
+    }),
+    // 图片缩放，排除带有 data-no-zoom 属性的图片
+    mediumZoomPlugin({
+      selector: '[vp-content] > img:not([data-no-zoom]), [vp-content] :not(a) > img:not([data-no-zoom])'
     }),
     // 搜索功能
     searchProPlugin({
