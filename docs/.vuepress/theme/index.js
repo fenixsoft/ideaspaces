@@ -6,6 +6,10 @@ export const ideaspacesTheme = (options = {}) => {
     name: 'vuepress-theme-ideaspaces',
     extends: defaultTheme(options),
     clientConfigFile: path.resolve(__dirname, './client.js'),
+    // 覆盖默认的 useRelatedLinks，实现跨组导航
+    alias: {
+      '@theme/useRelatedLinks': path.resolve(__dirname, './composables/useRelatedLinks.js'),
+    },
   }
 }
 

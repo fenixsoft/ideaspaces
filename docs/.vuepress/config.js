@@ -84,7 +84,7 @@ export default {
             text: '统计与概率',
             collapsible: false,
             children: [
-              { text: '引言：世界是不确定的', link: '/probability/introduction' },
+              { text: '引言：概率性思维', link: '/probability/introduction' },
               { text: '概率基础', link: '/probability/probability-basics' },
               { text: '统计推断', link: '/probability/statistical-inference' },
               { text: '模型评估', link: '/probability/model-evaluation' },

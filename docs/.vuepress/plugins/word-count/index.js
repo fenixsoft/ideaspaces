@@ -8,24 +8,40 @@
 const globalWords = {}
 
 /**
- * 预处理 Markdown 内容，移除语法标记
+ * 预处理 Markdown 内容，移除语法标记但保留代码和公式内容
+ *
+ * 字数统计规则（详见 openspec/specs/word-count-plugin/spec.md）：
+ * - 代码块 ```...``` 和行内代码 `...`：计入字数（移除语法标记，保留内容）
+ * - 行内公式 $...$ 和块级公式 $$...$$：计入字数（移除语法标记，保留内容）
+ * - 链接、图片、HTML标签、frontmatter：不计入字数
  */
 function preprocessMarkdown(content) {
   if (!content) return ''
 
   let text = content
 
-  text = text.replace(/```[\s\S]*?```/g, '')
-  text = text.replace(/`[^`]+`/g, '')
-  text = text.replace(/\$([^\$\n]+?)\$/g, '')
-  text = text.replace(/\$\$[\s\S]*?\$\$/g, '')
-  text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-  text = text.replace(/!\[[^\]]*\]\([^)]+\)/g, '')
-  text = text.replace(/^#{1,6}\s+/gm, '')
-  text = text.replace(/\*\*?([^*]+)\*\*?/g, '$1')
-  text = text.replace(/__?([^_]+)__?/g, '$1')
-  text = text.replace(/<[^>]+>/g, '')
-  text = text.replace(/^---[\s\S]*?---/m, '')
+  // 代码块：移除 ``` 和语言标记（可能包含空格），保留代码内容
+  text = text.replace(/```[^\n]*\n([\s\S]*?)```/g, '$1')
+
+  // 行内代码：移除 ` 符号，保留内容
+  text = text.replace(/`([^`]+)`/g, '$1')
+
+  // 块级公式：移除 $$ 符号，保留公式内容
+  text = text.replace(/\$\$([\s\S]*?)\$\$/g, '$1')
+
+  // 行内公式：移除 $ 符号，保留公式内容
+  text = text.replace(/\$([^\$\n]+?)\$/g, '$1')
+
+  // 以下内容不计入字数
+  text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')  // 链接：保留显示文字
+  text = text.replace(/!\[[^\]]*\]\([^)]+\)/g, '')     // 图片：完全移除
+  text = text.replace(/<[a-zA-Z\/][^>]*>/g, '')        // HTML标签：只匹配真正的标签（字母开头）
+  text = text.replace(/^---[\s\S]*?---/m, '')          // Frontmatter：完全移除
+
+  // Markdown 格式标记（保留文字内容）
+  text = text.replace(/^#{1,6}\s+/gm, '')               // 标题标记
+  text = text.replace(/\*\*?([^*]+)\*\*?/g, '$1')       // 粗体/斜体
+  text = text.replace(/__?([^_]+)__?/g, '$1')           // 粗体/斜体
 
   return text
 }
@@ -68,7 +84,6 @@ const wordCountPlugin = (options = {}) => {
         if (page.frontmatter?.wordCount) {
           wordCount = page.frontmatter.wordCount
         } else {
-          // 计算字数
           const content = page.content || ''
           if (content) {
             const plainText = preprocessMarkdown(content)
