@@ -10,6 +10,11 @@
   --c-bg-light: #FAFAFA;
 }
 
+/* KaTeX 文本字体 - 让 \text{} 命令中的中文使用正文字体 */
+.katex .text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
 /* 图注样式 - 只包含 em 的段落居中显示 */
 .theme-default-content p > em:only-child {
   display: block;
