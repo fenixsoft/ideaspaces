@@ -1,5 +1,4 @@
 import { viteBundler } from '@vuepress/bundler-vite'
-import { gitPlugin } from '@vuepress/plugin-git'
 import { getDirname, path } from 'vuepress/utils'
 import { registerComponentsPlugin } from '@vuepress/plugin-register-components'
 import { mediumZoomPlugin } from '@vuepress/plugin-medium-zoom'
@@ -115,8 +114,7 @@ export default {
     }),
     // 修复搜索版本字段兼容性问题
     searchVersionFixPlugin,
-    // Git 信息（更新时间）
-    gitPlugin(),
+    // Git 信息由 defaultTheme 内置提供，无需额外配置
     // 修复中文括号后粗体标记问题
     emphasisFixPlugin,
     // Mermaid 流程图

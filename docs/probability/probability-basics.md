@@ -35,14 +35,14 @@ print(dice_roll())  # 可能是 1
 
 这两类随机变量的数学处理方式不同，分别用**概率质量函数**和**概率密度函数**来描述。
 
-## 概率质量函数（PMF）
+### 概率质量函数（PMF）
 
 对于离散型随机变量，概率质量函数（Probability Mass Function, PMF）给出每个取值的概率：$P(X = x) = p$，其中 $X$ 是随机变量，$x$ 是一个可能的取值，$p$ 是取该值的概率。PMF 有两个重要性质：
 
 1. **非负性**：$P(X = x) \geq 0$ 对所有 $x$ 成立
 2. **归一性**：$\sum_x P(X = x) = 1$，所有概率之和为 1
 
-## 概率密度函数（PDF）
+### 概率密度函数（PDF）
 
 对于连续型随机变量，我们不能说"取某个值的概率"，因为连续变量取任何特定值的概率都是 0，譬如在实数轴上随机取一个数，取得数字 1 的概率为 0。我们用概率密度函数（Probability Density Function, PDF）来描述连续型随机变量。PDF $f(x)$ 的含义是随机变量 $X$ 落在区间 $[a, b]$ 内的概率是该区间内 PDF 曲线下的面积：$P(a \leq X \leq b) = \int_a^b f(x) \, dx$。PDF 也有两个性质：
 
@@ -92,7 +92,6 @@ plt.title('标准正态分布 N(0, 1) 的概率密度函数 (PDF)')
 plt.legend()
 plt.grid(alpha=0.3)
 plt.ylim(0, 0.5)
-
 plt.tight_layout()
 plt.show()
 plt.close()
@@ -104,7 +103,6 @@ def normal_cdf(x, mu=0, sigma=1):
 
 prob = normal_cdf(1) - normal_cdf(-1)
 print(f"P(-1 ≤ X ≤ 1) = {prob:.4f} ≈ {prob*100:.1f}%")
-print(f"验证：这是 68-95-99.7 法则中的 68% 区间")
 ```
 
 注意：PDF 本身不是概率，它完全可以大于 1。只有它的积分（曲线面积）才是概率，这个才受 PDF 归一性的约束。
