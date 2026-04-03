@@ -24,7 +24,7 @@ tags:
 - [第1篇：引言——微积分是变化与累积的语言](./introduction.md)
 - [第2篇：基础概念——极限、导数与微分](./derivative.md)
 - [第3篇：进阶概念——多元函数与优化基础](./gradient.md)
-- [第4篇：NumPy实践——微积分计算](./numpy-practice.md)
+- [第4篇：NumPy实践——微积分计算](./numpy.md)
 - [第5篇：应用场景——微积分在机器学习中的实践](./applications.md)
 
 ## 核心知识点

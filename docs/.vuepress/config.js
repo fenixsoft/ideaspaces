@@ -62,7 +62,7 @@ export default {
               { text: '引言：变化与累积', link: '/calculus/introduction' },
               { text: '极限、导数与微分', link: '/calculus/derivative' },
               { text: '多元函数与复合基础', link: '/calculus/gradient' },
-              { text: '微积分计算实践', link: '/calculus/numpy-practice' },
+              { text: '微积分计算实践', link: '/calculus/numpy' },
               { text: '应用场景', link: '/calculus/applications' },
             ]
           }
