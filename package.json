@@ -32,6 +32,7 @@
     "github-buttons": "^2.13.0",
     "markdown-it": "^14.1.0",
     "sass-embedded": "^1.86.0",
+    "slimsearch": "^2.2.2",
     "tencentcloud-sdk-nodejs-cdn": "^4.1.200",
     "vuepress": "2.0.0-rc.19",
     "vuepress-plugin-search-pro": "^2.0.0-rc.59"

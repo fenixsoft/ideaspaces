@@ -9,6 +9,7 @@ import wordCountPlugin from './plugins/word-count/index.js'
 import commentsPlugin from './plugins/comments/index.js'
 import ideaspacesTheme from './theme/index.js'
 import { searchProPlugin } from 'vuepress-plugin-search-pro'
+import { searchVersionFixPlugin } from './plugins/search-version-fix/index.js'
 
 const __dirname = getDirname(import.meta.url)
 
@@ -77,6 +78,8 @@ export default {
       // 禁用索引热度排序
       hotReload: true,
     }),
+    // 修复搜索版本字段兼容性问题
+    searchVersionFixPlugin,
     // Git 信息（更新时间）
     gitPlugin(),
     // 修复中文括号后粗体标记问题
