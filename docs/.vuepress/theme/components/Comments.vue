@@ -26,7 +26,7 @@ const giscusConfig = {
   reactionsEnabled: '0', // 禁用表情反应
   emitMetadata: '0',
   inputPosition: 'top', // 输入框在顶部
-  theme: 'preferred_color_scheme', // 跟随系统主题
+  theme: 'https://ai.icyfenix.cn/giscus-theme.css', // 自定义主题
   lang: 'zh-CN',
   loading: 'lazy'
 }
@@ -67,11 +67,13 @@ const loadGiscus = () => {
 }
 
 // 更新 Giscus 主题（响应系统主题变化）
-const updateTheme = (theme) => {
+// 自定义 CSS 已通过 @media 处理亮暗模式，这里只需确保 iframe 加载正确
+const updateTheme = (isDark) => {
   const iframe = giscusContainer.value?.querySelector('iframe.giscus-frame')
   if (iframe) {
+    // 自定义主题 URL，CSS 内部通过媒体查询处理亮暗模式
     iframe.contentWindow.postMessage(
-      { giscus: { setConfig: { theme } } },
+      { giscus: { setConfig: { theme: 'https://ai.icyfenix.cn/giscus-theme.css' } } },
       'https://giscus.app'
     )
   }
@@ -113,7 +115,7 @@ onMounted(() => {
   // 监听系统主题变化
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
   mediaQuery.addEventListener('change', (e) => {
-    updateTheme(e.matches ? 'dark' : 'light')
+    updateTheme(e.matches)
   })
 })
 

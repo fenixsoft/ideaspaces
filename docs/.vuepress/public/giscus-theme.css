@@ -1,0 +1,89 @@
+/*!
+ * IdeaSpaces 自定义 Giscus 主题
+ * 基于GitHub主题定制，与网站风格一致
+ */
+
+/* 亮色模式 */
+@media (prefers-color-scheme: light) {
+  main {
+    /* 按钮样式 - 黑底白字，与 Star 按钮一致 */
+    --color-btn-primary-text: #FFFFFF;
+    --color-btn-primary-bg: #24292E;
+    --color-btn-primary-border: rgba(205, 217, 229, 10%);
+    --color-btn-primary-hover-bg: #32383F;
+    --color-btn-primary-hover-border: rgba(205, 217, 229, 10%);
+    --color-btn-primary-selected-bg: #24292E;
+
+    /* 普通按钮样式 */
+    --color-btn-text: #24292E;
+    --color-btn-bg: #F6F8FA;
+    --color-btn-border: rgba(27, 31, 36, 15%);
+    --color-btn-hover-bg: #F3F4F6;
+    --color-btn-hover-border: rgba(27, 31, 36, 15%);
+    --color-btn-active-bg: hsl(220, 14%, 93%);
+
+    /* 基础颜色 */
+    --color-fg-default: #18181B;
+    --color-fg-muted: #71717A;
+    --color-canvas-default: #FFFFFF;
+    --color-canvas-subtle: #FAFAFA;
+    --color-border-default: #E4E4E7;
+    --color-border-muted: #E4E4E7;
+    --color-accent-fg: #2563EB;
+    --color-accent-emphasis: #2563EB;
+  }
+}
+
+/* 暗色模式 */
+@media (prefers-color-scheme: dark) {
+  main {
+    /* 按钮样式 - 黑底白字 */
+    --color-btn-primary-text: #FFFFFF;
+    --color-btn-primary-bg: #24292E;
+    --color-btn-primary-border: rgba(205, 217, 229, 10%);
+    --color-btn-primary-hover-bg: #32383F;
+    --color-btn-primary-hover-border: rgba(205, 217, 229, 10%);
+    --color-btn-primary-selected-bg: #24292E;
+
+    /* 普通按钮样式 */
+    --color-btn-text: #ADBAC7;
+    --color-btn-bg: #373E47;
+    --color-btn-border: rgba(205, 217, 229, 10%);
+    --color-btn-hover-bg: #444C56;
+    --color-btn-hover-border: #636E7B;
+    --color-btn-active-bg: hsl(213, 12%, 27%);
+
+    /* 基础颜色 */
+    --color-fg-default: #ADBAC7;
+    --color-fg-muted: #768390;
+    --color-canvas-default: #22272E;
+    --color-canvas-subtle: #2D333B;
+    --color-border-default: #444C56;
+    --color-border-muted: #373E47;
+    --color-accent-fg: #539BF5;
+    --color-accent-emphasis: #316DCA;
+  }
+}
+
+/* 自定义样式 - 所有模式下通用 */
+
+/* 隐藏 "– 由 giscus 提供支持" 文字 */
+.gsc-powered-by {
+  display: none !important;
+}
+
+/* 隐藏链接下划线 */
+main a {
+  text-decoration: none !important;
+}
+
+main a:hover {
+  text-decoration: none !important;
+}
+
+/* 按钮圆角与 Star 按钮一致 */
+main .btn,
+main [role="button"],
+main button {
+  border-radius: 8px !important;
+}
