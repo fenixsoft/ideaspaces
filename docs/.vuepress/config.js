@@ -16,8 +16,8 @@ const __dirname = getDirname(import.meta.url)
 export default {
   // 站点配置
   lang: 'zh-CN',
-  title: 'IdeaSpaces',
-  description: '思维实验室',
+  title: '设计机器学习应用系统',
+  description: '概念、原理与实践指南',
 
   // 禁止浏览器翻译（网站本身就是中文）
   head: [
@@ -60,7 +60,7 @@ export default {
         ]
       },
       {
-        text: '机器学习的数学基础',
+        text: '机器学习数学基础',
         collapsible: false,
         children: [
           {
@@ -80,7 +80,7 @@ export default {
             children: [
               { text: '引言：变化与累积', link: '/calculus/introduction' },
               { text: '极限、导数与微分', link: '/calculus/derivative' },
-              { text: '多元函数与复合函数', link: '/calculus/gradient' },
+              { text: '多元函数与复合函数求导', link: '/calculus/gradient' },
               { text: '微积分计算实践', link: '/calculus/numpy' },
             ]
           },
@@ -91,13 +91,32 @@ export default {
               { text: '引言：概率性思维', link: '/probability/introduction' },
               { text: '概率基础', link: '/probability/probability-basics' },
               { text: '统计推断', link: '/probability/statistical-inference' },
-              { text: '模型评估', link: '/probability/model-evaluation' },
-              { text: 'NumPy 实践', link: '/probability/numpy-practice' },
+              { text: '概率统计计算实践', link: '/probability/numpy-practice' },
               { text: '应用场景', link: '/probability/applications' },
             ]
           }
         ]
-      },  
+      }, 
+      {
+        text: '统计学习方法（-2006 深度学习前）',
+        collapsible: false,
+      },
+      {
+        text: '深度学习（2006-2017 TF架构前）',
+        collapsible: false,
+      },
+      {
+        text: '大语言模型（2017- SOTA）',
+        collapsible: false,
+      },
+      {
+        text: 'AI Infra & 应用',
+        collapsible: false,
+      },
+      {
+        text: '经典论文阅读',
+        collapsible: false,
+      },
     ]
   }),
 
@@ -113,8 +132,8 @@ export default {
     }),
     // 搜索功能
     searchProPlugin({
-      // 禁用索引热度排序
-      hotReload: true,
+      // 开发时禁用搜索索引更新后的自动刷新，避免编辑 markdown 时页面 reload
+      hotReload: false,
     }),
     // 修复搜索版本字段兼容性问题
     searchVersionFixPlugin,
