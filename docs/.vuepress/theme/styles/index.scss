@@ -429,4 +429,9 @@ body {
   .theme-default-content {
     padding: 24px 16px !important;
   }
+
+  // 在最小宽度布局下隐藏导航栏标题
+  .vp-site-name {
+    display: none;
+  }
 }

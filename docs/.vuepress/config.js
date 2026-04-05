@@ -98,7 +98,7 @@ export default {
         ]
       }, 
       {
-        text: '统计学习方法（-2006 深度学习前）',
+        text: '经典统计学习方法',
         collapsible: false,
       },
       {
