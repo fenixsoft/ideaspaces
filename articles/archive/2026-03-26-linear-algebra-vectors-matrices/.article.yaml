@@ -4,10 +4,18 @@ name: linear-algebra-vectors-matrices
 title: 向量与矩阵运算基础
 status: published
 created: 2026-03-25
-updated: 2026-03-26
+updated: 2026-04-06
 publishedDate: 2026-03-26
-version: 1.1
+version: 1.2
 changeLog:
+  - date: 2026-04-06
+    changes: "从docs同步修改内容"
+    files:
+      - introduction.md
+      - vectors.md
+      - matrices.md
+      - numpy.md
+      - applications.md
   - date: 2026-03-26
     changes: "更新引言章节内容"
 path: docs/linear-algebra-vectors-matrices/

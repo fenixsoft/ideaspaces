@@ -1,0 +1,42 @@
+name: support-vector-machines
+title: "支持向量机——核方法的艺术"
+status: composing
+created: "2026-04-06"
+updated: "2026-04-06"
+
+audience:
+  level: intermediate
+  background:
+    - 线性代数（向量空间、内积）
+    - 微积分（拉格朗日乘数、凸优化）
+    - Python编程基础
+    - NumPy基础操作
+
+config:
+  needExperiments: true
+  categories:
+    - 统计学习方法
+    - 支持向量机
+    - 机器学习
+
+series:
+  name: classical-statistical-learning
+  order: 3
+  total: 5
+
+articles:
+  - name: svm-max-margin
+    title: "SVM基础——最大间隔分类的艺术"
+    status: composing
+  - name: kernel-methods
+    title: "核技巧——非线性问题的线性解法"
+    status: pending
+  - name: svm-advanced
+    title: "SVM进阶——优化与扩展"
+    status: pending
+
+reviewHistory: []
+
+flags:
+  needsUserConfirmation: false
+  confirmationReason: null

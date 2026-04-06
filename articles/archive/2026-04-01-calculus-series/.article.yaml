@@ -4,7 +4,15 @@ status: published
 publishedDate: 2026-04-01
 path: docs/calculus/
 created: 2026-04-01
-updated: 2026-04-01
+updated: 2026-04-06
+changeLog:
+  - date: 2026-04-06
+    changes: "从docs同步修改内容"
+    files:
+      - introduction.md
+      - derivative.md
+      - gradient.md
+      - numpy-practice.md
 type: series
 
 series:

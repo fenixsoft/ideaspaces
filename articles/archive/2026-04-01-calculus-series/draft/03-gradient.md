@@ -1,368 +1,132 @@
----
-title: "进阶概念：多元函数与优化基础"
----
-
-# 进阶概念：多元函数与优化基础
+# 多元函数与复合函数求导
 
 上一章我们学习了单变量函数的导数和微分，建立了变化率的基本概念。然而，机器学习中的大多数问题涉及多个变量——神经网络的参数可能有数百万甚至数十亿个，损失函数是这些参数的多元函数。本章将把导数概念推广到多元函数，介绍偏导数、梯度、链式法则、方向导数和海森矩阵等核心概念，为理解机器学习优化算法奠定理论基础。
 
 ## 偏导数
 
-### 多元函数的概念
+**多元函数**（Multivariate Function）是单变量函数的自然推广。一个 $n$ 元函数 $f$ 就是将 $n$ 个输入 $(x_1, x_2, \ldots, x_n)$ 映射到一个输出值。现实世界里，多元函数比一元函数更普遍，譬如神经网络中每一层的输出是多个输入的多元函数，神经网络优化过程中的损失函数 $L(\theta_1, \theta_2, \ldots, \theta_n)$ 是模型参数的多元函数，特征向量 $(x_1, x_2, \ldots, x_n)$ 对应的预测值 $f(x_1, x_2, \ldots, x_n)$，等等。
 
-**多元函数**（Multivariate Function）是单变量函数的自然推广。一个 $n$ 元函数 $f$ 将 $n$ 个输入 $(x_1, x_2, \ldots, x_n)$ 映射到一个输出值 $y$：
+当我们处理多元函数时，首先想到的是用固定变量的思维将问题简化，去思考如果只让其中一个变量变化，而保持其他变量不变，函数值会如何变化？这正是**偏导数**（Partial Derivative）解决问题的思路。设 $z = f(x, y)$ 是一个二元函数，$f$ 在点 $(x_0, y_0)$ 处关于 $x$ 的偏导数定义为当 $y$ 固定不变，$x$ 发生微小的变化量 $\Delta x$ 时，函数 $f$ 关于 $x$ 的偏导数是：
 
-$$y = f(x_1, x_2, \ldots, x_n)$$
+$$\frac{\partial f}{\partial x} = \lim_{\Delta x \to 0} \frac{f(x_0 + \Delta x, y_0) - f(x_0, y_0)}{\Delta x}$$
 
-在机器学习中，多元函数无处不在：
-- 损失函数 $L(\theta_1, \theta_2, \ldots, \theta_n)$ 是模型参数的多元函数
-- 神经网络中每一层的输出是多个输入的多元函数
-- 特征向量 $(x_1, x_2, \ldots, x_n)$ 对应的预测值 $f(x_1, x_2, \ldots, x_n)$
+类似地，关于 $y$ 的偏导数被定义为：
 
-最常见的是二元函数 $z = f(x, y)$，它可以在三维空间中表示为一张曲面。
+$$\frac{\partial f}{\partial y} = \lim_{\Delta y \to 0} \frac{f(x_0, y_0 + \Delta y) - f(x_0, y_0)}{\Delta y}$$
 
-### 偏导数的定义与计算
+求 $f(x, y)$ 关于 $x$ 的偏导数时，将 $y$ 视为常数，对 $x$ 求普通导数，与单变量导数的计算方法完全一致，因此上一章节介绍的[导数运算法则](derivative.md#常见函数的导数)依然适用。设 $f(x, y) = x^2 y + 3xy^2$，求 $\frac{\partial f}{\partial x}$ 时，视 $y$ 为常数，$\frac{\partial f}{\partial x} = 2xy + 3y^2$，求 $\frac{\partial f}{\partial y}$ 时，视 $x$ 为常数，$\frac{\partial f}{\partial y} = x^2 + 6xy$ 。
 
-当我们面对多元函数时，一个自然的问题是：如果只让其中一个变量变化，而保持其他变量不变，函数值会如何变化？这正是**偏导数**（Partial Derivative）要回答的问题。
+导数在几何上被视为切线的斜率，偏导数有同样直观的几何解释。对于二元函数 $z = f(x, y)$，其图像是三维空间中的一张曲面。$\frac{\partial f}{\partial x}$ 表示在曲面上沿 $x$ 方向的"切线斜率"，$\frac{\partial f}{\partial y}$ 表示沿 $y$ 方向的"切线斜率"。具体来说，$\frac{\partial f}{\partial x}(x_0, y_0)$ 是曲面与平面 $y = y_0$ 的交线在点 $(x_0, y_0, f(x_0, y_0))$ 处的切线斜率。这相当于"固定 $y$，只让 $x$ 变化"的切线斜率。简而言之，偏导数代表着函数沿坐标轴方向的变化率。
 
-**定义**：设 $z = f(x, y)$ 是一个二元函数，$f$ 在点 $(x_0, y_0)$ 处关于 $x$ 的偏导数定义为：
-
-$$\frac{\partial f}{\partial x}\bigg|_{(x_0, y_0)} = \lim_{\Delta x \to 0} \frac{f(x_0 + \Delta x, y_0) - f(x_0, y_0)}{\Delta x}$$
-
-类似地，关于 $y$ 的偏导数为：
-
-$$\frac{\partial f}{\partial y}\bigg|_{(x_0, y_0)} = \lim_{\Delta y \to 0} \frac{f(x_0, y_0 + \Delta y) - f(x_0, y_0)}{\Delta y}$$
-
-偏导数的记号有多种：$\frac{\partial f}{\partial x}$、$f_x$、$\partial_x f$ 都表示 $f$ 关于 $x$ 的偏导数。
-
-**计算方法**：求 $f(x, y)$ 关于 $x$ 的偏导数时，将 $y$ 视为常数，对 $x$ 求普通导数。这与单变量导数的计算方法完全一致。
-
-**示例**：设 $f(x, y) = x^2 y + 3xy^2$，求 $\frac{\partial f}{\partial x}$ 和 $\frac{\partial f}{\partial y}$。
-
-- 求 $\frac{\partial f}{\partial x}$：视 $y$ 为常数，$\frac{\partial f}{\partial x} = 2xy + 3y^2$
-- 求 $\frac{\partial f}{\partial y}$：视 $x$ 为常数，$\frac{\partial f}{\partial y} = x^2 + 6xy$
-
-### 偏导数的几何意义
-
-偏导数有直观的几何解释。对于二元函数 $z = f(x, y)$，其图像是三维空间中的一张曲面。$\frac{\partial f}{\partial x}$ 表示在曲面上沿 $x$ 方向的"切线斜率"，$\frac{\partial f}{\partial y}$ 表示沿 $y$ 方向的"切线斜率"。
-
-具体来说，$\frac{\partial f}{\partial x}(x_0, y_0)$ 是曲面与平面 $y = y_0$ 的交线在点 $(x_0, y_0, f(x_0, y_0))$ 处的切线斜率。这相当于"固定 $y$，只让 $x$ 变化"的切线斜率。
-
-## 梯度
-
-### 梯度的定义
-
-偏导数告诉我们函数沿每个坐标轴方向的变化率。如果把这些信息组合起来，就得到一个向量，称为**梯度**（Gradient）。
-
-**定义**：设 $f(x_1, x_2, \ldots, x_n)$ 是一个多元函数，其梯度定义为：
-
-$$\nabla f = \left(\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}\right)$$
-
-其中 $\nabla$ 称为**梯度算子**（Gradient Operator），读作"nabla"或"del"。
-
-对于二元函数 $f(x, y)$，梯度为：
-
-$$\nabla f = \left(\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}\right)$$
-
-梯度是一个向量，它的每个分量是对应变量的偏导数。
-
-### 梯度的几何意义
-
-梯度有一个极其重要的几何性质：**梯度指向函数值增长最快的方向**。
-
-这一性质可以这样理解：偏导数 $\frac{\partial f}{\partial x_i}$ 告诉我们沿 $x_i$ 轴方向的变化率。如果把这些"方向贡献"组合起来，梯度方向就是所有坐标轴方向的"最优组合"——使函数值增长最快的方向。
-
-相应地，**负梯度方向**就是函数值下降最快的方向。这正是梯度下降算法的核心：沿着负梯度方向移动，可以最快地找到函数的最小值。
-
-### 梯度与优化的关系
-
-在机器学习中，我们的目标通常是**最小化损失函数**。设损失函数为 $L(\theta)$，其中 $\theta = (\theta_1, \theta_2, \ldots, \theta_n)$ 是模型参数。
-
-梯度下降算法的更新规则是：
-
-$$\theta_{t+1} = \theta_t - \eta \nabla L(\theta_t)$$
-
-这里：
-- $\nabla L(\theta_t)$ 是损失函数在当前参数处的梯度
-- $\eta$ 是学习率，控制每一步的步长
-- 负号表示沿负梯度方向移动
-
-理解梯度的几何意义，对于理解梯度下降的收敛行为、选择合适的学习率、诊断训练问题等都至关重要。
-
-```python runnable
-import numpy as np
-import matplotlib.pyplot as plt
-
-# 定义二元函数 f(x, y) = x^2 + y^2
-def f(x, y):
-    return x ** 2 + y ** 2
-
-# 计算梯度
-def gradient(x, y):
-    return np.array([2 * x, 2 * y])
-
-# 创建网格
-x = np.linspace(-2, 2, 20)
-y = np.linspace(-2, 2, 20)
-X, Y = np.meshgrid(x, y)
-Z = f(X, Y)
-
-# 绘制等高线和梯度场
-fig, ax = plt.subplots(figsize=(8, 8))
-
-# 等高线
-contour = ax.contour(X, Y, Z, levels=20, cmap='coolwarm')
-ax.clabel(contour, inline=True, fontsize=8)
-
-# 梯度场（稀疏采样）
-x_sparse = np.linspace(-2, 2, 10)
-y_sparse = np.linspace(-2, 2, 10)
-X_sparse, Y_sparse = np.meshgrid(x_sparse, y_sparse)
-
-# 计算梯度
-U = 2 * X_sparse  # ∂f/∂x
-V = 2 * Y_sparse  # ∂f/∂y
-
-# 归一化箭头长度
-magnitude = np.sqrt(U ** 2 + V ** 2)
-U_norm = U / (magnitude + 1e-8)
-V_norm = V / (magnitude + 1e-8)
-
-ax.quiver(X_sparse, Y_sparse, U_norm, V_norm, color='black', alpha=0.7)
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_title('函数 f(x,y) = x² + y² 的等高线与梯度场\n梯度箭头指向函数值增长最快的方向')
-ax.set_aspect('equal')
-ax.grid(True, alpha=0.3)
-
-plt.show()
-plt.close()
-
-print("观察：梯度箭头从低值区域指向高值区域")
-print("梯度下降就是沿着箭头的反方向移动")
-```
-
-## 链式法则
-
-### 一元复合函数求导
-
-在上一章中，我们提到了链式法则（Chain Rule），但没有详细展开。链式法则是求导的核心工具，它告诉我们如何对复合函数求导。
-
-**链式法则**：设 $y = f(u)$，$u = g(x)$，则 $y = f(g(x))$ 是 $x$ 的复合函数，其导数为：
-
-$$\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx}$$
-
-用函数符号表示：$(f \circ g)'(x) = f'(g(x)) \cdot g'(x)$。
-
-**直观理解**：$y$ 关于 $x$ 的变化率，等于 $y$ 关于中间变量 $u$ 的变化率，乘以 $u$ 关于 $x$ 的变化率。这就像"连锁反应"——$x$ 的变化先影响 $u$，再通过 $u$ 影响 $y$。
-
-**示例**：设 $y = \sin(x^2)$，求 $\frac{dy}{dx}$。
-
-设 $u = x^2$，则 $y = \sin u$。由链式法则：
-
-$$\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx} = \cos u \cdot 2x = 2x \cos(x^2)$$
-
-### 多元复合函数求导
-
-对于多元函数，链式法则更加丰富。设 $z = f(x, y)$，而 $x = x(t)$，$y = y(t)$，则 $z$ 通过 $x$ 和 $y$ 成为 $t$ 的函数。此时：
-
-$$\frac{dz}{dt} = \frac{\partial f}{\partial x} \cdot \frac{dx}{dt} + \frac{\partial f}{\partial y} \cdot \frac{dy}{dt}$$
-
-这是多元链式法则的一种形式：总变化率等于各路径贡献之和。
-
-更一般地，设 $z = f(x_1, x_2, \ldots, x_n)$，而每个 $x_i$ 都是 $t$ 的函数，则：
-
-$$\frac{dz}{dt} = \sum_{i=1}^{n} \frac{\partial f}{\partial x_i} \cdot \frac{dx_i}{dt}$$
-
-### 反向传播的数学基础
-
-链式法则是神经网络**反向传播**（Backpropagation）算法的数学基础。在神经网络中，损失函数 $L$ 是多层复合函数：
-
-$$L = L(y^{(L)}) = L(f^{(L)}(y^{(L-1)})) = L(f^{(L)}(f^{(L-1)}(\ldots f^{(1)}(x))))$$
-
-其中 $y^{(l)}$ 是第 $l$ 层的输出，$f^{(l)}$ 是第 $l$ 层的变换函数。
-
-计算损失函数关于某层参数的梯度，需要反复应用链式法则。反向传播算法巧妙地利用了这一点：从输出层开始，逐层向前计算梯度，每一层的梯度依赖于上一层的梯度，避免了重复计算。
-
-例如，对于简单的两层网络：
-- 前向传播：$y = f(W_2 \cdot f(W_1 x))$
-- 计算 $\frac{\partial L}{\partial W_1}$：需要经过 $W_1 \to h \to W_2 \to y \to L$ 这条路径
-
-链式法则告诉我们：
-
-$$\frac{\partial L}{\partial W_1} = \frac{\partial L}{\partial y} \cdot \frac{\partial y}{\partial W_2 \cdot h} \cdot \frac{\partial W_2 \cdot h}{\partial h} \cdot \frac{\partial h}{\partial W_1 x} \cdot \frac{\partial W_1 x}{\partial W_1}$$
-
-这个公式看起来复杂，但反向传播算法通过逐层传递梯度，高效地完成了这个计算。
-
-## 方向导数
-
-### 方向导数的定义
-
-偏导数告诉我们函数沿坐标轴方向的变化率，但如果我们想知道沿任意方向的变化率呢？这就需要**方向导数**（Directional Derivative）。
-
-**定义**：设 $f(x, y)$ 是一个二元函数，$\mathbf{u} = (u_1, u_2)$ 是一个单位向量（$\|\mathbf{u}\| = 1$），则 $f$ 在点 $(x_0, y_0)$ 处沿方向 $\mathbf{u}$ 的方向导数定义为：
+那如果我们不想局限于固定坐标轴，想知道沿任意方向的变化率呢？这就需要**方向导数**（Directional Derivative）：设 $f(x, y)$ 是一个二元函数，$\mathbf{u} = (u_1, u_2)$ 是一个单位向量（$\|\mathbf{u}\| = 1$），则 $f$ 在点 $(x_0, y_0)$ 处沿方向 $\mathbf{u}$ 的方向导数定义为：
 
 $$D_{\mathbf{u}} f(x_0, y_0) = \lim_{h \to 0} \frac{f(x_0 + h u_1, y_0 + h u_2) - f(x_0, y_0)}{h}$$
 
-直观上，方向导数表示从点 $(x_0, y_0)$ 出发，沿方向 $\mathbf{u}$ 移动一小步 $h$ 时，函数值的平均变化率的极限。
+几何直观上，方向导数表示从点 $(x_0, y_0)$ 出发，沿方向 $\mathbf{u}$ 移动一小步 $h$ 时，函数值的平均变化率的极限。
 
-### 方向导数与梯度的关系
+## 梯度
 
-方向导数有一个重要性质：**方向导数等于梯度与方向向量的点积**。
+偏导数告诉我们函数沿每个坐标轴方向的变化率。如果把所有坐标方向的偏导数信息组合起来，就得到一个向量，称为**梯度**（Gradient）：设 $f(x_1, x_2, \ldots, x_n)$ 是一个多元函数，其梯度定义为：
 
-$$D_{\mathbf{u}} f = \nabla f \cdot \mathbf{u} = \|\nabla f\| \|\mathbf{u}\| \cos\theta = \|\nabla f\| \cos\theta$$
+$$\nabla f = \left(\frac{\partial f}{\partial x_1}, \frac{\partial f}{\partial x_2}, \ldots, \frac{\partial f}{\partial x_n}\right)$$
 
-其中 $\theta$ 是梯度 $\nabla f$ 与方向 $\mathbf{u}$ 之间的夹角。
+其中 $\nabla$ 称为**梯度算子**（Gradient Operator）。有了梯度后，我们可以从另外一个角度来观察方向导数——方向导数是梯度与方向向量的内积：
 
-这个公式揭示了梯度的深层含义：
-- 当 $\theta = 0$（$\mathbf{u}$ 与 $\nabla f$ 同向）时，$D_{\mathbf{u}} f = \|\nabla f\|$ 最大，即沿梯度方向函数值增长最快
-- 当 $\theta = \pi$（$\mathbf{u}$ 与 $\nabla f$ 反向）时，$D_{\mathbf{u}} f = -\|\nabla f\|$ 最小，即沿负梯度方向函数值下降最快
-- 当 $\theta = \frac{\pi}{2}$（$\mathbf{u}$ 与 $\nabla f$ 垂直）时，$D_{\mathbf{u}} f = 0$，即沿与梯度垂直的方向，函数值不变（等高线方向）
+$$D_{\mathbf{u}} f = \nabla f \cdot \mathbf{u}$$
 
-这一性质为梯度下降算法提供了理论依据：负梯度方向确实是函数值下降最快的方向。
+这个公式（在学习 [链式法则](#链式法则）后可以证明它与前面的定义是等价的）揭示了梯度一个极其重要的几何性质：**梯度指向函数值增长最快的方向**。回想一下 [内积的定义与几何性质](../linear/vectors.md#内积与投影)，设 $\theta$ 为梯度 $\nabla f$ 与方向向量 $\mathbf{u}$ 之间的夹角，则有 $D_{\mathbf{u}} f = \|\nabla f\| \|\mathbf{u}\| \cos\theta $，又由于 $\|\mathbf{u}\| = 1$，因此 $D_{\mathbf{u}} f = \|\nabla f\| \cos\theta$。因为 $\cos\theta$ 在 $\theta = 0$ 时取得最大值 1，所以当方向向量 $\mathbf{u}$ 与梯度 $\nabla f$ **同向**时，方向导数达到最大值 $\|\nabla f\|$。换句话说，梯度方向就是让函数值增长最快的方向。
 
-## 海森矩阵
+举个具体例子，考虑函数 $f(x, y) = x^2 + y^2$，这像一个碗状曲面（或倒过来的山丘），如下图所示。在点 $(1, 0.5)$ 处的梯度 $\nabla f = (2x, 2y) = (2, 1)$，梯度大小 $||\nabla f|| = \sqrt{2^2 + 1^2} = \sqrt{5} \approx 2.24$
 
-### 二阶偏导数
+![梯度示例](./assets/gradient_3d.png)
 
-与单变量函数类似，多元函数也可以有高阶偏导数。对于二元函数 $f(x, y)$，一阶偏导数 $\frac{\partial f}{\partial x}$ 和 $\frac{\partial f}{\partial y}$ 仍然是 $x, y$ 的函数，可以对它们继续求偏导，得到二阶偏导数：
+*图：梯度示例*
 
-- $\frac{\partial^2 f}{\partial x^2} = \frac{\partial}{\partial x}\left(\frac{\partial f}{\partial x}\right)$
-- $\frac{\partial^2 f}{\partial y^2} = \frac{\partial}{\partial y}\left(\frac{\partial f}{\partial y}\right)$
-- $\frac{\partial^2 f}{\partial x \partial y} = \frac{\partial}{\partial y}\left(\frac{\partial f}{\partial x}\right)$
-- $\frac{\partial^2 f}{\partial y \partial x} = \frac{\partial}{\partial x}\left(\frac{\partial f}{\partial y}\right)$
+计算表明，如果沿梯度方向 $(2, 1)$ 走，每单位距离函数值增加约 2.24（这是所有方向中最大的）。如果沿负梯度方向 $(-2, -1)$ 走，每单位距离函数值减少约 2.24（这是所有方向中"下降最快"的）。如果沿与梯度垂直的方向走（比如 $(1, -2)$），函数值不变——这正是等高线的切线方向。相应地，**负梯度方向**就是函数值下降最快的方向。这就引出机器学习中损失函数优化算法梯度下降算法的核心：沿着负梯度方向移动，可以最快地找到函数的最小值。
 
-后两个称为**混合偏导数**。在大多数情况下，混合偏导数与求导顺序无关，即 $\frac{\partial^2 f}{\partial x \partial y} = \frac{\partial^2 f}{\partial y \partial x}$。
+梯度这个几何性质对我们后面的学习非常重要，在机器学习的场景里，优化目标通常是**最小化损失函数**。设损失函数为 $L(\theta)$，其中 $\theta = (\theta_1, \theta_2, \ldots, \theta_n)$ 是模型参数。梯度下降算法的更新规则是：
 
-### 海森矩阵的定义
+$$\theta_{t+1} = \theta_t - \eta \nabla L(\theta_t)$$
 
-**海森矩阵**（Hessian Matrix）是将二阶偏导数组织成的矩阵。对于 $n$ 元函数 $f(x_1, x_2, \ldots, x_n)$，其海森矩阵为：
+这里 $\eta$ 是学习率，控制每一步的步长，$\nabla L(\theta_t)$ 是损失函数在当前参数处的梯度，指示了函数增长最快的方向，负号表示沿负梯度方向移动，相当于是损失函数下降最快的方向移动。理解梯度的几何意义，是理解机器学习中梯度下降的收敛行为、选择合适的学习率、诊断训练等问题的理论基础。
 
-$$\mathbf{H} = \begin{pmatrix}
-\frac{\partial^2 f}{\partial x_1^2} & \frac{\partial^2 f}{\partial x_1 \partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_1 \partial x_n} \\
-\frac{\partial^2 f}{\partial x_2 \partial x_1} & \frac{\partial^2 f}{\partial x_2^2} & \cdots & \frac{\partial^2 f}{\partial x_2 \partial x_n} \\
-\vdots & \vdots & \ddots & \vdots \\
-\frac{\partial^2 f}{\partial x_n \partial x_1} & \frac{\partial^2 f}{\partial x_n \partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_n^2}
-\end{pmatrix}$$
+## 复合函数与链式法则
 
-海森矩阵是对称矩阵（在混合偏导数连续的条件下），它包含了函数的二阶导数信息。
+前面介绍偏导数和梯度时，我们跳过了对梯度与方向向量间内积关系的解释，这是因为过程中要使用到路径复合函数（具体推导见 [练习题第 1 题](#练习题））。实际场景中，函数往往不是简单的 $f(x)$ 形式，而是多个函数嵌套组合的结果。譬如一辆飞机向上爬升，位置 $x(t)$ 随时间变化，而不同高度的温度 $T(x)$ 不同。飞机周围的温度 $T(t) = T(x(t))$ 就是一个复合函数——时间 $t$ 先影响位置 $x$，再通过位置影响温度 $T$。如果我们想知道"温度随时间的变化率" $\frac{dT}{dt}$，不能直接对 $T(t)$ 求导，必须逐层拆解：先看温度如何随位置变化 $\frac{dT}{dx}$，再看位置如何随时间变化 $\frac{dx}{dt}$，这就要用到复合函数求导。
 
-### 函数凹凸性判定
+**复合函数**（Composite Function）是指一个函数的输出作为另一个函数的输入。设 $u = g(x)$，$y = f(u)$，则 $y = f(g(x))$ 称为 $f$ 与 $g$ 的复合函数，记作 $f \circ g$。复合函数将多个简单函数"串联"起来，形成复杂的函数关系。譬如 $y = \sin(x^2)$ 是由 $u = x^2$ 和 $y = \sin(u)$ 复合而成，$y = e^{x^2 + 1}$ 是由 $u = x^2 + 1$ 和 $y = e^u$ 复合而成。神经网络模型里，输入数据经过层层变换，最终输出预测值和损失，每一层都是一个函数，整个网络也是一个深度复合函数。
 
-海森矩阵在优化中的一个重要应用是**判定函数的凹凸性**：
+**链式法则**（Chain Rule）正是解决复合函数求导问题的有力工具。它告诉我们复合函数的导数等于各层函数导数的乘积，$y$ 关于 $x$ 的变化率，等于 $y$ 关于中间变量 $u$ 的变化率，乘以 $u$ 关于 $x$ 的变化率。这就像一连串"连锁反应"，$x$ 的变化先影响 $u$，再通过 $u$ 影响 $y$。譬如设 $y = f(u)$，$u = g(x)$，则 $y = f(g(x))$ 是 $x$ 的复合函数，其导数为：$\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx}$。用函数符号表示为：$(f \circ g)'(x) = f'(g(x)) \cdot g'(x)$。
 
-- 如果海森矩阵在区域内**正定**（所有特征值 > 0），则函数在该区域**严格凸**
-- 如果海森矩阵在区域内**负定**（所有特征值 < 0），则函数在该区域**严格凹**
-- 如果海森矩阵**不定**（特征值有正有负），则函数在该区域**既非凸也非凹**
+举个具体例子，有 $y = \sin(x^2)$，求 $\frac{dy}{dx}$。先设 $u = x^2$，则 $y = \sin u$。由链式法则：$$\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx} = \cos u \cdot 2x = 2x \cos(x^2)$$
 
-**凸函数**在优化中特别重要，因为它保证任何局部最小值都是全局最小值，这使得优化问题更容易求解。
+将多元函数与复合函数结合起来，可以得出链式法则更一般的形式：设 $z = f(x, y)$，而 $x = x(t)$，$y = y(t)$，则 $z$ 通过 $x$ 和 $y$ 成为 $t$ 的函数 $z = f(x(t), y(t))$。此时有 $\frac{dz}{dt} = \frac{\partial f}{\partial x} \cdot \frac{dx}{dt} + \frac{\partial f}{\partial y} \cdot \frac{dy}{dt}$。这个式子的所表达的含义是说总变化率等于各路径贡献之和。
 
-```python runnable
-import numpy as np
+## 积分
 
-def check_convexity(f, grad_f, hess_f, x):
-    """检查函数在点 x 处的凸性"""
-    H = hess_f(x)
-    eigenvalues = np.linalg.eigvals(H)
+在机器学习中主要关注的是优化问题，微分肯定是主角，但积分作为微积分中另一个重要概念，在概率论、信息论等领域也有着广泛应用。微分研究的是"局部变化率"——在某一点处，函数值变化的快慢。积分则研究"全局累积量"——在一个区间上，函数值的总体效果。这两个看似相反的问题，却通过 [微积分基本定理](#微积分基本定理)紧密联系在一起。
 
-    print(f"海森矩阵：\n{H}")
-    print(f"特征值：{eigenvalues}")
+积分概念源于一个古老而实际的问题：如何计算曲线下的面积。譬如，要计算河流横截面的面积以估算流量，或者计算不规则土地的面积。对于直线围成的图形（三角形、矩形），面积公式人们早已熟知；但对于曲线围成的区域，传统几何方法束手无策。积分的解题思路是**分割-近似-求极限**：将不规则区域分割成许多小块，每块用规则图形（如矩形）近似，然后求和，当分割无限细密时，近似值趋于精确值。这种思想不仅解决了面积问题，还推广到更广泛的"累积"问题：累积路程（从速度求位移）、累积质量（从密度求质量）、累积概率（从概率密度求概率）等等。
 
-    if np.all(eigenvalues > 0):
-        print("结论：函数在此点严格凸（海森矩阵正定）")
-    elif np.all(eigenvalues < 0):
-        print("结论：函数在此点严格凹（海森矩阵负定）")
-    else:
-        print("结论：函数在此点既非凸也非凹（海森矩阵不定）")
+积分分为**定积分**（Definite Integral）和**不定积分**（Indefinite Integral）两大类：
 
-# 示例1：凸函数 f(x,y) = x^2 + y^2
-print("=== 示例1：f(x,y) = x² + y² ===")
-def f1(x):
-    return x[0]**2 + x[1]**2
+- 定积分计算函数在特定区间上的累积效果。它给出一个具体数值，而不是一个函数。定积分回答"函数在区间 $[a, b]$ 上累积了多少"的问题。
 
-def hess_f1(x):
-    return np.array([[2, 0], [0, 2]])
+- 不定积分是导数的逆运算。已知一个函数 $f(x)$，寻找它的原函数 $F(x)$ 使得 $F'(x) = f(x)$。譬如已知 $f(x) = 2x$，其不定积分是 $F(x) = x^2 + C$（$C$ 是任意常数），因为 $(x^2 + C)' = 2x$。不定积分回答"什么函数的导数是这个函数"的问题。
 
-check_convexity(f1, None, hess_f1, np.array([1, 1]))
-
-print("\n=== 示例2：鞍点函数 f(x,y) = x² - y² ===")
-def f2(x):
-    return x[0]**2 - x[1]**2
-
-def hess_f2(x):
-    return np.array([[2, 0], [0, -2]])
-
-check_convexity(f2, None, hess_f2, np.array([0, 0]))
-```
-
-## 积分简介
-
-### 定积分的定义
-
-**定积分**（Definite Integral）是微积分的另一个核心概念。虽然机器学习主要关注微分（优化），但积分在概率论、信息论等领域有重要应用。
-
-**定义**（黎曼积分）：设 $f(x)$ 在区间 $[a, b]$ 上有界，将区间分成 $n$ 个小区间，在每个小区间 $[x_{i-1}, x_i]$ 上任取一点 $\xi_i$，作和式：
-
-$$\sum_{i=1}^{n} f(\xi_i) \Delta x_i$$
-
-当分割无限细密（所有 $\Delta x_i \to 0$）时，如果这个和式趋于一个确定的极限，则称此极限为 $f(x)$ 在 $[a, b]$ 上的定积分，记作：
+介绍了背景，现在给出定积分的严格定义：设 $f(x)$ 在区间 $[a, b]$ 上有界，将区间分成 $n$ 个小区间，在每个小区间 $[x_{i-1}, x_i]$ 上任取一点 $\xi_i$，作和式：$\sum_{i=1}^{n} f(\xi_i) \Delta x_i$，当分割无限细密（所有 $\Delta x_i \to 0$）时，如果这个和式趋于一个确定的极限，则称此极限为 $f(x)$ 在 $[a, b]$ 上的定积分，记作：
 
 $$\int_a^b f(x) \, dx$$
 
-### 定积分的几何意义
+其中 $a$ 称为积分下限，$b$ 称为积分上限，$f(x)$ 称为被积函数，$dx$ 表示积分变量。这个定义很好地体现了积分“分割、近似、求极限”的中心思想。也直观体现改了积分的几何意义：定积分表示函数曲线与 $x$ 轴之间的有向面积（有向面积是指当 $f(x) > 0$ 时，面积取正值，当 $f(x) < 0$ 时，面积取负值），定积分是这些有向面积的代数和。
 
-定积分有直观的几何意义：**定积分表示函数曲线与 $x$ 轴之间的有向面积**。
+## 微积分基本定理
 
-具体来说：
-- 当 $f(x) > 0$ 时，面积取正值
-- 当 $f(x) < 0$ 时，面积取负值
-- 定积分是这些有向面积的代数和
+微分和积分通过**微积分基本定理**（Fundamental Theorem of Calculus）紧密联系在一起。这个定理是微积分理论两个重要部分的纽带，它证明了微分和积分运算互逆，微分求变化率，积分求累积量；一个是"拆分"，一个是"组装"，是同一问题的两个侧面。这为后续发展（如微分方程、变分法）奠定了基础。同时，基本定理还大幅简化了定积分的计算，从复杂的极限过程简化为找原函数代入端点。整个微积分基本定理分为两部分：
 
-### 微积分基本定理
+- **第一基本定理**（微分与积分的关系）
 
-微分和积分通过**微积分基本定理**联系起来：
+    设 $f(x)$ 在 $[a, b]$ 上连续，定义"积分函数"：$F(x) = \int_a^x f(t) \, dt$，则 $F(x)$ 在 $[a, b]$ 上可导，且导数就是被积函数本身：$F'(x) = f(x)$
 
-**定理**：设 $f(x)$ 在 $[a, b]$ 上连续，$F(x)$ 是 $f(x)$ 的一个原函数（即 $F'(x) = f(x)$），则：
+    这个定理告诉我们：**积分的导数等于被积函数**。也就是说，积分是微分的逆运算——如果先对 $f$ 积分得到 $F$，再对 $F$ 求导，就会回到 $f$。从几何直观很容易就能理解这个定理为何成立：$F(x) = \int_a^x f(t) \, dt$ 表示曲线 $y = f(t)$ 从 $a$ 到 $x$ 之间的面积。当 $x$ 增加一小量 $\Delta x$ 时，面积增加约 $f(x) \cdot \Delta x$（近似为宽 $\Delta x$、高 $f(x)$ 的矩形）。因此面积的变化率（即导数）正好是高度 $f(x)$。
 
-$$\int_a^b f(x) \, dx = F(b) - F(a)$$
+- **第二基本定理**（牛顿-莱布尼茨公式）
 
-这个定理告诉我们：要计算定积分，只需要找到被积函数的原函数，然后代入端点求值。这大大简化了积分的计算。
+    设 $f(x)$ 在 $[a, b]$ 上连续，$G(x)$ 是 $f(x)$ 的任意一个原函数（即 $G'(x) = f(x)$），则：$\int_a^b f(x) \, dx = G(b) - G(a)$。
 
-### 积分与概率分布的关系
+    这个公式也称为牛顿-莱布尼茨公式，是微积分中最著名的公式之一。它告诉我们：要计算定积分，只需要找到被积函数的原函数，然后代入端点求值即可。这大大简化了积分的计算，原本需要用"分割、近似、求极限"的复杂过程，现在只需找到原函数并求差值。
 
-积分在概率论中有着核心地位。对于连续型随机变量 $X$，其**概率密度函数**（Probability Density Function, PDF）$p(x)$ 满足：
+通过一个具体例子来展示牛顿-莱布尼茨公式对积分计算的简化，假设要计算 $\int_0^1 2x \, dx$，可以有如下两种方法：
 
-$$\int_{-\infty}^{\infty} p(x) \, dx = 1$$
+- 方法一（分割求极限）：将区间分成 $n$ 个等份，每份宽度 $\Delta x = 1/n$，取右端点求和，当 $n \to \infty$ 时，极限为 $1$ ：
+$$\sum_{i=1}^{n} f(x_i) \Delta x = \sum_{i=1}^{n} \frac{2i}{n} \cdot \frac{1}{n} = \frac{2}{n^2} \sum_{i=1}^{n} i = \frac{2}{n^2} \cdot \frac{n(n+1)}{2} = \frac{n+1}{n}$$
 
-随机变量落在区间 $[a, b]$ 内的概率为：
-
-$$P(a \leq X \leq b) = \int_a^b p(x) \, dx$$
-
-**期望**（Expected Value）定义为：
-
-$$E[X] = \int_{-\infty}^{\infty} x \cdot p(x) \, dx$$
-
-这些积分概念在机器学习中广泛应用，例如在变分推断、生成模型（VAE、扩散模型）等场景中。
+- 方法二（牛顿-莱布尼茨公式）：$f(x) = 2x$ 的原函数是 $G(x) = x^2$（验证：$(x^2)' = 2x$）。因此：
+$$\int_0^1 2x \, dx = G(1) - G(0) = 1^2 - 0^2 = 1$$
 
 ## 本章小结
 
-本章将单变量微分学推广到多元情形，核心要点如下：
+当数学从研究"一个变量如何影响结果"转向"多个变量共同作用如何决定结果"时，偏导数提供了一个自然的切入点——固定其他变量，只观察一个变量的影响。这种"降维思考"的策略，将复杂的多元问题分解为熟悉的单变量问题，体现了科学研究中化繁为简的核心智慧。偏导数刻画了沿坐标轴方向的变化，梯度则将这些分散的信息整合成一个向量，揭示了函数在各方向变化的"全景图"。梯度指向函数值增长最快的方向，这一几何性质看似简单，却是机器学习中梯度下降算法的灵魂所在。多元函数是另外一个维度的多变量复合嵌套关系，链式法则为我们提供了拆解这种复杂性的工具。总变化率等于各路径贡献之和，这是一种"分治"的思想，在机器学习中也完全被借鉴过去，神经网络正是深度复合函数的典型代表，反向传播算法本质上就是链式法则的系统性应用。
 
-- **偏导数**是多元函数沿各坐标轴方向的变化率。计算时将其他变量视为常数，方法与单变量求导相同。
-
-- **梯度**是偏导数组成的向量，指向函数值增长最快的方向。负梯度方向是函数值下降最快的方向，这是梯度下降算法的理论基础。
-
-- **链式法则**处理复合函数的求导。对于多元复合函数，总变化率等于各路径贡献之和。链式法则是反向传播算法的数学基础。
-
-- **方向导数**是函数沿任意方向的变化率，等于梯度与方向向量的点积。这进一步验证了梯度方向是函数值变化最快的方向。
-
-- **海森矩阵**组织了二阶偏导数信息，用于判定函数的凹凸性。凸函数的海森矩阵正定，保证局部最小值就是全局最小值。
-
-- **积分**刻画了函数曲线下的面积，在概率论中有重要应用。微积分基本定理将微分和积分联系起来。
-
-这些概念构成了机器学习优化算法的数学基础。下一章将通过 NumPy 和 PyTorch 实践，将这些理论概念转化为可执行的代码。
+下一章将通过 NumPy 和 PyTorch 的实践，将这些抽象概念转化为可执行的代码，让数学思想在程序中落地生根。
 
 ## 练习题
+
+1. 证明方向向量的定义 $D_{\mathbf{u}} f(x_0, y_0) = \lim_{h \to 0} \frac{f(x_0 + h u_1, y_0 + h u_2) - f(x_0, y_0)}{h}$ 与 $D_{\mathbf{u}} f = \nabla f \cdot \mathbf{u}$ 是等价的。
+    <details>
+    <summary>参考答案</summary>
+    这实际上是一个复合函数的导数问题：令 $g(h) = f(x_0 + h u_1, y_0 + h u_2)$，方向导数就是 $g'(0)$。定义路径函数 $x(h) = x_0 + h u_1$，$y(h) = y_0 + h u_2$。根据多元链式法则：
+
+    $$\frac{dg}{dh} = \frac{\partial f}{\partial x} \cdot \frac{dx}{dh} + \frac{\partial f}{\partial y} \cdot \frac{dy}{dh}$$
+
+    计算路径导数：$\frac{dx}{dh} = u_1$，$\frac{dy}{dh} = u_2$。代入得：
+
+    $$D_{\mathbf{u}} f = \frac{\partial f}{\partial x} \cdot u_1 + \frac{\partial f}{\partial y} \cdot u_2$$
+
+    上式右边正好是向量 $(\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y})$ 与向量 $(u_1, u_2)$ 的点积。前者就是梯度 $\nabla f$，后者就是方向向量 $\mathbf{u}$。因此：
+
+    $$D_{\mathbf{u}} f = \nabla f \cdot \mathbf{u}$$
+    </details>
 
 1. 设 $f(x, y) = x^2 y + y^3$，求 $\frac{\partial f}{\partial x}$、$\frac{\partial f}{\partial y}$ 和 $\nabla f$。
     <details>
@@ -377,7 +141,7 @@ $$E[X] = \int_{-\infty}^{\infty} x \cdot p(x) \, dx$$
     在点 $(1, 2)$ 处：$\nabla f(1, 2) = (4, 13)$
     </details>
 
-2. 设 $z = x^2 + y^2$，$x = t + 1$，$y = t^2$，用链式法则求 $\frac{dz}{dt}$。
+1. 设 $z = x^2 + y^2$，$x = t + 1$，$y = t^2$，用链式法则求 $\frac{dz}{dt}$。
     <details>
     <summary>参考答案</summary>
 
@@ -399,7 +163,7 @@ $$E[X] = \int_{-\infty}^{\infty} x \cdot p(x) \, dx$$
     两种方法结果一致。
     </details>
 
-3. 设 $f(x, y) = x^2 - y^2$，计算 $f$ 在点 $(1, 1)$ 处沿方向 $\mathbf{u} = (\frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}})$ 的方向导数。
+1. 设 $f(x, y) = x^2 - y^2$，计算 $f$ 在点 $(1, 1)$ 处沿方向 $\mathbf{u} = (\frac{1}{\sqrt{2}}, \frac{1}{\sqrt{2}})$ 的方向导数。
     <details>
     <summary>参考答案</summary>
 
@@ -412,7 +176,7 @@ $$E[X] = \int_{-\infty}^{\infty} x \cdot p(x) \, dx$$
     解释：方向 $\mathbf{u}$ 与梯度垂直，因此沿这个方向函数值不变。这正是等高线的切线方向。
     </details>
 
-4. 判断函数 $f(x, y) = x^2 + 2y^2 + 2xy$ 的凸性。
+1. 判断函数 $f(x, y) = x^2 + 2y^2 + 2xy$ 的凸性。
     <details>
     <summary>参考答案</summary>
 
@@ -436,7 +200,7 @@ $$E[X] = \int_{-\infty}^{\infty} x \cdot p(x) \, dx$$
     结论：海森矩阵正定，函数严格凸。
     </details>
 
-5. 设 $f(x) = e^{-x^2}$，计算 $\int_{-\infty}^{\infty} f(x) \, dx$，并解释其在概率论中的意义。
+1. 设 $f(x) = e^{-x^2}$，计算 $\int_{-\infty}^{\infty} f(x) \, dx$，并解释其在概率论中的意义。
     <details>
     <summary>参考答案</summary>
 
@@ -453,7 +217,7 @@ $$E[X] = \int_{-\infty}^{\infty} x \cdot p(x) \, dx$$
     - 高斯分布的参数估计
     </details>
 
-6. 证明：若 $\nabla f(\mathbf{x}^*) = \mathbf{0}$ 且海森矩阵 $\mathbf{H}$ 在 $\mathbf{x}^*$ 处正定，则 $\mathbf{x}^*$ 是 $f$ 的局部最小值点。
+1. 证明：若 $\nabla f(\mathbf{x}^*) = \mathbf{0}$ 且海森矩阵 $\mathbf{H}$ 在 $\mathbf{x}^*$ 处正定，则 $\mathbf{x}^*$ 是 $f$ 的局部最小值点。
     <details>
     <summary>参考答案</summary>
 

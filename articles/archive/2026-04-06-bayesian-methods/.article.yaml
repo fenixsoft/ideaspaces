@@ -1,0 +1,42 @@
+name: bayesian-methods
+title: "贝叶斯方法——概率性思维的实践"
+status: composing
+created: "2026-04-06"
+updated: "2026-04-06"
+
+audience:
+  level: intermediate
+  background:
+    - 概率统计（贝叶斯定理、条件概率）
+    - 线性代数（向量、矩阵）
+    - Python编程基础
+    - NumPy基础操作
+
+config:
+  needExperiments: true
+  categories:
+    - 统计学习方法
+    - 贝叶斯方法
+    - 机器学习
+
+series:
+  name: classical-statistical-learning
+  order: 2
+  total: 5
+
+articles:
+  - name: naive-bayes
+    title: "朴素贝叶斯——最简单的概率分类器"
+    status: composing
+  - name: bayesian-network
+    title: "贝叶斯网络——建模变量间的依赖关系"
+    status: pending
+  - name: em-algorithm
+    title: "EM算法——隐变量模型的参数估计"
+    status: pending
+
+reviewHistory: []
+
+flags:
+  needsUserConfirmation: false
+  confirmationReason: null

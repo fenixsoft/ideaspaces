@@ -171,7 +171,7 @@
 
 /* 展开后的 summary 与内容间距 */
 .theme-default-content div ol:last-of-type li:has(details) details[open] {
-  display: block;
+  /* display: block; */
   width: 100%;
 }
 

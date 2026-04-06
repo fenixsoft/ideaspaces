@@ -99,6 +99,57 @@ export default {
       {
         text: '经典统计学习方法',
         collapsible: false,
+        children: [
+          {
+            text: '线性模型',
+            collapsible: false,
+            children: [
+              { text: '线性回顾', link: '/statistical-learning/linear-models/linear-regression' },
+              { text: '逻辑回归', link: '/statistical-learning/linear-models/logistic-regression' },
+              { text: '正则化与GLM', link: '/statistical-learning/linear-models/regularization-glm' },
+            ]
+          },
+          {
+            text: '贝叶斯方法',
+            collapsible: false,
+            children: [
+              { text: '章节概览', link: '/statistical-learning/bayesian-methods/' },
+              { text: '朴素贝叶斯', link: '/statistical-learning/bayesian-methods/01-naive-bayes' },
+              { text: '贝叶斯网络', link: '/statistical-learning/bayesian-methods/02-bayesian-network' },
+              { text: 'EM算法', link: '/statistical-learning/bayesian-methods/03-em-algorithm' },
+            ]
+          },
+          {
+            text: '支持向量机',
+            collapsible: false,
+            children: [
+              { text: '章节概览', link: '/statistical-learning/support-vector-machines/' },
+              { text: 'SVM基础', link: '/statistical-learning/support-vector-machines/01-svm-max-margin' },
+              { text: '核技巧', link: '/statistical-learning/support-vector-machines/02-kernel-methods' },
+              { text: 'SVM进阶', link: '/statistical-learning/support-vector-machines/03-svm-advanced' },
+            ]
+          },
+          {
+            text: '决策树与集成',
+            collapsible: false,
+            children: [
+              { text: '章节概览', link: '/statistical-learning/decision-tree-ensemble/' },
+              { text: '决策树', link: '/statistical-learning/decision-tree-ensemble/01-decision-tree' },
+              { text: '随机森林', link: '/statistical-learning/decision-tree-ensemble/02-random-forest' },
+              { text: 'Boosting', link: '/statistical-learning/decision-tree-ensemble/03-boosting' },
+            ]
+          },
+          {
+            text: '无监督学习',
+            collapsible: false,
+            children: [
+              { text: '章节概览', link: '/statistical-learning/unsupervised-learning/' },
+              { text: '聚类', link: '/statistical-learning/unsupervised-learning/01-clustering' },
+              { text: '降维', link: '/statistical-learning/unsupervised-learning/02-dimensionality-reduction' },
+              { text: '进阶', link: '/statistical-learning/unsupervised-learning/03-unsupervised-advanced' },
+            ]
+          },
+        ]
       },
       {
         text: '深度学习（2006-2017 TF架构前）',

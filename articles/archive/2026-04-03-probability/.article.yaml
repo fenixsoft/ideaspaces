@@ -4,7 +4,16 @@ status: published
 publishedDate: "2026-04-03"
 path: docs/probability/
 created: "2026-04-03"
-updated: "2026-04-03"
+updated: "2026-04-06"
+changeLog:
+  - date: "2026-04-06"
+    changes: "从docs同步修改内容"
+    files:
+      - introduction.md
+      - probability-basics.md
+      - statistical-inference.md
+      - numpy-practice.md
+      - applications.md
 
 audience:
   level: intermediate
