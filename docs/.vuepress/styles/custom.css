@@ -199,7 +199,7 @@
   line-height: 1.5;
   color: #4EC9B0;
   white-space: pre-wrap;
-  max-height: 500px;
+  max-height: 1000px;
   overflow-y: auto;
 }
 

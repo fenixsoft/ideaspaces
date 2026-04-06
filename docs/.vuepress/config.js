@@ -91,8 +91,7 @@ export default {
               { text: '引言：概率性思维', link: '/probability/introduction' },
               { text: '概率基础', link: '/probability/probability-basics' },
               { text: '统计推断', link: '/probability/statistical-inference' },
-              { text: '概率统计计算实践', link: '/probability/numpy-practice' },
-              { text: '应用场景', link: '/probability/applications' },
+              { text: '概率统计实践', link: '/probability/numpy-practice' },
             ]
           }
         ]

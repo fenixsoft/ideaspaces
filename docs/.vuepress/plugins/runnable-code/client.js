@@ -132,7 +132,7 @@ if (typeof document !== 'undefined' && !document.getElementById(styleId)) {
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-all;
-  max-height: 500px;
+  max-height: 1000px;
   overflow-y: auto;
 }
 

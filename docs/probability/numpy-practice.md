@@ -1,50 +1,25 @@
----
-title: "NumPy 实践：概率统计的计算工具"
----
+# 概率统计实践
 
-# NumPy 实践：概率统计的计算工具
+前面章节建立了概率统计的理论基础。本章将这些知识付诸实践，使用 NumPy 实现概率统计的核心计算。通过代码实践，不仅能加深对概念的理解，还能掌握实际数据分析的技能。
 
-前四章建立了概率统计的理论基础。本章将这些知识付诸实践，使用 NumPy 实现概率统计的核心计算。通过代码实践，不仅能加深对概念的理解，还能掌握实际数据分析的技能。
+## 分布采样
 
-## 随机数生成与采样
+**均匀分布**（Uniform Distribution）是最简单的连续概率分布，其概率密度函数在定义区间内处处相等。对于 $[a, b]$ 区间的均匀分布，变量 $X$ 落在该区间内任意子区间 $[c, d]$ 的概率与子区间长度成正比：$P(c \leq X \leq d) = \frac{d-c}{b-a}$。均匀分布在实际中常用于模拟"无偏好"的随机选择，比如随机抽取样本、随机分配任务等。
 
-### np.random 模块概述
+[**正态分布**](probability-basics.md#正态分布)（Normal Distribution，也称高斯分布）是统计学中最重要的分布，其概率密度函数呈对称的钟形曲线。自然界和人类社会中大量现象近似服从正态分布，如人的身高、考试成绩、测量误差等。标准正态分布 $N(0, 1)$ 的概率密度函数为：$f(x) = \frac{1}{\sqrt{2\pi}} e^{-x^2/2}$，其特点是均值（期望）为 0，标准差为 1，曲线在均值处最高，向两侧逐渐降低，约 68% 的数据落在 $\pm 1$ 个标准差范围内，约 95% 落在 $\pm 2$ 个标准差范围内。
 
-NumPy 的 `np.random` 模块提供了丰富的随机数生成功能，是概率统计计算的基础。
+从概率分布中**采样**（Sampling），就是按照该分布的概率密度函数生成随机数——某个值出现的概率越高，生成该值的可能性就越大。采样是蒙特卡洛模拟、随机算法、统计推断等技术的基础操作。NumPy 提供了简洁的函数来实现这两种最基本分布的采样：
 
-```python runnable
-import numpy as np
+- `np.random.rand(n)`：从 $[0, 1)$ 区间的均匀分布采样，返回 $n$ 个样本。
+- `np.random.randn(n)`：从标准正态分布 $N(0, 1)$ 采样，返回 $n$ 个样本。
+- `np.random.uniform(low, high, n)`：从任意区间 $[low, high]$ 的均匀分布采样。
+- `np.random.normal(mean, std, n)`：从任意参数的正态分布 $N(\mu, \sigma^2)$ 采样。
 
-# 查看随机数生成器
-print("NumPy 随机数生成模块概览")
-print("=" * 50)
-
-# 常用函数列表
-functions = [
-    ("np.random.seed()", "设置随机种子"),
-    ("np.random.rand()", "均匀分布 [0, 1)"),
-    ("np.random.randn()", "标准正态分布"),
-    ("np.random.randint()", "随机整数"),
-    ("np.random.choice()", "随机选择"),
-    ("np.random.shuffle()", "随机打乱"),
-    ("np.random.binomial()", "二项分布"),
-    ("np.random.normal()", "正态分布"),
-    ("np.random.poisson()", "泊松分布"),
-    ("np.random.exponential()", "指数分布"),
-]
-
-for func, desc in functions:
-    print(f"  {func:30s} - {desc}")
-```
-
-### 均匀分布与正态分布采样
+下面的代码演示了均匀分布和正态分布的采样过程，并通过可视化对比采样数据的直方图与理论[概率密度函数](probability-basics.md#概率密度函数-pdf)（PDF），验证采样的正确性。
 
 ```python runnable
 import numpy as np
 import matplotlib.pyplot as plt
-
-# 设置随机种子，确保可复现
-np.random.seed(42)
 
 # 均匀分布采样
 n = 10000
@@ -57,8 +32,7 @@ normal_samples = np.random.randn(n)  # 标准正态分布
 fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
 # 均匀分布
-axes[0].hist(uniform_samples, bins=50, density=True, alpha=0.7, 
-             color='steelblue', edgecolor='black')
+axes[0].hist(uniform_samples, bins=50, density=True, alpha=0.7, color='steelblue', edgecolor='black')
 axes[0].axhline(1, color='r', linestyle='--', linewidth=2, label='理论 PDF')
 axes[0].set_xlabel('值')
 axes[0].set_ylabel('概率密度')
@@ -67,8 +41,7 @@ axes[0].legend()
 axes[0].grid(alpha=0.3)
 
 # 正态分布
-axes[1].hist(normal_samples, bins=50, density=True, alpha=0.7, 
-             color='steelblue', edgecolor='black')
+axes[1].hist(normal_samples, bins=50, density=True, alpha=0.7, color='steelblue', edgecolor='black')
 
 # 理论 PDF
 x = np.linspace(-4, 4, 100)
@@ -83,20 +56,13 @@ axes[1].grid(alpha=0.3)
 plt.tight_layout()
 plt.show()
 plt.close()
-
-# 检验采样质量
-print("均匀分布:")
-print(f"  样本均值: {uniform_samples.mean():.4f} (理论: 0.5)")
-print(f"  样本方差: {uniform_samples.var():.4f} (理论: 1/12 ≈ 0.0833)")
-print()
-print("标准正态分布:")
-print(f"  样本均值: {normal_samples.mean():.4f} (理论: 0)")
-print(f"  样本标准差: {normal_samples.std():.4f} (理论: 1)")
 ```
 
-### 随机种子与可复现性
+## 随机种子与可复现性
 
-在机器学习实验中，**可复现性**至关重要。设置随机种子确保每次运行得到相同结果。
+**随机种子**（Random Seed）是控制随机数生成器初始状态的数值。计算机中的"随机"实际上是伪随机，就是由确定性算法生成，给定相同种子，算法将产生完全相同的随机数序列。在机器学习实验、科学计算和数据分析中，**可复现性**（Reproducibility）是基本要求，他人能够重复你的实验并获得相同结果，对结果验证、错误排查、模型对比都是不可或缺的。
+
+NumPy 的随机数生成器维护一个内部状态，通过 `np.random.seed(n)` 设置随机种子为整数 $n$，同一种子在不同运行中产生相同序列，此后所有随机操作结果便可确定。常用种子值如 42、0 等已成为社区惯例（并无特殊含义，只是便于记忆）。下面的代码对比了不设置种子与设置种子时随机数生成的差异，直观展示随机种子如何控制可复现性。
 
 ```python runnable
 import numpy as np
@@ -117,7 +83,21 @@ for i in range(3):
     print(f"  第 {i+1} 次: {samples}")
 ```
 
-### 随机选择与打乱
+## 随机选择与打乱
+
+**随机选择**（Random Choice）是从给定集合中按指定规则抽取元素的操作。根据是否允许重复抽取，分为有放回选择（同一元素可被多次选中）和无放回选择（每个元素最多选中一次）。加权选择则允许为每个元素设定被选中的概率权重，在实际中可用于模拟不同选项具有不同概率的决策场景，如推荐系统的多样性采样、问卷调查的分层抽样等。
+
+**随机打乱**（Random Shuffle）是对序列元素顺序的随机重排，使得每个元素出现在任意位置的概率相等。打乱操作在数据预处理中极为常用：训练集与测试集的随机划分、数据增强中的随机顺序、实验设计的随机分组等场景都需要打破数据的原始顺序以避免偏差。
+
+NumPy 提供了以下函数实现这些操作：
+
+- `np.random.choice(array, size, replace)`：从数组中随机选择元素，`replace` 控制是否允许重复
+- `np.random.choice(array, size, p)`：加权选择，`p` 为各元素的选中概率（需与数组长度相同且总和为 1）
+- `np.random.shuffle(array)`：原地打乱数组顺序，直接修改原数组
+
+下面的代码演示了随机选择的三种模式（有放回、无放回、加权）以及随机打乱的效果。
+
+
 
 ```python runnable
 import numpy as np
@@ -147,25 +127,25 @@ np.random.shuffle(arr)
 print(f"打乱后: {arr}")
 ```
 
-## 分布的 NumPy 表示
+## 分布的可视化
 
-### 直方图与分布可视化
+通过可视化分布的形状，可以直观理解其特性：离散分布（[二项分布](probability-basics.md#二项分布)、[泊松分布](probability-basics.md#指数分布与泊松分布)）的直方图呈现条状，反映各取值的概率；连续分布（[指数分布](probability-basics.md#指数分布与泊松分布)）的直方图呈现平滑曲线，反映概率密度。NumPy 提供了丰富的分布采样函数：
+
+- `np.random.binomial(n, p, size)`：从二项分布 $B(n, p)$ 采样
+- `np.random.poisson(lam, size)`：从泊松分布 $Poisson(\lambda)$ 采样
+- `np.random.exponential(scale, size)`：从指数分布 $Exp(scale)$ 采样，`scale` 为平均等待时间
+
+下面的代码演示了三种分布的采样与可视化，并使用 `np.histogram` 计算直方图的原始数据。
 
 ```python runnable
 import numpy as np
 import matplotlib.pyplot as plt
 
-np.random.seed(42)
-
-# 生成多种分布的数据
-n = 10000
-
+n = 10000 # 生成多种分布的数据
 # 二项分布
 binomial = np.random.binomial(n=20, p=0.3, size=n)
-
 # 泊松分布
 poisson = np.random.poisson(lam=5, size=n)
-
 # 指数分布
 exponential = np.random.exponential(scale=2, size=n)
 
@@ -173,29 +153,25 @@ exponential = np.random.exponential(scale=2, size=n)
 fig, axes = plt.subplots(1, 3, figsize=(14, 4))
 
 # 二项分布（离散）
-axes[0].hist(binomial, bins=range(0, 21), density=True, 
-             color='steelblue', edgecolor='black', alpha=0.7)
+axes[0].hist(binomial, bins=range(0, 21), density=True, color='steelblue', edgecolor='black', alpha=0.7)
 axes[0].set_xlabel('值')
 axes[0].set_ylabel('概率')
 axes[0].set_title('二项分布 B(20, 0.3)')
 axes[0].grid(alpha=0.3, axis='y')
 
 # 泊松分布（离散）
-axes[1].hist(poisson, bins=range(0, 20), density=True, 
-             color='steelblue', edgecolor='black', alpha=0.7)
+axes[1].hist(poisson, bins=range(0, 20), density=True, color='steelblue', edgecolor='black', alpha=0.7)
 axes[1].set_xlabel('值')
 axes[1].set_ylabel('概率')
 axes[1].set_title('泊松分布 Poisson(5)')
 axes[1].grid(alpha=0.3, axis='y')
 
 # 指数分布（连续）
-axes[2].hist(exponential, bins=50, density=True, 
-             color='steelblue', edgecolor='black', alpha=0.7)
+axes[2].hist(exponential, bins=50, density=True, color='steelblue', edgecolor='black', alpha=0.7)
 axes[2].set_xlabel('值')
 axes[2].set_ylabel('概率密度')
 axes[2].set_title('指数分布 Exp(2)')
 axes[2].grid(alpha=0.3)
-
 plt.tight_layout()
 plt.show()
 plt.close()
@@ -207,12 +183,21 @@ print(f"  区间边界: {bin_edges[:6]}...")  # 只显示前几个
 print(f"  概率: {hist[:5]}...")
 ```
 
-### 统计量计算
+## 统计量计算
+
+**描述性统计量**（Descriptive Statistics）是对数据集基本特征的数值概括，分为三类：集中趋势（均值、中位数）、离散程度（方差、标准差、范围）和分布形状（分位数、偏度、峰度）。这些统计量不依赖于数据的分布假设，提供对数据的"第一眼"认知，帮助快速判断数据特征、发现异常值、比较不同数据集。NumPy 提供了高效的统计量计算函数：
+
+- `np.mean(data)` / `np.median(data)`：计算均值和中位数
+- `np.var(data)` / `np.std(data)`：计算方差和标准差
+- `np.min(data)` / `np.max(data)` / `np.ptp(data)`：最小值、最大值、范围
+- `np.percentile(data, p)`：计算 $p$ 分位数
+- `np.cov(x, y)` / `np.corrcoef(x, y)`：协方差和相关系数
+
+下面的代码以模拟的考试成绩数据为例，演示各项描述性统计量的计算，并手动实现偏度和峰度的计算公式。
 
 ```python runnable
 import numpy as np
 
-np.random.seed(42)
 data = np.random.normal(100, 15, 1000)  # 模拟考试成绩
 
 print("=== 描述性统计 ===")
@@ -248,13 +233,24 @@ print(f"\n偏度: {skewness:.4f} (正态分布为 0)")
 print(f"峰度: {kurtosis:.4f} (正态分布为 0)")
 ```
 
-### 协方差与相关系数
+## 协方差与相关系数
+
+**协方差**（Covariance）衡量两个随机变量协同变化的程度。对于变量 $X$ 和 $Y$，协方差定义为 $Cov(X, Y) = E[(X - E[X])(Y - E[Y])]$。协方差为正表示两变量倾向于同向变化（一个增大时另一个也增大），为负表示反向变化，为零表示线性无关。协方差的大小受变量单位影响，难以直接比较不同数据集之间的关系强度。
+
+**相关系数**（Correlation Coefficient）是协方差的标准化版本，消除了单位的影响。相关系数定义为 $r = \frac{Cov(X, Y)}{\sigma_X \sigma_Y}$，取值范围 $[-1, 1]$。$r = 1$ 表示完美正相关，$r = -1$ 表示完美负相关，$r = 0$ 表示无线性相关性。相关系数是数据分析中最常用的关系度量指标，广泛应用于特征选择、因子分析、回归诊断等场景。
+
+协方差矩阵和相关系数矩阵将这种度量推广到多变量场景。对于 $n$ 个变量，矩阵的第 $i$ 行第 $j$ 列元素表示第 $i$ 个和第 $j$ 个变量的协方差或相关系数。矩阵的对角线元素是方差（协方差矩阵）或 1（相关系数矩阵）。NumPy 提供了以下函数计算这些统计量：
+
+- `np.cov(x, y)`：计算两个变量的协方差
+- `np.cov([x1, x2, ...])`：计算多变量的协方差矩阵
+- `np.corrcoef(x, y)`：计算两个变量的相关系数
+- `np.corrcoef([x1, x2, ...])`：计算多变量的相关系数矩阵
+
+下面的代码生成三组数据：$y$ 与 $x$ 正相关、$z$ 与 $x$ 独立，演示协方差矩阵和相关系数矩阵的计算，并通过散点图直观展示不同相关强度的视觉效果。
 
 ```python runnable
 import numpy as np
 import matplotlib.pyplot as plt
-
-np.random.seed(42)
 
 # 生成相关数据
 n = 100
@@ -276,231 +272,202 @@ print()
 
 # 可视化
 fig, axes = plt.subplots(1, 3, figsize=(12, 4))
-
 axes[0].scatter(x, y, alpha=0.6)
 axes[0].set_xlabel('x')
 axes[0].set_ylabel('y')
 axes[0].set_title(f'x vs y (r = {corr_matrix[0,1]:.2f})')
 axes[0].grid(alpha=0.3)
-
 axes[1].scatter(x, z, alpha=0.6)
 axes[1].set_xlabel('x')
 axes[1].set_ylabel('z')
 axes[1].set_title(f'x vs z (r = {corr_matrix[0,2]:.2f})')
 axes[1].grid(alpha=0.3)
-
 axes[2].scatter(y, z, alpha=0.6)
 axes[2].set_xlabel('y')
 axes[2].set_ylabel('z')
 axes[2].set_title(f'y vs z (r = {corr_matrix[1,2]:.2f})')
 axes[2].grid(alpha=0.3)
-
 plt.tight_layout()
 plt.show()
 plt.close()
 ```
 
-## Monte Carlo 模拟
+## 蒙特卡洛方法
 
-### Monte Carlo 方法思想
+许多实际问题难以用解析方法精确求解，譬如，积分计算中函数可能没有闭式表达，概率估计中事件组合可能过于复杂，优化问题中目标函数可能不可导，等等。**蒙特卡洛方法**（Monte Carlo Method）为这类问题提供了一条近似求解的路径。
 
-**Monte Carlo 方法（蒙特卡洛方法）**通过随机采样来近似求解复杂问题。核心思想：**用频率估计概率，用随机模拟逼近确定性问题**。
+蒙特卡洛方法得名于摩纳哥的蒙特卡洛赌场，随机性是该方法的核心。蒙特卡洛方法通过大量随机采样，将复杂问题转化为大量简单样本的统计聚合。其工作原理建立在两个数学基础之上：[大数定律](https://en.wikipedia.org/wiki/Law_of_large_numbers)保证样本均值收敛于期望值，[中心极限定理](https://en.wikipedia.org/wiki/Central_limit_theorem)保证收敛速度可预测。具体而言，用样本均值估计积分值、用成功频率估计概率、用随机试验统计近似解析结果，采样数量越大，估计精度越高。
 
-### 积分估计
+- 以下代码是计算积分 $\int_a^b f(x) dx \approx \frac{b-a}{N} \sum_{i=1}^N f(x_i)$ 的蒙特卡洛方法，其中 $x_i$ 是 $[a, b]$ 上的均匀随机采样：
 
-计算积分 $\int_a^b f(x) dx$ 的 Monte Carlo 方法：
+    ```python runnable
+    import numpy as np
+    import matplotlib.pyplot as plt
 
-$$\int_a^b f(x) dx \approx \frac{b-a}{N} \sum_{i=1}^N f(x_i)$$
+    # 计算 ∫_0^1 sin(x) dx
+    # 真实值: 1 - cos(1) ≈ 0.4597
+    def f(x):
+        return np.sin(x)
+    a, b = 0, 1
+    true_value = 1 - np.cos(1)  # 解析解
 
-其中 $x_i$ 是 $[a, b]$ 上的均匀随机采样。
+    # 不同采样数量的估计
+    sample_sizes = [100, 1000, 10000, 100000]
+    estimates = []
 
-```python runnable
-import numpy as np
-import matplotlib.pyplot as plt
+    for n in sample_sizes:
+        x_samples = np.random.uniform(a, b, n)
+        estimate = (b - a) * np.mean(f(x_samples))
+        estimates.append(estimate)
+        error = abs(estimate - true_value)
+        print(f"n = {n:6d}: 估计值 = {estimate:.6f}, 误差 = {error:.6f}")
+    print(f"\n真实值: {true_value:.6f}")
 
-# Monte Carlo 积分估计
-np.random.seed(42)
+    # 可视化收敛过程
+    n_range = np.arange(100, 10001, 100)
+    convergence = []
+    for n in n_range:
+        x_samples = np.random.uniform(a, b, n)
+        estimate = (b - a) * np.mean(f(x_samples))
+        convergence.append(estimate)
 
-# 计算 ∫_0^1 sin(x) dx
-# 真实值: 1 - cos(1) ≈ 0.4597
+    plt.figure(figsize=(10, 5))
+    plt.plot(n_range, convergence, 'b-', alpha=0.5, label='Monte Carlo 估计')
+    plt.axhline(true_value, color='r', linestyle='--', linewidth=2, label=f'真实值 = {true_value:.4f}')
+    plt.xlabel('采样数量 n')
+    plt.ylabel('积分估计')
+    plt.title('Monte Carlo 积分估计收敛过程')
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+    plt.close()
+    ```
 
-def f(x):
-    return np.sin(x)
+- 另外一个蒙特卡洛方法经典的示例是用随机投点估计 π。在边长为 2 的正方形内随机投点，统计落在单位圆内的比例。由于圆面积 $\pi$ 与正方形面积 4 的比值为 $\pi/4$, 故该比例乘以 4 即得 π 的估计值。
 
-a, b = 0, 1
-true_value = 1 - np.cos(1)  # 解析解
+    ```python runnable
+    import numpy as np
+    import matplotlib.pyplot as plt
 
-# 不同采样数量的估计
-sample_sizes = [100, 1000, 10000, 100000]
-estimates = []
-
-for n in sample_sizes:
-    x_samples = np.random.uniform(a, b, n)
-    estimate = (b - a) * np.mean(f(x_samples))
-    estimates.append(estimate)
-    error = abs(estimate - true_value)
-    print(f"n = {n:6d}: 估计值 = {estimate:.6f}, 误差 = {error:.6f}")
-
-print(f"\n真实值: {true_value:.6f}")
-
-# 可视化收敛过程
-n_range = np.arange(100, 10001, 100)
-convergence = []
-
-for n in n_range:
-    x_samples = np.random.uniform(a, b, n)
-    estimate = (b - a) * np.mean(f(x_samples))
-    convergence.append(estimate)
-
-plt.figure(figsize=(10, 5))
-plt.plot(n_range, convergence, 'b-', alpha=0.5, label='Monte Carlo 估计')
-plt.axhline(true_value, color='r', linestyle='--', linewidth=2, label=f'真实值 = {true_value:.4f}')
-plt.xlabel('采样数量 n')
-plt.ylabel('积分估计')
-plt.title('Monte Carlo 积分估计收敛过程')
-plt.legend()
-plt.grid(alpha=0.3)
-plt.tight_layout()
-plt.show()
-plt.close()
-```
-
-### π 的估计
-
-经典的 Monte Carlo 示例：用随机投点估计 π。
-
-```python runnable
-import numpy as np
-import matplotlib.pyplot as plt
-
-np.random.seed(42)
-
-# 用 Monte Carlo 方法估计 π
-# 在单位正方形内随机投点，落在单位圆内的比例 = π/4
-
-n = 10000
-x = np.random.uniform(-1, 1, n)
-y = np.random.uniform(-1, 1, n)
-
-# 判断是否在单位圆内
-inside = x**2 + y**2 <= 1
-
-# 估计 π
-pi_estimate = 4 * np.sum(inside) / n
-error = abs(pi_estimate - np.pi)
-
-print(f"采样点数: {n}")
-print(f"落在圆内的点数: {np.sum(inside)}")
-print(f"π 估计值: {pi_estimate:.6f}")
-print(f"真实值: {np.pi:.6f}")
-print(f"误差: {error:.6f}")
-
-# 可视化
-plt.figure(figsize=(8, 8))
-
-# 绘制点
-plt.scatter(x[inside], y[inside], c='blue', s=1, alpha=0.5, label='圆内')
-plt.scatter(x[~inside], y[~inside], c='red', s=1, alpha=0.5, label='圆外')
-
-# 绘制圆
-theta = np.linspace(0, 2*np.pi, 100)
-plt.plot(np.cos(theta), np.sin(theta), 'k-', linewidth=2)
-
-# 绘制正方形
-plt.plot([-1, 1, 1, -1, -1], [-1, -1, 1, 1, -1], 'k-', linewidth=2)
-
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title(f'Monte Carlo 估计 π = {pi_estimate:.4f}')
-plt.axis('equal')
-plt.legend()
-plt.grid(alpha=0.3)
-
-plt.tight_layout()
-plt.show()
-plt.close()
-
-# 收敛过程
-sample_sizes = [100, 1000, 5000, 10000, 50000, 100000]
-estimates = []
-
-for n_samples in sample_sizes:
-    x = np.random.uniform(-1, 1, n_samples)
-    y = np.random.uniform(-1, 1, n_samples)
+    # 用 Monte Carlo 方法估计 π
+    # 在单位正方形内随机投点，落在单位圆内的比例 = π/4
+    n = 10000
+    x = np.random.uniform(-1, 1, n)
+    y = np.random.uniform(-1, 1, n)
+    # 判断是否在单位圆内
     inside = x**2 + y**2 <= 1
-    estimates.append(4 * np.sum(inside) / n_samples)
+    # 估计 π
+    pi_estimate = 4 * np.sum(inside) / n
+    error = abs(pi_estimate - np.pi)
 
-print("\n收敛过程:")
-for n_samples, est in zip(sample_sizes, estimates):
-    print(f"  n = {n_samples:6d}: π ≈ {est:.6f}, 误差 = {abs(est - np.pi):.6f}")
-```
+    print(f"采样点数: {n}")
+    print(f"落在圆内的点数: {np.sum(inside)}")
+    print(f"π 估计值: {pi_estimate:.6f}")
+    print(f"真实值: {np.pi:.6f}")
+    print(f"误差: {error:.6f}")
 
-### 概率估计
+    # 可视化
+    plt.figure(figsize=(8, 8))
+    # 绘制点
+    plt.scatter(x[inside], y[inside], c='blue', s=1, alpha=0.5, label='圆内')
+    plt.scatter(x[~inside], y[~inside], c='red', s=1, alpha=0.5, label='圆外')
+    # 绘制圆
+    theta = np.linspace(0, 2*np.pi, 100)
+    plt.plot(np.cos(theta), np.sin(theta), 'k-', linewidth=2)
+    # 绘制正方形
+    plt.plot([-1, 1, 1, -1, -1], [-1, -1, 1, 1, -1], 'k-', linewidth=2)
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.title(f'Monte Carlo 估计 π = {pi_estimate:.4f}')
+    plt.axis('equal')
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+    plt.close()
 
-Monte Carlo 方法可以估计复杂事件的概率。
+    # 收敛过程
+    sample_sizes = [100, 1000, 5000, 10000, 50000, 100000]
+    estimates = []
+    for n_samples in sample_sizes:
+        x = np.random.uniform(-1, 1, n_samples)
+        y = np.random.uniform(-1, 1, n_samples)
+        inside = x**2 + y**2 <= 1
+        estimates.append(4 * np.sum(inside) / n_samples)
 
-```python runnable
-import numpy as np
-import matplotlib.pyplot as plt
+    print("\n收敛过程:")
+    for n_samples, est in zip(sample_sizes, estimates):
+        print(f"  n = {n_samples:6d}: π ≈ {est:.6f}, 误差 = {abs(est - np.pi):.6f}")
+    ```
 
-# 估计三个标准正态变量之和大于 3 的概率
-np.random.seed(42)
+- 蒙特卡洛方法还可以估计复杂事件的概率。通过大量随机试验模拟事件发生过程，统计事件发生的频率作为概率的估计值，当试验次数足够多时，频率趋于概率。以下代码估计三个标准正态变量之和大于 3 的概率：
 
-def estimate_probability(n_samples=100000):
-    """估计 P(X + Y + Z > 3)，其中 X, Y, Z ~ N(0,1)"""
-    X = np.random.randn(n_samples)
-    Y = np.random.randn(n_samples)
-    Z = np.random.randn(n_samples)
-    
+    ```python runnable
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    # 估计三个标准正态变量之和大于 3 的概率
+    def estimate_probability(n_samples=100000):
+        """估计 P(X + Y + Z > 3)，其中 X, Y, Z ~ N(0,1)"""
+        X = np.random.randn(n_samples)
+        Y = np.random.randn(n_samples)
+        Z = np.random.randn(n_samples)
+        S = X + Y + Z
+        count = np.sum(S > 3)   
+        return count / n_samples
+
+    # Monte Carlo 估计
+    n_samples = 100000
+    prob_estimate = estimate_probability(n_samples)
+
+    # 理论值（S ~ N(0, 3)，所以 S/sqrt(3) ~ N(0,1)）
+    from math import erf, sqrt
+    z = 3 / sqrt(3)
+    prob_theory = 0.5 * (1 - erf(z / sqrt(2)))
+    print(f"P(X + Y + Z > 3) 的估计")
+    print(f"  Monte Carlo 估计: {prob_estimate:.6f}")
+    print(f"  理论值: {prob_theory:.6f}")
+    print(f"  误差: {abs(prob_estimate - prob_theory):.6f}")
+
+    # 可视化 S 的分布
+    n = 100000
+    X = np.random.randn(n)
+    Y = np.random.randn(n)
+    Z = np.random.randn(n)
     S = X + Y + Z
-    count = np.sum(S > 3)
-    
-    return count / n_samples
 
-# Monte Carlo 估计
-n_samples = 100000
-prob_estimate = estimate_probability(n_samples)
+    plt.figure(figsize=(10, 5))
+    plt.hist(S, bins=100, density=True, alpha=0.7, color='steelblue', edgecolor='black')
 
-# 理论值（S ~ N(0, 3)，所以 S/sqrt(3) ~ N(0,1)）
-from math import erf, sqrt
-z = 3 / sqrt(3)
-prob_theory = 0.5 * (1 - erf(z / sqrt(2)))
+    # 理论 PDF
+    x = np.linspace(-6, 6, 100)
+    pdf = 1 / sqrt(2 * np.pi * 3) * np.exp(-x**2 / (2 * 3))
+    plt.plot(x, pdf, 'r-', linewidth=2, label='理论 PDF: N(0, 3)')
+    plt.axvline(3, color='green', linestyle='--', linewidth=2, label='阈值 = 3')
+    plt.xlabel('S = X + Y + Z')
+    plt.ylabel('概率密度')
+    plt.title('三个标准正态变量之和的分布')
+    plt.legend()
+    plt.grid(alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+    plt.close()
+    ```
 
-print(f"P(X + Y + Z > 3) 的估计")
-print(f"  Monte Carlo 估计: {prob_estimate:.6f}")
-print(f"  理论值: {prob_theory:.6f}")
-print(f"  误差: {abs(prob_estimate - prob_theory):.6f}")
+## 贝叶斯后验采样
 
-# 可视化 S 的分布
-n = 100000
-X = np.random.randn(n)
-Y = np.random.randn(n)
-Z = np.random.randn(n)
-S = X + Y + Z
+**贝叶斯推断**（Bayesian Inference）是一种统计推断方法，通过观测数据更新对未知参数的认知。贝叶斯定理将参数的先验分布与数据的似然函数结合，得到后验分布：$P(\theta | data) = \frac{P(data | \theta) P(\theta)}{P(data)}$。后验分布完整刻画了参数的不确定性，包含参数的所有可能取值及其相对概率。
 
-plt.figure(figsize=(10, 5))
+**后验采样**是从后验分布中抽取样本的过程。当后验分布没有解析形式或计算困难时，采样方法成为获取后验信息的实用途径。通过大量后验样本，可以估计参数的后验均值、方差、可信区间等统计量，实现对参数不确定性的完整描述。贝叶斯后验采样广泛应用于机器学习中的参数估计、模型选择、预测推断等场景。
 
-plt.hist(S, bins=100, density=True, alpha=0.7, color='steelblue', edgecolor='black')
+NumPy 提供了以下方法实现贝叶斯后验采样：
 
-# 理论 PDF
-x = np.linspace(-6, 6, 100)
-pdf = 1 / sqrt(2 * np.pi * 3) * np.exp(-x**2 / (2 * 3))
-plt.plot(x, pdf, 'r-', linewidth=2, label='理论 PDF: N(0, 3)')
+- `np.random.gamma(shape, scale, size)`：采样 Gamma 分布，用于 Beta-Gamma 关系采样
+- `np.random.binomial(n, p, size)`：生成二项分布观测数据
+- `np.percentile(samples, p)`：从后验样本计算可信区间
 
-plt.axvline(3, color='green', linestyle='--', linewidth=2, label='阈值 = 3')
-
-plt.xlabel('S = X + Y + Z')
-plt.ylabel('概率密度')
-plt.title('三个标准正态变量之和的分布')
-plt.legend()
-plt.grid(alpha=0.3)
-
-plt.tight_layout()
-plt.show()
-plt.close()
-```
-
-### 贝叶斯后验采样
+下面的代码以硬币正面概率估计为例，演示贝叶斯后验采样的完整流程：生成观测数据、计算后验参数、从 Beta 后验分布采样、统计后验信息。
 
 ```python runnable
 import numpy as np
@@ -568,28 +535,17 @@ plt.close()
 
 ## 本章小结
 
-本章通过 NumPy 实践了概率统计的核心计算：
-
-1. **随机数生成**：`np.random` 模块提供了丰富的分布采样功能。设置随机种子确保可复现性。
-
-2. **统计量计算**：均值、方差、分位数、协方差、相关系数等描述性统计。
-
-3. **Monte Carlo 方法**：通过随机采样近似求解积分、概率估计等复杂问题。
-
-4. **贝叶斯后验采样**：从后验分布采样，得到参数的完整不确定性描述。
-
-这些计算技能是数据分析和机器学习实践的基础。掌握 NumPy 的概率统计功能，能够高效地实现各种统计算法。
+本章对概率统计计算的进行了编程实践，从最基本的分布采样（均匀分布、正态分布）出发，逐步深入到随机种子控制、随机选择与打乱操作、多种概率分布的可视化、描述性统计量计算、协方差与相关系数分析、蒙特卡洛模拟方法，以及贝叶斯后验采样技术。这些方法构成了数据分析与机器学习的计算基础。均匀分布和正态分布采样是随机模拟的起点；随机种子确保了实验的可复现性；描述性统计量提供了对数据特征的第一眼认知；协方差和相关系数量化了变量之间的关系强度；蒙特卡洛方法为复杂问题的近似求解提供了通用框架；贝叶斯后验采样则在参数估计中实现了对不确定性的完整描述。
 
 ## 练习题
 
-1. 使用 Monte Carlo 方法估计 $\int_0^1 x^2 dx$ 的值，并与真实值比较。
+1. 使用蒙特卡洛方法估计 $\int_0^1 x^2 dx$ 的值，并与真实值比较。
    <details>
    <summary>参考答案</summary>
 
-   ```python
+   ```python runnable
    import numpy as np
-   np.random.seed(42)
-   
+
    n = 100000
    x = np.random.uniform(0, 1, n)
    estimate = np.mean(x**2)
@@ -603,60 +559,26 @@ plt.close()
 
    </details>
 
-2. 编写函数计算数据集的偏度和峰度。
+2. 使用蒙特卡洛方法验证中心极限定理（无论原始分布如何，当样本量足够大时，样本均值的分布近似服从正态分布）。
    <details>
    <summary>参考答案</summary>
 
-   ```python
-   import numpy as np
-   
-   def skewness(data):
-       """计算偏度"""
-       mean = np.mean(data)
-       std = np.std(data)
-       return np.mean(((data - mean) / std) ** 3)
-   
-   def kurtosis(data):
-       """计算峰度（超额峰度）"""
-       mean = np.mean(data)
-       std = np.std(data)
-       return np.mean(((data - mean) / std) ** 4) - 3
-   
-   # 测试
-   np.random.seed(42)
-   data = np.random.randn(10000)
-   
-   print(f"正态分布数据的偏度: {skewness(data):.4f}")
-   print(f"正态分布数据的峰度: {kurtosis(data):.4f}")
-   ```
-
-   </details>
-
-3. 使用 Monte Carlo 方法验证中心极限定理：从均匀分布采样，观察样本均值的分布。
-   <details>
-   <summary>参考答案</summary>
-
-   ```python
+   ```python runnable
    import numpy as np
    import matplotlib.pyplot as plt
-   
-   np.random.seed(42)
    
    # 从均匀分布采样
    n_samples = 10000
    sample_size = 30
-   
    sample_means = []
    for _ in range(n_samples):
        sample = np.random.uniform(0, 1, sample_size)
        sample_means.append(np.mean(sample))
-   
    sample_means = np.array(sample_means)
    
    # 理论值
    # X ~ U(0,1): E[X] = 0.5, Var[X] = 1/12
    # X̄: E[X̄] = 0.5, Var[X̄] = 1/(12*30)
-   
    theoretical_mean = 0.5
    theoretical_std = np.sqrt(1 / (12 * sample_size))
    
