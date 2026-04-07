@@ -67,31 +67,31 @@ export default {
             text: '线性代数',
             collapsible: false,
             children: [
-              { text: '引言：机器学习的语言', link: '/linear/introduction' },
-              { text: '向量基础', link: '/linear/vectors' },
-              { text: '矩阵基础', link: '/linear/matrices' },
-              { text: '数据处理实践', link: '/linear/numpy' },
-              { text: '应用场景', link: '/linear/applications' },
+              { text: '引言：机器学习的语言', link: '/maths/linear/introduction' },
+              { text: '向量基础', link: '/maths/linear/vectors' },
+              { text: '矩阵基础', link: '/maths/linear/matrices' },
+              { text: '数据处理实践', link: '/maths/linear/numpy' },
+              { text: '应用场景', link: '/maths/linear/applications' },
             ]
           },
           {
             text: '微积分',
             collapsible: false,
             children: [
-              { text: '引言：变化与累积', link: '/calculus/introduction' },
-              { text: '极限、导数与微分', link: '/calculus/derivative' },
-              { text: '多元函数与复合函数求导', link: '/calculus/gradient' },
-              { text: '微积分计算实践', link: '/calculus/numpy' },
+              { text: '引言：变化与累积', link: '/maths/calculus/introduction' },
+              { text: '极限、导数与微分', link: '/maths/calculus/derivative' },
+              { text: '多元函数与复合函数求导', link: '/maths/calculus/gradient' },
+              { text: '微积分计算实践', link: '/maths/calculus/numpy' },
             ]
           },
           {
             text: '统计与概率',
             collapsible: false,
             children: [
-              { text: '引言：概率性思维', link: '/probability/introduction' },
-              { text: '概率基础', link: '/probability/probability-basics' },
-              { text: '统计推断', link: '/probability/statistical-inference' },
-              { text: '概率统计实践', link: '/probability/numpy-practice' },
+              { text: '引言：概率性思维', link: '/maths/probability/introduction' },
+              { text: '概率基础', link: '/maths/probability/probability-basics' },
+              { text: '统计推断', link: '/maths/probability/statistical-inference' },
+              { text: '概率统计实践', link: '/maths/probability/numpy-practice' },
             ]
           }
         ]
@@ -104,7 +104,7 @@ export default {
             text: '线性模型',
             collapsible: false,
             children: [
-              { text: '线性回顾', link: '/statistical-learning/linear-models/linear-regression' },
+              { text: '线性回归', link: '/statistical-learning/linear-models/linear-regression' },
               { text: '逻辑回归', link: '/statistical-learning/linear-models/logistic-regression' },
               { text: '正则化与GLM', link: '/statistical-learning/linear-models/regularization-glm' },
             ]

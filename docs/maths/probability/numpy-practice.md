@@ -216,7 +216,7 @@ print()
 # 分位数
 percentiles = [25, 50, 75]
 for p in percentiles:
-    print(f"{p}% 分位数： {np.percentile(data, p):.2 f}")
+    print(f"{p}% 分位数： {np.percentile(data, p):.2f}")
 
 # 四分位距
 q1, q3 = np.percentile(data, [25, 75])
@@ -229,8 +229,8 @@ std = np.std(data)
 skewness = np.mean(((data - mean) / std) ** 3)
 kurtosis = np.mean(((data - mean) / std) ** 4) - 3
 
-print(f"\n 偏度： {skewness:.4 f} (正态分布为 0)")
-print(f"峰度： {kurtosis:.4 f} (正态分布为 0)")
+print(f"\n 偏度： {skewness:.4f} (正态分布为 0)")
+print(f"峰度： {kurtosis:.4f} (正态分布为 0)")
 ```
 
 ## 协方差与相关系数
@@ -320,8 +320,8 @@ plt.close()
         estimate = (b - a) * np.mean(f(x_samples))
         estimates.append(estimate)
         error = abs(estimate - true_value)
-        print(f"n = {n:6 d}: 估计值 = {estimate:.6 f}, 误差 = {error:.6 f}")
-    print(f"\n 真实值： {true_value:.6 f}")
+        print(f"n = {n:6d}: 估计值 = {estimate:.6f}, 误差 = {error:.6f}")
+    print(f"\n 真实值： {true_value:.6f}")
 
     # 可视化收敛过程
     n_range = np.arange(100, 10001, 100)
@@ -333,7 +333,7 @@ plt.close()
 
     plt.figure(figsize=(10, 5))
     plt.plot(n_range, convergence, 'b-', alpha=0.5, label='Monte Carlo 估计')
-    plt.axhline(true_value, color='r', linestyle='--', linewidth=2, label=f'真实值 = {true_value:.4 f}')
+    plt.axhline(true_value, color='r', linestyle='--', linewidth=2, label=f'真实值 = {true_value:.4f}')
     plt.xlabel('采样数量 n')
     plt.ylabel('积分估计')
     plt.title('Monte Carlo 积分估计收敛过程')
@@ -363,9 +363,9 @@ plt.close()
 
     print(f"采样点数： {n}")
     print(f"落在圆内的点数： {np.sum(inside)}")
-    print(f"π 估计值： {pi_estimate:.6 f}")
-    print(f"真实值： {np.pi:.6 f}")
-    print(f"误差： {error:.6 f}")
+    print(f"π 估计值： {pi_estimate:.6f}")
+    print(f"真实值： {np.pi:.6f}")
+    print(f"误差： {error:.6f}")
 
     # 可视化
     plt.figure(figsize=(8, 8))
@@ -379,7 +379,7 @@ plt.close()
     plt.plot([-1, 1, 1, -1, -1], [-1, -1, 1, 1, -1], 'k-', linewidth=2)
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.title(f'Monte Carlo 估计 π = {pi_estimate:.4 f}')
+    plt.title(f'Monte Carlo 估计 π = {pi_estimate:.4f}')
     plt.axis('equal')
     plt.legend()
     plt.grid(alpha=0.3)
@@ -398,7 +398,7 @@ plt.close()
 
     print("\n 收敛过程:")
     for n_samples, est in zip(sample_sizes, estimates):
-        print(f"  n = {n_samples:6 d}: π ≈ {est:.6 f}, 误差 = {abs(est - np.pi):.6 f}")
+        print(f"  n = {n_samples:6d}: π ≈ {est:.6f}, 误差 = {abs(est - np.pi):.6f}")
     ```
 
 - 蒙特卡洛方法还可以估计复杂事件的概率。通过大量随机试验模拟事件发生过程，统计事件发生的频率作为概率的估计值，当试验次数足够多时，频率趋于概率。以下代码估计三个标准正态变量之和大于 3 的概率：
@@ -426,9 +426,9 @@ plt.close()
     z = 3 / sqrt(3)
     prob_theory = 0.5 * (1 - erf(z / sqrt(2)))
     print(f"P(X + Y + Z > 3) 的估计")
-    print(f"  Monte Carlo 估计： {prob_estimate:.6 f}")
-    print(f"  理论值： {prob_theory:.6 f}")
-    print(f"  误差： {abs(prob_estimate - prob_theory):.6 f}")
+    print(f"  Monte Carlo 估计： {prob_estimate:.6f}")
+    print(f"  理论值： {prob_theory:.6f}")
+    print(f"  误差： {abs(prob_estimate - prob_theory):.6f}")
 
     # 可视化 S 的分布
     n = 100000
@@ -485,7 +485,7 @@ flips = np.random.binomial(1, true_p, n_flips)
 n_heads = flips.sum()
 
 print(f"观测数据： {n_flips} 次抛掷, {n_heads} 次正面")
-print(f"MLE 估计： p̂ = {n_heads/n_flips:.3 f}")
+print(f"MLE 估计： p̂ = {n_heads/n_flips:.3f}")
 print()
 
 # 使用拒绝采样从后验分布采样
@@ -507,9 +507,9 @@ posterior_samples = sample_beta(alpha_post, beta_post, 10000)
 
 # 后验统计量
 print("后验分布统计:")
-print(f"  后验均值： {posterior_samples.mean():.4 f}")
-print(f"  后验标准差： {posterior_samples.std():.4 f}")
-print(f"  95% 可信区间： [{np.percentile(posterior_samples, 2.5):.4 f}, {np.percentile(posterior_samples, 97.5):.4 f}]")
+print(f"  后验均值： {posterior_samples.mean():.4f}")
+print(f"  后验标准差： {posterior_samples.std():.4f}")
+print(f"  95% 可信区间： [{np.percentile(posterior_samples, 2.5):.4f}, {np.percentile(posterior_samples, 97.5):.4f}]")
 
 # 可视化
 plt.figure(figsize=(10, 5))
@@ -518,9 +518,8 @@ plt.hist(posterior_samples, bins=50, density=True, alpha=0.7,
          color='steelblue', edgecolor='black')
 
 plt.axvline(true_p, color='green', linestyle='--', linewidth=2, label=f'真实值 p = {true_p}')
-plt.axvline(n_heads/n_flips, color='red', linestyle=':', linewidth=2, label=f'MLE = {n_heads/n_flips:.3 f}')
-plt.axvline(posterior_samples.mean(), color='purple', linestyle='-.', linewidth=2, 
-            label=f'后验均值 = {posterior_samples.mean():.3 f}')
+plt.axvline(n_heads/n_flips, color='red', linestyle=':', linewidth=2, label=f'MLE = {n_heads/n_flips:.3f}')
+plt.axvline(posterior_samples.mean(), color='purple', linestyle='-.', linewidth=2, label=f'后验均值 = {posterior_samples.mean():.3f}')
 
 plt.xlabel('p')
 plt.ylabel('后验密度')
@@ -552,9 +551,9 @@ plt.close()
    
    true_value = 1/3
    
-   print(f"Monte Carlo 估计： {estimate:.6 f}")
-   print(f"真实值： {true_value:.6 f}")
-   print(f"误差： {abs(estimate - true_value):.6 f}")
+   print(f"Monte Carlo 估计： {estimate:.6f}")
+   print(f"真实值： {true_value:.6f}")
+   print(f"误差： {abs(estimate - true_value):.6f}")
    ```
 
    </details>
@@ -582,8 +581,8 @@ plt.close()
    theoretical_mean = 0.5
    theoretical_std = np.sqrt(1 / (12 * sample_size))
    
-   print(f"样本均值的均值： {sample_means.mean():.4 f} (理论： {theoretical_mean})")
-   print(f"样本均值的标准差： {sample_means.std():.4 f} (理论： {theoretical_std:.4 f})")
+   print(f"样本均值的均值： {sample_means.mean():.4f} (理论： {theoretical_mean})")
+   print(f"样本均值的标准差： {sample_means.std():.4f} (理论： {theoretical_std:.4f})")
    
    # 可视化
    plt.hist(sample_means, bins=50, density=True, alpha=0.7)

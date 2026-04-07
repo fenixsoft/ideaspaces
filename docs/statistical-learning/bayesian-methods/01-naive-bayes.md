@@ -2,7 +2,7 @@
 
 ## 引言：贝叶斯思维在机器学习中的实践
 
-在[概率统计系列](../../probability/introduction.md)中，我们学习了贝叶斯定理：
+在[概率统计系列](../../maths/probability/introduction.md)中，我们学习了贝叶斯定理：
 
 $$P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}$$
 

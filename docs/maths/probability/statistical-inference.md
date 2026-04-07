@@ -59,7 +59,7 @@ $$\frac{\partial \ell(\theta)}{\partial \theta} = 0$$
 
     print(f"真实参数： p = {true_p}")
     print(f"观测数据： {n} 次抛掷，{flips.sum()} 次正面")
-    print(f"MLE 估计： p̂ = {p_mle:.4 f}")
+    print(f"MLE 估计： p̂ = {p_mle:.4f}")
     print()
 
     # 可视化似然函数
@@ -72,7 +72,7 @@ $$\frac{\partial \ell(\theta)}{\partial \theta} = 0$$
 
     plt.figure(figsize=(10, 5))
     plt.plot(p_values, log_likelihood, 'b-', linewidth=2)
-    plt.axvline(p_mle, color='r', linestyle='--', label=f'MLE: p = {p_mle:.2 f}')
+    plt.axvline(p_mle, color='r', linestyle='--', label=f'MLE: p = {p_mle:.2f}')
     plt.axvline(true_p, color='g', linestyle=':', label=f'真实值： p = {true_p}')
     plt.xlabel('参数 p')
     plt.ylabel('对数似然 l(p)')
@@ -88,7 +88,7 @@ $$\frac{\partial \ell(\theta)}{\partial \theta} = 0$$
     print(f"  似然函数： L(p) = p^{k} * (1-p)^{n-k}")
     print(f"  对数似然： l(p) = {k}*log(p) + {n-k}*log(1-p)")
     print(f"  令 dl/dp = 0: {k}/p - {n-k}/(1-p) = 0")
-    print(f"  解得： p̂ = {k}/{n} = {k/n:.4 f}")
+    print(f"  解得： p̂ = {k}/{n} = {k/n:.4f}")
     ```
 
     从代码模拟结果可见，伯努利分布的 MLE 结果就是样本均值 $k/n$。与直觉完全一致，那似然函数和这套复杂流程有什么价值呢？首先，这是**证明而非猜测**，直觉告诉我们"8 正 2 反"对应 $p=0.8$，但推导证明了这个结论在任何情况下都成立；其次，这是通用方法，伯努利分布是最简单的例子，结论恰好直观，但其他分布的结论往往不那么简单（譬如下面案例 2 的正态分布的方差估计）；最后，推导过程揭示了 MLE 的本质 “ 令导数为零求解方式来最大化似然函数 ”，理解了这个原理才能判断何时该用 MLE、 何时可能有更好的方法。
@@ -110,11 +110,9 @@ $$\frac{\partial \ell(\theta)}{\partial \theta} = 0$$
     import matplotlib.pyplot as plt
 
     # MLE 估计：正态分布
-    np.random.seed(42)
     true_mu, true_sigma = 5.0, 2.0
     n = 1000
     data = np.random.normal(true_mu, true_sigma, n)
-
     # MLE 估计
     mu_mle = np.mean(data)
     sigma2_mle = np.mean((data - mu_mle) ** 2)  # MLE 用 n 做分母
@@ -122,28 +120,21 @@ $$\frac{\partial \ell(\theta)}{\partial \theta} = 0$$
 
     print("=== 正态分布参数估计 ===")
     print(f"真实参数： μ = {true_mu}, σ = {true_sigma}")
-    print(f"MLE 估计： μ̂ = {mu_mle:.4 f}, σ̂ = {sigma_mle:.4 f}")
+    print(f"MLE 估计： μ̂ = {mu_mle:.4f}, σ̂ = {sigma_mle:.4f}")
     print()
 
     # 可视化
     x = np.linspace(true_mu - 4*true_sigma, true_mu + 4*true_sigma, 1000)
-
     def normal_pdf(x, mu, sigma):
         return 1 / (sigma * np.sqrt(2 * np.pi)) * np.exp(-0.5 * ((x - mu) / sigma) ** 2)
-
     plt.figure(figsize=(10, 6))
 
     # 真实分布
-    plt.plot(x, normal_pdf(x, true_mu, true_sigma), 'g-', linewidth=2, 
-            label=f'真实分布： N({true_mu}, {true_sigma}²)')
-
+    plt.plot(x, normal_pdf(x, true_mu, true_sigma), 'g-', linewidth=2, label=f'真实分布： N({true_mu}, {true_sigma}²)')
     # MLE 估计分布
-    plt.plot(x, normal_pdf(x, mu_mle, sigma_mle), 'r--', linewidth=2,
-            label=f'MLE 估计： N({mu_mle:.2 f}, {sigma_mle:.2 f}²)')
-
+    plt.plot(x, normal_pdf(x, mu_mle, sigma_mle), 'r--', linewidth=2, label=f'MLE 估计： N({mu_mle:.2f}, {sigma_mle:.2f}²)')
     # 直方图
     plt.hist(data, bins=30, density=True, alpha=0.3, color='blue', edgecolor='black')
-
     plt.xlabel('x')
     plt.ylabel('概率密度')
     plt.title('正态分布的 MLE 估计')
@@ -204,8 +195,8 @@ p_map = (k + alpha - 1) / (n + alpha + beta - 2)
 
 print(f"真实参数： p = {true_p}")
 print(f"观测数据： n={n}, k={k}")
-print(f"MLE 估计： p̂ = {p_mle:.4 f}")
-print(f"MAP 估计 (Beta({alpha},{beta}) 先验): p̂ = {p_map:.4 f}")
+print(f"MLE 估计： p̂ = {p_mle:.4f}")
+print(f"MAP 估计 (Beta({alpha},{beta}) 先验): p̂ = {p_map:.4f}")
 print()
 
 # 可视化
@@ -222,7 +213,7 @@ def beta_pdf(x, a, b):
 prior = np.array([beta_pdf(p, alpha, beta) for p in p_values])
 
 # 后验（正比于似然 × 先验）
-log_posterior = log_likelihood + np.log(prior + 1 e-10)
+log_posterior = log_likelihood + np.log(prior + 1e-10)
 
 # 归一化用于可视化
 posterior = np.exp(log_posterior - log_posterior.max())
@@ -231,7 +222,7 @@ fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 
 # 似然
 axes[0].plot(p_values, np.exp(log_likelihood - log_likelihood.max()), 'b-', linewidth=2)
-axes[0].axvline(p_mle, color='r', linestyle='--', label=f'MLE: {p_mle:.2 f}')
+axes[0].axvline(p_mle, color='r', linestyle='--', label=f'MLE: {p_mle:.2f}')
 axes[0].set_xlabel('p')
 axes[0].set_ylabel('似然（归一化）')
 axes[0].set_title(f'似然函数')
@@ -249,7 +240,7 @@ axes[1].grid(alpha=0.3)
 
 # 后验
 axes[2].plot(p_values, posterior, 'purple', linewidth=2)
-axes[2].axvline(p_map, color='r', linestyle='--', label=f'MAP: {p_map:.2 f}')
+axes[2].axvline(p_map, color='r', linestyle='--', label=f'MAP: {p_map:.2f}')
 axes[2].axvline(true_p, color='g', linestyle=':', label=f'真实值： {true_p}')
 axes[2].set_xlabel('p')
 axes[2].set_ylabel('后验密度（归一化）')
@@ -263,7 +254,7 @@ plt.close()
 
 print("关键洞察：")
 print(f"  当样本量小时（n={n}），MAP 估计受到先验的强烈影响")
-print(f"  MLE 可能过拟合数据（p̂={p_mle:.2 f}），MAP 更稳健（p̂={p_map:.2 f}）")
+print(f"  MLE 可能过拟合数据（p̂={p_mle:.2f}），MAP 更稳健（p̂={p_map:.2f}）")
 print(f"  当样本量大时，先验影响减弱，MLE 和 MAP 趋于一致")
 ```
 
@@ -432,14 +423,14 @@ plt.close()
 print("=== 假设检验结果 ===")
 print(f"H0: 硬币公平 (p = 0.5)")
 print(f"观测数据： n = {n}, k = {k} (正面比例 = {k/n:.2%})")
-print(f"p 值： {p_value:.4 f}")
+print(f"p 值： {p_value:.4f}")
 print(f"显著性水平 α = 0.05")
 print()
 if p_value < 0.05:
-    print(f"结论： p 值 ({p_value:.4 f}) < α (0.05)，拒绝 H0")
+    print(f"结论： p 值 ({p_value:.4f}) < α (0.05)，拒绝 H0")
     print("      有统计显著性证据认为硬币不公平")
 else:
-    print(f"结论： p 值 ({p_value:.4 f}) ≥ α (0.05)，不能拒绝 H0")
+    print(f"结论： p 值 ({p_value:.4f}) ≥ α (0.05)，不能拒绝 H0")
     print("      没有足够证据认为硬币不公平")
 ```
 
