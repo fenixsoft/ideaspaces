@@ -374,6 +374,7 @@ body {
       color: var(--vp-c-accent);
     }
   }
+
 }
 
 // ==================== 页脚样式 ====================
@@ -404,6 +405,14 @@ body {
     p {
       font-size: 15px;
     }
+  }
+
+  .vp-site-name{
+    display: none;
+  }
+
+  .vp-navbar-item {
+      margin-left: 1rem;
   }
 
   .vp-home {

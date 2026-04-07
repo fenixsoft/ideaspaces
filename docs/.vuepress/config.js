@@ -113,7 +113,6 @@ export default {
             text: '贝叶斯方法',
             collapsible: false,
             children: [
-              { text: '章节概览', link: '/statistical-learning/bayesian-methods/' },
               { text: '朴素贝叶斯', link: '/statistical-learning/bayesian-methods/01-naive-bayes' },
               { text: '贝叶斯网络', link: '/statistical-learning/bayesian-methods/02-bayesian-network' },
               { text: 'EM算法', link: '/statistical-learning/bayesian-methods/03-em-algorithm' },
@@ -123,7 +122,6 @@ export default {
             text: '支持向量机',
             collapsible: false,
             children: [
-              { text: '章节概览', link: '/statistical-learning/support-vector-machines/' },
               { text: 'SVM基础', link: '/statistical-learning/support-vector-machines/01-svm-max-margin' },
               { text: '核技巧', link: '/statistical-learning/support-vector-machines/02-kernel-methods' },
               { text: 'SVM进阶', link: '/statistical-learning/support-vector-machines/03-svm-advanced' },
@@ -133,7 +131,6 @@ export default {
             text: '决策树与集成',
             collapsible: false,
             children: [
-              { text: '章节概览', link: '/statistical-learning/decision-tree-ensemble/' },
               { text: '决策树', link: '/statistical-learning/decision-tree-ensemble/01-decision-tree' },
               { text: '随机森林', link: '/statistical-learning/decision-tree-ensemble/02-random-forest' },
               { text: 'Boosting', link: '/statistical-learning/decision-tree-ensemble/03-boosting' },
@@ -143,7 +140,6 @@ export default {
             text: '无监督学习',
             collapsible: false,
             children: [
-              { text: '章节概览', link: '/statistical-learning/unsupervised-learning/' },
               { text: '聚类', link: '/statistical-learning/unsupervised-learning/01-clustering' },
               { text: '降维', link: '/statistical-learning/unsupervised-learning/02-dimensionality-reduction' },
               { text: '进阶', link: '/statistical-learning/unsupervised-learning/03-unsupervised-advanced' },
