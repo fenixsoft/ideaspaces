@@ -106,7 +106,7 @@ export default {
             children: [
               { text: '线性回归', link: '/statistical-learning/linear-models/linear-regression' },
               { text: '逻辑回归', link: '/statistical-learning/linear-models/logistic-regression' },
-              { text: '正则化与GLM', link: '/statistical-learning/linear-models/regularization-glm' },
+              { text: '正则化与广义线性模型', link: '/statistical-learning/linear-models/regularization-glm' },
             ]
           },
           {
@@ -123,7 +123,7 @@ export default {
             collapsible: false,
             children: [
               { text: 'SVM基础', link: '/statistical-learning/support-vector-machines/01-svm-max-margin' },
-              { text: '核技巧', link: '/statistical-learning/support-vector-machines/02-kernel-methods' },
+              { text: '核方法', link: '/statistical-learning/support-vector-machines/02-kernel-methods' },
               { text: 'SVM进阶', link: '/statistical-learning/support-vector-machines/03-svm-advanced' },
             ]
           },

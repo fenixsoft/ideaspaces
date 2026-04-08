@@ -3,6 +3,17 @@
  * 负责创建和管理 Docker 容器执行 Python 代码
  */
 import Docker from 'dockerode'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// 项目根目录（从 local-server/src 向上两级）
+const PROJECT_ROOT = path.resolve(__dirname, '..', '..')
+
+// 共享模块目录
+const DEFAULT_SHARED_MODULES_PATH = path.join(PROJECT_ROOT, 'local-server', 'shared_modules')
 
 const docker = new Docker()
 
@@ -12,6 +23,20 @@ const SANDBOX_CONFIG = {
   imageGpu: 'ideaspaces-sandbox:gpu',
   timeout: 60000,           // 60 秒超时
   memory: 4 * 1024 * 1024 * 1024  // 4GB 内存
+}
+
+/**
+ * 获取共享模块路径
+ */
+function getSharedModulesPath() {
+  return process.env.SHARED_MODULES_PATH || DEFAULT_SHARED_MODULES_PATH
+}
+
+/**
+ * 检查是否启用 Volume Mount
+ */
+function shouldMountSharedModules() {
+  return process.env.MOUNT_SHARED_MODULES !== 'false'
 }
 
 /**
@@ -92,6 +117,26 @@ export async function runPythonCode(code, useGpu = false) {
       'PYTHONUNBUFFERED=1'
       // matplotlib 使用 IPython Kernel 的 inline 后端，自动发送 display_data
     ]
+  }
+
+  // Volume Mount 配置 - 挂载共享模块
+  const useMount = shouldMountSharedModules()
+  const sharedModulesPath = getSharedModulesPath()
+
+  if (useMount) {
+    // 检查共享模块目录是否存在
+    const fs = await import('fs')
+    if (fs.existsSync(sharedModulesPath)) {
+      containerConfig.HostConfig.Binds = [
+        `${sharedModulesPath}:/usr/local/lib/python3.11/site-packages/shared:ro`
+      ]
+      console.log(`[Sandbox] Volume Mount 已启用: ${sharedModulesPath}`)
+    } else {
+      console.warn(`[Sandbox] 警告: 共享模块目录不存在: ${sharedModulesPath}`)
+      console.warn('[Sandbox] 提示: 运行 npm run extract:shared 生成共享模块')
+    }
+  } else {
+    console.log('[Sandbox] Volume Mount 已禁用 (MOUNT_SHARED_MODULES=false)')
   }
 
   // GPU 配置

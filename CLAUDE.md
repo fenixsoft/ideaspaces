@@ -102,6 +102,41 @@ docker build -t ideaspaces-sandbox:latest . -f local-server/Dockerfile.sandbox -
 docker run --rm ideaspaces-sandbox:gpu python3 -c "print('Hello')"
 ```
 
+### 共享模块（可复用 Python 类）
+
+文档中多个 runnable code 块可通过共享模块复用类定义：
+
+```bash
+# 从文档提取标记的类定义到共享模块
+npm run extract:shared
+
+# 构建镜像时自动执行提取
+npm run build:sandbox
+```
+
+**使用方式**：
+
+1. 在文档中标记需要提取的类：
+   ```markdown
+   ```python runnable extract-class="LogisticRegression"
+   class LogisticRegression:
+       ...
+   ```
+   ```
+
+2. 在其他代码块中导入使用：
+   ```python
+   from shared.linear.logistic_regression import LogisticRegression
+   model = LogisticRegression()
+   ```
+
+**目录结构**：
+- 文档：`docs/statistical-learning/linear-models/*.md`
+- 共享模块：`local-server/shared_modules/linear/*.py`
+
+**开发模式**：Volume Mount 自动启用，修改代码无需重建镜像
+**生产模式**：设置 `MOUNT_SHARED_MODULES=false` 禁用挂载
+
 ### 端口说明
 
 | 服务 | 端口 | 说明 |

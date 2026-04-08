@@ -27,12 +27,17 @@ export const runnableCodePlugin = (options = {}) => {
 
       md.renderer.rules.fence = (tokens, idx, options, env, self) => {
         const token = tokens[idx]
-        const info = token.info.trim().toLowerCase()
+        const info = token.info.trim()
 
         // 检查是否为 runnable 代码块
         if (info.includes('runnable')) {
-          const language = info.replace('runnable', '').replace('gpu', '').trim() || 'python'
-          const useGpu = info.includes('gpu')
+          const infoLower = info.toLowerCase()
+          const language = info.replace(/runnable|gpu|extract-class="[^"]*"/gi, '').trim() || 'python'
+          const useGpu = infoLower.includes('gpu')
+
+          // 解析 extract-class 参数
+          const extractMatch = info.match(/extract-class="([^"]+)"/i)
+          const extractClass = extractMatch ? extractMatch[1] : null
 
           // 生成唯一 ID
           const id = `runnable-${idx}-${Date.now()}`
@@ -47,8 +52,15 @@ export const runnableCodePlugin = (options = {}) => {
             codeHtml = divMatch[1]
           }
 
+          // 构建 data 属性
+          const dataAttrs = [
+            `data-lang="${language}"`,
+            `data-gpu="${useGpu}"`,
+            extractClass ? `data-extract-class="${extractClass}"` : ''
+          ].filter(Boolean).join(' ')
+
           // 返回可编辑的代码块，保留语法高亮
-          return `<div class="runnable-code-block" data-lang="${language}" data-gpu="${useGpu}">
+          return `<div class="runnable-code-block" ${dataAttrs}>
   <div class="code-area">
     <div class="floating-toolbar">
       <button class="run-btn" data-target="${id}">▶ Run</button>
