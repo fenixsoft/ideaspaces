@@ -22,6 +22,7 @@ export default {
   // 禁止浏览器翻译（网站本身就是中文）
   head: [
     ['meta', { name: 'google', content: 'notranslate' }],
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
   ],
 
   // 部署配置 - GitHub Pages 子目录
@@ -29,6 +30,8 @@ export default {
 
   // 使用自定义主题
   theme: ideaspacesTheme({
+    logo: '/logo_min_size.png',
+
     // 禁用颜色模式切换按钮
     colorModeSwitch: false,
 
