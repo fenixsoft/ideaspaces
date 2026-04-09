@@ -186,12 +186,13 @@ function updateInitPy(moduleDir, classNames) {
       );
       // 添加到 __all__
       content = content.replace(
-        /(__all__\s*=\s*\[)([^\]]*)\]/,
-        `$1$2, '${className}'`
+        /(__all__\s*=\s*\[)([^\]]*)(\])/,
+        `$1$2, '${className}'$3`
       );
       // 清理多余的逗号
-      content = content.replace(/,(\s*])/, '$1');
-      content = content.replace(/,\s*,/g, ',');
+      content = content.replace(/,(\s*])/, '$1');  // 末尾逗号
+      content = content.replace(/,\s*,/g, ',');    // 连续逗号
+      content = content.replace(/\[,/, '[');       // 开头逗号
     }
   }
 
