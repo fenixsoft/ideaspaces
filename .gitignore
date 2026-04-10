@@ -30,6 +30,9 @@ npm-debug.log*
 # History (local file history)
 .history/
 
+# Articles working directory
+articles/
+
 # Docker
 *.dockerignore
 
