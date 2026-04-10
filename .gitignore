@@ -9,6 +9,8 @@ docs/.vuepress/.cache/
 
 # IDE
 .idea/
+.vscode/
+.claude/
 *.swp
 *.swo
 
