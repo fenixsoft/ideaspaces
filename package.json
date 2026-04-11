@@ -1,7 +1,7 @@
 {
   "name": "dmla",
   "version": "1.0.0",
-  "description": "Design Machine Learning Applications - 交互式知识管理平台",
+  "description": "Design Machine Learning Applications - 设计机器学习应用系统",
   "type": "module",
   "scripts": {
     "dev": "vuepress dev docs",

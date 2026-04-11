@@ -11,11 +11,6 @@ const heroText = computed(() => {
   return frontmatter.value.heroText || siteLocale.value.title || 'Hello'
 })
 
-const tagline = computed(() => {
-  if (frontmatter.value.tagline === null) return null
-  return frontmatter.value.tagline || siteLocale.value.description || 'Welcome'
-})
-
 const heroImage = computed(() => frontmatter.value.heroImage)
 const heroAlt = computed(() => frontmatter.value.heroAlt || heroText.value || 'hero')
 
@@ -29,6 +24,39 @@ const actions = computed(() => {
 })
 
 const features = computed(() => frontmatter.value.features ?? [])
+
+// 解析 badges 数据
+const badges = computed(() => {
+  const rawBadges = frontmatter.value.badges
+  if (!rawBadges) return []
+
+  // 支持数组格式：[{ src, alt, href }]
+  if (Array.isArray(rawBadges)) {
+    return rawBadges.map(badge => ({
+      src: badge.src,
+      alt: badge.alt || '',
+      href: badge.href || ''
+    }))
+  }
+
+  return []
+})
+
+// 解析 informations 数据
+const informations = computed(() => {
+  const rawInfo = frontmatter.value.informations
+  if (!rawInfo) return []
+
+  // 支持数组格式：[{ src, alt }]
+  if (Array.isArray(rawInfo)) {
+    return rawInfo.map(info => ({
+      src: info.src,
+      alt: info.alt || ''
+    }))
+  }
+
+  return []
+})
 </script>
 
 <template>
@@ -46,10 +74,28 @@ const features = computed(() => frontmatter.value.features ?? [])
       {{ heroText }}
     </h1>
 
-    <!-- 描述 -->
-    <p v-if="tagline" class="home-hero-tagline">
-      {{ tagline }}
-    </p>
+    <!-- Badges -->
+    <div v-if="badges.length" class="home-hero-badges">
+      <a
+        v-for="badge in badges"
+        :key="badge.src"
+        :href="badge.href"
+        :target="badge.href ? '_blank' : undefined"
+        :rel="badge.href ? 'noopener noreferrer' : undefined"
+      >
+        <img :src="badge.src" :alt="badge.alt" />
+      </a>
+    </div>
+
+    <!-- Informations -->
+    <div v-if="informations.length" class="home-hero-informations">
+      <img
+        v-for="info in informations"
+        :key="info.src"
+        :src="info.src"
+        :alt="info.alt"
+      />
+    </div>
 
     <!-- 操作按钮 -->
     <p v-if="actions.length" class="home-hero-actions">
@@ -88,7 +134,8 @@ const features = computed(() => frontmatter.value.features ?? [])
 
 .home-hero-title {
   font-size: 3rem;
-  /* margin: 1.8rem auto; */
+  padding-top: 0px;
+  margin: -10px 0 25px 0;
 }
 
 .home-hero-tagline {
@@ -97,6 +144,41 @@ const features = computed(() => frontmatter.value.features ?? [])
   color: var(--vp-c-text-mute);
   font-size: 1.6rem;
   line-height: 1.3;
+}
+
+.home-hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: -30px;
+  color:chocolate
+}
+
+.home-hero-badges a::after {
+  display: none !important;
+}
+
+.home-hero-informations .medium-zoom-image {
+  cursor: default;
+}
+
+.home-hero-badges img {
+  height: 20px;
+  vertical-align: middle;
+}
+
+.home-hero-informations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin: 0.5rem auto;
+}
+
+.home-hero-informations img {
+  height: 20px;
+  vertical-align: middle;
 }
 
 .home-hero-actions {

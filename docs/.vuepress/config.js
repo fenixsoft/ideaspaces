@@ -17,7 +17,7 @@ export default {
   // 站点配置
   lang: 'zh-CN',
   title: '设计机器学习应用系统',
-  description: '概念、原理与实践指南',
+  description: '',
 
   // 禁止浏览器翻译（网站本身就是中文）
   head: [

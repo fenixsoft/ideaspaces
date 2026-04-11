@@ -3,6 +3,29 @@ title: 首页
 heroImage: /logo.png
 # heroText: 
 # tagline: 
+badges:
+  - src: https://img.shields.io/github/stars/fenixsoft/dmla
+    alt: GitHub Repo stars
+    href: https://github.com/fenixsoft/dmla
+  - src: https://img.shields.io/github/followers/fenixsoft
+    alt: GitHub followers
+    href: https://github.com/fenixsoft
+  - src: https://img.shields.io/github/forks/fenixsoft/dmla
+    alt: GitHub forks
+    href: https://github.com/fenixsoft/dmla/forks
+informations:
+  - src: https://visitor-badge.laobi.icu/badge?page_id=fenixsoft/dmla
+    alt: visitors
+  - src: https://img.shields.io/github/last-commit/fenixsoft/dmla
+    alt: GitHub last commit
+  - src: https://img.shields.io/badge/license-creative%20commons%20by%204.0-red
+    alt: License
+  - src: https://img.shields.io/github/actions/workflow/status/fenixsoft/dmla/deploy.yml
+    alt: GitHub Actions Workflow Status
+  - src: https://img.shields.io/docker/pulls/icyfenix/bookstore?color=aquamarine
+    alt: Docker Pulls
+  - src: https://img.shields.io/badge/author-IcyFenix-chocolate
+    alt: Author
 actions:
   - text: 开始阅读
     link: /contents.html
@@ -17,7 +40,7 @@ features:
     details: 基于 GitHub Issues 的评论系统，无需自建后端
   - title: 🐍 代码沙箱
     details: 本地部署支持 Python 代码在线执行，支持 GPU 加速
-footer: MIT Licensed | Copyright © 2024
+footer: CC-BY-4.0 Licensed | Copyright © 2026
 ---
 
 <HomeHero />
