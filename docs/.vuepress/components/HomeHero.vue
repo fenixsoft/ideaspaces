@@ -151,7 +151,7 @@ const informations = computed(() => {
   flex-wrap: wrap;
   gap: 6px;
   justify-content: center;
-  margin-bottom: -30px;
+  margin-bottom: -15px;
   color:chocolate
 }
 
@@ -177,8 +177,9 @@ const informations = computed(() => {
 }
 
 .home-hero-informations img {
-  height: 20px;
+  /* height: 20px; */
   vertical-align: middle;
+  margin: 0px;
 }
 
 .home-hero-actions {
@@ -202,7 +203,9 @@ const informations = computed(() => {
 }
 
 .home-hero-action:hover {
-  color: var(--vp-c-accent-text);
+  color: var(-vp-c-accent);
+  background-color: #eff4ff;
+  text-decoration: none !important;
 }
 
 .home-hero-action.primary {
