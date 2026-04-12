@@ -47,3 +47,6 @@ coverage/
 # Playwright CLI (用于测试)
 .playwright-cli/
 
+# Scripts - 仅忽略 Python 文件
+scripts/*.py
+

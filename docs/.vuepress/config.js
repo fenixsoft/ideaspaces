@@ -118,16 +118,16 @@ export default {
             children: [
               { text: '朴素贝叶斯', link: '/statistical-learning/bayesian-methods/naive-bayes' },
               { text: '贝叶斯网络', link: '/statistical-learning/bayesian-methods/bayesian-network' },
-              { text: 'EM算法', link: '/statistical-learning/bayesian-methods/em-algorithm' },
+              { text: 'EM 算法', link: '/statistical-learning/bayesian-methods/em-algorithm' },
             ]
           },
           {
             text: '支持向量机',
             collapsible: false,
             children: [
-              { text: 'SVM基础', link: '/statistical-learning/support-vector-machines/svm-max-margin' },
+              { text: '支持向量机基础', link: '/statistical-learning/support-vector-machines/svm-max-margin' },
               { text: '核方法', link: '/statistical-learning/support-vector-machines/kernel-methods' },
-              { text: 'SVM进阶', link: '/statistical-learning/support-vector-machines/svm-advanced' },
+              { text: '支持向量机进阶', link: '/statistical-learning/support-vector-machines/svm-advanced' },
             ]
           },
           {

@@ -10,9 +10,11 @@
  * 5. 清理中文标点周围的空格
  *
  * 用法：
- *   npm run format:md        # 检查模式（默认）
+ *   npm run format:md        # 检查模式（默认，处理 docs 目录所有文件）
  *   npm run format:md:check  # 检查模式
  *   npm run format:md:fix    # 修复模式
+ *   node scripts/format-markdown.js docs/path/to/file.md      # 检查单个文件
+ *   node scripts/format-markdown.js docs/path/to/file.md --fix  # 修复单个文件
  */
 
 import fs from 'fs';
@@ -29,6 +31,8 @@ const DOCS_DIR = path.join(PROJECT_ROOT, 'docs');
 // 解析命令行参数
 const args = process.argv.slice(2);
 const mode = args.includes('--fix') ? 'fix' : 'check';
+// 提取文件名参数（排除 --fix 标志）
+const targetFile = args.find(arg => arg !== '--fix' && !arg.startsWith('--'));
 
 // 统计信息
 const stats = {
@@ -446,14 +450,31 @@ function generateDiffReport(result) {
  */
 function main() {
   console.log(`\nMarkdown 格式化脚本 (${mode === 'fix' ? '修复' : '检查'}模式)\n`);
-  console.log(`扫描目录: ${DOCS_DIR}`);
-  console.log(`排除目录: .vuepress/\n`);
 
-  // 获取所有 Markdown 文件
-  const files = getMarkdownFiles(DOCS_DIR, ['.vuepress']);
+  // 确定要处理的文件列表
+  let files;
+  if (targetFile) {
+    // 处理单个文件
+    const absolutePath = path.resolve(PROJECT_ROOT, targetFile);
+    if (!fs.existsSync(absolutePath)) {
+      console.error(`错误: 文件不存在 - ${targetFile}`);
+      process.exit(1);
+    }
+    if (!absolutePath.endsWith('.md')) {
+      console.error(`错误: 不是 Markdown 文件 - ${targetFile}`);
+      process.exit(1);
+    }
+    files = [absolutePath];
+    console.log(`目标文件: ${targetFile}\n`);
+  } else {
+    // 处理 docs 目录下所有文件
+    console.log(`扫描目录: ${DOCS_DIR}`);
+    console.log(`排除目录: .vuepress/\n`);
+    files = getMarkdownFiles(DOCS_DIR, ['.vuepress']);
+    console.log(`找到 ${files.length} 个文件\n`);
+  }
+
   stats.filesScanned = files.length;
-
-  console.log(`找到 ${files.length} 个文件\n`);
 
   const results = [];
 
