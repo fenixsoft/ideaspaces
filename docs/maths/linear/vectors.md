@@ -18,11 +18,11 @@ issue:
 
 ![二维空间中的向量](./assets/vector_2d.png)
 
-其中 $v_i$ 称为向量的第 $i$ 个**分量**（Component），$n$ 称为向量的**维度**（Dimension），$n$ 维向量只存在于 $n$ 维空间中，意味着它需要 $n$ 个坐标轴才能完整描述。譬如，$\mathbf{v} = (3, -1, 2)$ 是一个三维向量，其三个分量分别为 $v_1 = 3$，$v_2 = -1$，$v_3 = 2$。按数据科学的的观点，特征向量的维度对应于特征的数量。例如，用"房屋面积、卧室数量、房龄"三个特征描述一套房子，就需要一个三维向量来表示。大数据中体系的“[维表](https://zh.wikipedia.org/wiki/%E6%98%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F#%E7%BB%B4%E8%A1%A8)”、DBMS 中的“[MDD 多维数据库](https://scholar.google.com/scholar?q=Multi+Dimensional+Database)”这些名字都是由此而来。
+其中 $v_i$ 称为向量的第 $i$ 个**分量**（Component），$n$ 称为向量的**维度**（Dimension），$n$ 维向量只存在于 $n$ 维空间中，意味着它需要 $n$ 个坐标轴才能完整描述。譬如，$\mathbf{v} = (3, -1, 2)$ 是一个三维向量，其三个分量分别为 $v_1 = 3$，$v_2 = -1$，$v_3 = 2$。按数据科学的观点，特征向量的维度对应于特征的数量。例如，用"房屋面积、卧室数量、房龄"三个特征描述一套房子，就需要一个三维向量来表示。大数据体系中的”[维表](https://zh.wikipedia.org/wiki/%E6%98%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F#%E7%BB%B4%E8%A1%A8)”、DBMS 中的”[MDD 多维数据库](https://scholar.google.com/scholar?q=Multi+Dimensional+Database)”这些名字都是由此而来。
 
-有一个与维度相关的易混淆的概念是向量的**长度**（Length），也称为**大小**（Size）或**模**（Magnitude），维度是几何视角看待向量所形成的概念，意为多少个坐标轴才能描述向量；而长度是代数视角下的产物，是指向量中包含的分量个数。对于 $n$ 维向量 $\mathbf{v} = (v_1, v_2, \ldots, v_n)$，其长度也同样为 $n$，与维度在数值上是相等的。但是后面讲到矩阵与张量的时情况就不一样了，一个 $3 \times 4$ 矩阵，可以说维度是 $3 \times 4$（二维结构），但长度为 12（元素总数）；一个模型训练中的四维张量 $(batch, channel, height, width)$，其维度是 4，长度则是 $batch \times channel \times height \times width$。
+有一个与维度相关的易混淆的概念是向量的**长度**（Length），也称为**大小**（Size）或**模**（Magnitude），维度是几何视角看待向量所形成的概念，意为多少个坐标轴才能描述向量；而长度是代数视角下的产物，是指向量中包含的分量个数。对于 $n$ 维向量 $\mathbf{v} = (v_1, v_2, \ldots, v_n)$，其长度也同样为 $n$，与维度在数值上是相等的。但是后面讲到矩阵与张量时情况就不一样了，一个 $3 \times 4$ 矩阵，可以说维度是 $3 \times 4$（二维结构），但长度为 12（元素总数）；一个模型训练中的四维张量 $(batch, channel, height, width)$，其维度是 4，长度则是 $batch \times channel \times height \times width$。
 
-向量、矩阵的长度决定了存储它们所需的储存空间大小，而维度则是进行向量、矩阵运算时检查兼容性的重要依据，举个例子，两个矩阵进行加法运算的前提是必须具有相同的维度，而非长度。譬如 $2 \times 6$ 与 $3 \times 4$ 的两个矩阵长度都是 12，但它们不能进行加法运算。
+向量、矩阵的长度决定了存储它们所需的存储空间大小，而维度则是进行向量、矩阵运算时检查兼容性的重要依据，举个例子，两个矩阵进行加法运算的前提是必须具有相同的维度，而非长度。譬如 $2 \times 6$ 与 $3 \times 4$ 的两个矩阵长度都是 12，但它们不能进行加法运算。
 
 还有一个数学上不经常提起，但是编程和机器学习框架中（如 NumPy、PyTorch、TensorFlow）被频繁使用的概念：**形状**（Shape），它描述的是向量在内存中的存储结构。形状以元组形式表示，指明数组在每个维度上的大小。如：
 
@@ -127,7 +127,7 @@ print(f"v1, v2, v4 线性无关：{is_linearly_independent([v1, v2, v4])}")  # F
 
 *图 “平行四边形法则”与“三角形法则”*
 
-**数乘**（Scalar Multiplication）也称标量乘法，定义即为标量与向量的乘积：$c\mathbf{v} = (cv_1, cv_2, \ldots, cv_n)$。数乘的几何意义比加法更加直观，无需什么法则，直接就是对向量进行 $\mathbf{c}$ 倍的缩放操作：
+**数乘**（Scalar Multiplication）也称标量乘法，定义即为标量与向量的乘积：$c\mathbf{v} = (cv_1, cv_2, \ldots, cv_n)$。数乘的几何意义比加法更加直观，无需什么法则，直接就是对向量进行 $c$ 倍的缩放操作：
 
 - 当 $c > 0$：向量的长度缩放为原来的 $|c|$ 倍，方向不变
 - 当 $c < 0$：向量的长度缩放为原来的 $|c|$ 倍，方向反向
@@ -148,7 +148,7 @@ print(f"v1, v2, v4 线性无关：{is_linearly_independent([v1, v2, v4])}")  # F
 
 ## 内积与投影
 
-当把数的概念从标量扩展到向量后，构成向量的多个标量将以不同的规则相乘，会的得出不同的结果，因此“乘法”对于向量（当然也包括后续的矩阵和张量）就是个需要根据上下文或数学符号才能准确分辨的词汇。譬如，两个同维向量对应位置元素相乘，结果仍是同维向量，这种称为[逐元素积（Hadamard 积）](https://en.wikipedia.org/wiki/Hadamard_product)；两个向量进行列向量与向量组个元素相乘，结果生成一个矩阵，这种称为[外积（Outer Product）](https://en.wikipedia.org/wiki/Outer_Product)，还有外积在更高维的张量上的推广[克罗内克积（Kronecker Product）](https://en.wikipedia.org/wiki/Kronecker_product)；又或者局限于三维空间，但在计算机图形学中（计算表面法向量）、物理学中（力矩、角动量）都很常见的[叉积（Cross Product）](https://en.wikipedia.org/wiki/Cross_product)，等等。
+当把数的概念从标量扩展到向量后，构成向量的多个标量将以不同的规则相乘，会得出不同的结果，因此“乘法”对于向量（当然也包括后续的矩阵和张量）就是个需要根据上下文或数学符号才能准确分辨的词汇。譬如，两个同维向量对应位置元素相乘，结果仍是同维向量，这种称为[逐元素积（Hadamard 积）](https://en.wikipedia.org/wiki/Hadamard_product)；两个向量进行列向量与向量组个元素相乘，结果生成一个矩阵，这种称为[外积（Outer Product）](https://en.wikipedia.org/wiki/Outer_Product)，还有外积在更高维的张量上的推广[克罗内克积（Kronecker Product）](https://en.wikipedia.org/wiki/Kronecker_product)；又或者局限于三维空间，但在计算机图形学中（计算表面法向量）、物理学中（力矩、角动量）都很常见的[叉积（Cross Product）](https://en.wikipedia.org/wiki/Cross_product)，等等。
 
 由于我们的讨论尚未涉及到矩阵、张量这些概念，因此这里只关注向量的**内积**（Inner Product）和它的应用。内积也称为**点积**（Dot Product），它的代数定义为：$\mathbf{u} \cdot \mathbf{v} = \sum_{i=1}^{n} u_i v_i = u_1v_1 + u_2v_2 + \cdots + u_nv_n$。内积满足如下性质：
 1. 交换律：$\mathbf{u} \cdot \mathbf{v} = \mathbf{v} \cdot \mathbf{u}$
@@ -162,9 +162,9 @@ print(f"v1, v2, v4 线性无关：{is_linearly_independent([v1, v2, v4])}")  # F
 
 *图：向量内积的几何意义 —— 从左到右分别为：同向（内积为正）、正交（内积为零）、反向（内积为负）*
 
-机器学习中广泛使用由内积衍生的**余弦相似度**（Cosine Similarity）来衡量文本、图像等数据相似性。余弦相似度的定义直接从内积几何定义而来：$\text{cosine\_similarity}(\mathbf{u}, \mathbf{v}) = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}$，显而易见，它是内积去掉摸长后的结果（内积公式 $\mathbf{u} \cdot \mathbf{v} = \|\mathbf{u}\| \|\mathbf{v}\| \cos\theta$ 两边同时除以 $\|\mathbf{u}\| \|\mathbf{v}\|$）。这表明余弦相似度只关心向量的方向，并不关心向量的长度。这个特点使其在处理文本相似度中十分有用，它对应的现实是“一小段话与一大篇文章完全有可能在描述同一个意思”。
+机器学习中广泛使用由内积衍生的**余弦相似度**（Cosine Similarity）来衡量文本、图像等数据相似性。余弦相似度的定义直接从内积几何定义而来：$\text{cosine\_similarity}(\mathbf{u}, \mathbf{v}) = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}$，显而易见，它是内积去掉模长后的结果（内积公式 $\mathbf{u} \cdot \mathbf{v} = \|\mathbf{u}\| \|\mathbf{v}\| \cos\theta$ 两边同时除以 $\|\mathbf{u}\| \|\mathbf{v}\|$）。这表明余弦相似度只关心向量的方向，并不关心向量的长度。这个特点使其在处理文本相似度中十分有用，它对应的现实是“一小段话与一大篇文章完全有可能在描述同一个意思”。
 
-内积建立了代数与几何的桥梁。通过代数计算可以等到向量间夹角（$\cos\theta = \frac{u \cdot v}{|u| |v|}$）、向量长度（$|v| = \sqrt{v \cdot v}$）这些几何量，也可以用代数表达式精确描述正交（$u \cdot v = 0$）、投影（$\text{proj}_u(v) = \frac{v \cdot u}{u \cdot u} u$）这样的几何概念。不夸张地说，内积让向量的"计算"与"看见"完全统一了起来。
+内积建立了代数与几何的桥梁。这个公式的含义是：通过代数计算可以得到向量间夹角（$\cos\theta = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}$）、向量长度（$\|\mathbf{v}\| = \sqrt{\mathbf{v} \cdot \mathbf{v}}$）这些几何量，也可以用代数表达式精确描述正交（$\mathbf{u} \cdot \mathbf{v} = 0$）、投影（$\text{proj}_u(v) = \frac{v \cdot u}{u \cdot u} u$）这样的几何概念。不夸张地说，内积让向量的"计算"与"看见"完全统一了起来。
 
 **投影**（Projection）是内积的另一种运算。向量 $\mathbf{u}$ 在向量 $\mathbf{v}$ 上的投影可表示为：$\text{proj}_{\mathbf{v}} \mathbf{u} = \frac{\mathbf{u} \cdot \mathbf{v}}{\mathbf{v} \cdot \mathbf{v}} \mathbf{v} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{v}\|^2} \mathbf{v}$。从几何意义上看，投影描述了向量 $\mathbf{u}$ 在向量 $\mathbf{v}$ 方向上的"影子" —— 它是 $\mathbf{u}$ 在 $\mathbf{v}$ 方向上的分量，可以形象地理解为：当一束垂直于 $\mathbf{v}$ 的光线照射 $\mathbf{u}$ 时，在 $\mathbf{v}$ 所在直线上投下的影子。投影的结果 $\text{proj}_{\mathbf{v}} \mathbf{u}$ 是一个与 $\mathbf{v}$ 同向（或反向）的向量，其模长反映了 $\mathbf{u}$ 在 $\mathbf{v}$ 方向上的"影响力"大小。投影在各种科学领域中都有着广泛的应用场景，譬如：
 
@@ -183,7 +183,7 @@ print(f"v1, v2, v4 线性无关：{is_linearly_independent([v1, v2, v4])}")  # F
 | 夹角 | $\cos\theta = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}$ | 数据间的相关性，夹角越小表示越相似，如推荐系统和语义搜索 |
 | 正交 | $\mathbf{u} \cdot \mathbf{v} = 0$ | 数据相互独立、毫无关联，如 [PCA 主成分分析](applications.md#主成分分析)中正交主成分代表不相关的特征 |
 | 投影 | $\text{proj}_{\mathbf{v}} \mathbf{u} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{v}\|^2} \mathbf{v}$ | 数据在某个方向上的"影子"，如降维和特征提取 |
-| 线性变换 | 矩阵乘法 $\mathbf{Ax}$ | 数据的转换、旋转或缩放，如神经网络中的权重变换 |
+| [线性变换](matrices.md#线性变换的几何直观) | 矩阵乘法 $\mathbf{Ax}$ | 数据的转换、旋转或缩放，如神经网络中的权重变换 |
 
 面对更高维的场景，虽然我们无法直接“看见”四维、五维甚至更高维的空间，但线性代数的运算规则在任意维度都成立，这种抽象能力正是数学工具的强大之处。在处理机器学习问题时，我们经常面对高维向量。譬如 GloVe 词向量通常是 300 维，BERT 的句向量可达 768 维甚至更高。虽然无法可视化，但我们仍然可以应用内积、变换、投影等运算来寻找向量之间的关系。当然，高维空间也有一些反直觉的性质。譬如在高维空间中，大多数点都分布在“边角”附近，而不是中心区域，这对理解某些机器学习算法的行为有重要启示。
 
@@ -191,7 +191,7 @@ print(f"v1, v2, v4 线性无关：{is_linearly_independent([v1, v2, v4])}")  # F
 
 **基**（Basis）是向量空间的一组线性无关向量，使得空间中任意向量都可以表示为这组向量的线性组合。就像我们平常在三维空间中用 $x$、$y$、$z$ 轴描述任何位置一样，基提供了一套描述向量空间中所有向量的"语言"。譬如有一组二维平面 $\mathbb{R}^2$ 的基向量 $\mathbf{e}_1 = (1, 0)$ ，$\mathbf{e}_2 = (0, 1)$，那么向量 $(3,2)$ 就可以表示为 $(3, 2) = 3\cdot\mathbf{e}_1 + 2\cdot\mathbf{e}_2 = 3\cdot(1,0) + 2\cdot(0,1)$。这里的 3 和 2 就是该向量在这个基下的坐标。
 
-如同正方形与平行四边形、直角坐标系与笛卡尔坐标系的关系那样，在所有基向量中有一类两两正交的特殊子集，被称为**正交基**（Orthogonal Basis）。上面举的例子 $\mathbf{e}_1 = (1, 0)$ ，$\mathbf{e}_2 = (0, 1)$ 就是一组正交基。进一步，如果正交基的每个向量都是单位向量（模长为 1），那我们就成其为**标准正交基**（Orthonormal Basis）。根据正交与摸长为 1 的定义，显然标准正交基 $\{\mathbf{e}_1, \mathbf{e}_2, \ldots, \mathbf{e}_n\}$ 满足：$\mathbf{e}_i \cdot \mathbf{e}_j = \begin{cases} 1, & i = j \\ 0, & i \neq j \end{cases}$。最常用的标准正交基是**自然基**，既：
+如同正方形与平行四边形、直角坐标系与笛卡尔坐标系的关系那样，在所有基向量中有一类两两正交的特殊子集，被称为**正交基**（Orthogonal Basis）。上面举的例子 $\mathbf{e}_1 = (1, 0)$ ，$\mathbf{e}_2 = (0, 1)$ 就是一组正交基。进一步，如果正交基的每个向量都是单位向量（模长为 1），那我们就称其为**标准正交基**（Orthonormal Basis）。根据正交与摸长为 1 的定义，显然标准正交基 $\{\mathbf{e}_1, \mathbf{e}_2, \ldots, \mathbf{e}_n\}$ 满足：$\mathbf{e}_i \cdot \mathbf{e}_j = \begin{cases} 1, & i = j \\ 0, & i \neq j \end{cases}$。最常用的标准正交基是**自然基**，既：
 - $\mathbf{e}_1 = (1, 0, 0, \ldots, 0)$
 - $\mathbf{e}_2 = (0, 1, 0, \ldots, 0)$
 - ...
@@ -251,7 +251,7 @@ print(f"v1, v2, v4 线性无关：{is_linearly_independent([v1, v2, v4])}")  # F
 
 这些概念相互关联、层层递进：向量空间定义了运算的舞台，线性相关性刻画了数据的冗余结构，内积建立了代数与几何的联系，正交基提供了最优的坐标系统，范数则赋予了我们多角度度量数据的能力。掌握这些基础，将为后续学习矩阵、线性变换以及更复杂的机器学习算法奠定坚实基础。
 
-下一章将介绍矩阵 —— 向量的自然扩展，以及线性变换的几何意义。
+下一章将介绍矩阵，它是向量的自然扩展，以及线性变换的几何意义。
 
 ## 练习题
 
