@@ -10,7 +10,7 @@ issue:
 
 ## 矩阵的概念与应用
 
-**矩阵（Matrix）** 是由标量按行列排列成的矩形阵列，如同向量将标量从零阶扩展到一阶，矩阵则把向量从一阶扩展到了二阶。习惯上，人们常用粗体、大写字母来表示矩阵。一个 $m \times n$ 的矩阵 $\mathbf{A}$ 包含 $m$ 行 $n$ 列元素。矩阵的维度记为 $m \times n$，其中 $m$ 是行数（rows），$n$ 是列数（columns）。矩阵具有相同数量的行和列时被成为**方阵（Square Matrix）**，其形状为正方形。
+**矩阵**（Matrix）是由标量按行列排列成的矩形阵列，如同向量将标量从零阶扩展到一阶，矩阵则把向量从一阶扩展到了二阶。习惯上，人们常用粗体、大写字母来表示矩阵。一个 $m \times n$ 的矩阵 $\mathbf{A}$ 包含 $m$ 行 $n$ 列元素。矩阵的维度记为 $m \times n$，其中 $m$ 是行数（rows），$n$ 是列数（columns）。矩阵具有相同数量的行和列时被成为**方阵**（Square Matrix），其形状为正方形。
 
 $$ \mathbf{A} = \begin{pmatrix}
 a_{11} & a_{12} & \cdots & a_{1n} \\
@@ -93,7 +93,7 @@ $$\mathbf{A} = \begin{pmatrix}
 
 除加法、数乘、乘法外这些二元运算外，矩阵还有“**转置**”和“**求逆**”两种常见的一元运算：
 
-- **矩阵的转置（Transpose）** 是一种将矩阵的行列互换的操作。设 $\mathbf{A}$ 是 $m \times n$ 矩阵，其转置 $\mathbf{A}^T$ 是 $n \times m$ 矩阵：$(\mathbf{A}^T)_{ij} = a_{ji}$。转置具备如下性质：
+- **矩阵的转置**（Transpose）是一种将矩阵的行列互换的操作。设 $\mathbf{A}$ 是 $m \times n$ 矩阵，其转置 $\mathbf{A}^T$ 是 $n \times m$ 矩阵：$(\mathbf{A}^T)_{ij} = a_{ji}$。转置具备如下性质：
 
     - $(\mathbf{A}^T)^T = \mathbf{A}$（旋转一次 $180^\circ$ 是转置，旋转两次到 $360^\circ$ 就相当于没动）
     - $(\mathbf{A} + \mathbf{B})^T = \mathbf{A}^T + \mathbf{B}^T$
@@ -115,7 +115,7 @@ $$\mathbf{A} = \begin{pmatrix}
     3 & 6 & 9
     \end{pmatrix}$$
 
-- **矩阵的求逆（Inverse）** 是一种"撤销"原矩阵的线性变换，回到原始状态的操作。对于方阵 $\mathbf{A}$，如果存在矩阵 $\mathbf{B}$ 使得：$\mathbf{AB} = \mathbf{BA} = \mathbf{I}$，则称 $\mathbf{A}$ 可逆（Invertible），$\mathbf{B}$ 称为 $\mathbf{A}$ 的逆矩阵，记为 $\mathbf{A}^{-1}$。逆矩阵具备如下性质：
+- **矩阵的求逆**（Inverse）是一种"撤销"原矩阵的线性变换，回到原始状态的操作。对于方阵 $\mathbf{A}$，如果存在矩阵 $\mathbf{B}$ 使得：$\mathbf{AB} = \mathbf{BA} = \mathbf{I}$，则称 $\mathbf{A}$ 可逆（Invertible），$\mathbf{B}$ 称为 $\mathbf{A}$ 的逆矩阵，记为 $\mathbf{A}^{-1}$。逆矩阵具备如下性质：
 
     - $(\mathbf{A}^{-1})^{-1} = \mathbf{A}$（撤销的撤销 = 原样。就像"取消撤销"就是回到最初的样子）
     - $(\mathbf{AB})^{-1} = \mathbf{B}^{-1} \mathbf{A}^{-1}$（先穿袜子再穿鞋，脱的时候要倒过来，先脱鞋再脱袜子）
@@ -141,7 +141,7 @@ $$\mathbf{A} = \begin{pmatrix}
     0 & 1
     \end{pmatrix} = \mathbf{I}_2$$
 
-    不是所有操作都可以撤销，不是所有方阵都可逆。矩阵可逆的条件，需要同时满足行列式不为零（$\det(\mathbf{A}) \neq 0$）、满秩（对于 $n \times n$ 方阵有 $\text{rank}(\mathbf{A}) = n$）和所有特征值都不为零这三个条件的方阵才可逆。当矩阵不可逆或索性就不是方阵时，可以使用**伪逆（Pseudoinverse）**获得一个最接近的近似解。伪逆记为 $\mathbf{A}^+ = (\mathbf{A}^T \mathbf{A})^{-1} \mathbf{A}^T$（当 $\mathbf{A}^T \mathbf{A}$ 可逆时）。这个公式的含义是先通过 $\mathbf{A}^T \mathbf{A}$ 将 $m \times n$ 矩阵裁剪成 $n \times n$ 方阵，把多余的信息过滤掉，保留核心结构。然后在此基础上找到一个最接近的逆，最后乘以 $\mathbf{A}^T$ 映射回原始空间。伪逆具备如下性质：
+    不是所有操作都可以撤销，不是所有方阵都可逆。矩阵可逆的条件，需要同时满足行列式不为零（$\det(\mathbf{A}) \neq 0$）、满秩（对于 $n \times n$ 方阵有 $\text{rank}(\mathbf{A}) = n$）和所有特征值都不为零这三个条件的方阵才可逆。当矩阵不可逆或索性就不是方阵时，可以使用**伪逆**（Pseudoinverse）获得一个最接近的近似解。伪逆记为 $\mathbf{A}^+ = (\mathbf{A}^T \mathbf{A})^{-1} \mathbf{A}^T$（当 $\mathbf{A}^T \mathbf{A}$ 可逆时）。这个公式的含义是先通过 $\mathbf{A}^T \mathbf{A}$ 将 $m \times n$ 矩阵裁剪成 $n \times n$ 方阵，把多余的信息过滤掉，保留核心结构。然后在此基础上找到一个最接近的逆，最后乘以 $\mathbf{A}^T$ 映射回原始空间。伪逆具备如下性质：
 
     - $\mathbf{A}\mathbf{A}^+\mathbf{A} = \mathbf{A}$
     - $\mathbf{A}^+\mathbf{A}\mathbf{A}^+ = \mathbf{A}^+$
@@ -156,7 +156,7 @@ $$\mathbf{A} = \begin{pmatrix}
 
 在矩阵运算中，有一类矩阵因其简洁的结构而具有特殊的代数性质。它们就像是数字世界中的"标准件"——虽然形式简单，却能简化复杂的运算、揭示问题的本质，并在求解线性方程组、坐标变换等场景中扮演关键角色。下面介绍几种最重要的特殊矩阵：
 
-- **单位矩阵（Identity Matrix）**：$\mathbf{I}$ 是主对角线元素为 1、其余为 0 的方阵，单位矩阵是矩阵乘法的"单位元"，满足： $\mathbf{AI} = \mathbf{IA} = \mathbf{A}$。
+- **单位矩阵**（Identity Matrix）：$\mathbf{I}$ 是主对角线元素为 1、其余为 0 的方阵，单位矩阵是矩阵乘法的"单位元"，满足： $\mathbf{AI} = \mathbf{IA} = \mathbf{A}$。
 
     $$\mathbf{I}_n = \begin{pmatrix}
     1 & 0 & \cdots & 0 \\
@@ -165,7 +165,7 @@ $$\mathbf{A} = \begin{pmatrix}
     0 & 0 & \cdots & 1
     \end{pmatrix}$$
 
-- **对角矩阵（Diagonal Matrix）**：对角矩阵除主对角线外，其他元素都为 0 的方阵，对角矩阵左乘向量，相当于对向量的每个分量进行独立缩放。
+- **对角矩阵**（Diagonal Matrix）：对角矩阵除主对角线外，其他元素都为 0 的方阵，对角矩阵左乘向量，相当于对向量的每个分量进行独立缩放。
 
     $$\mathbf{D} = \begin{pmatrix}
     d_1 & 0 & 0 \\
@@ -173,9 +173,9 @@ $$\mathbf{A} = \begin{pmatrix}
     0 & 0 & d_3
     \end{pmatrix}$$
 
-- **对称矩阵（Symmetric Matrix）**：对称矩阵满足 $\mathbf{A} = \mathbf{A}^T$，即 $a_{ij} = a_{ji}$。对称矩阵包含的特征向量可以构成正交基，许多有用的矩阵如协方差矩阵、邻接矩阵、Hessian 矩阵都是对称矩阵。
+- **对称矩阵**（Symmetric Matrix）：对称矩阵满足 $\mathbf{A} = \mathbf{A}^T$，即 $a_{ij} = a_{ji}$。对称矩阵包含的特征向量可以构成正交基，许多有用的矩阵如协方差矩阵、邻接矩阵、Hessian 矩阵都是对称矩阵。
 
-- **正交矩阵（Orthogonal Matrix）**：正交矩阵满足 $\mathbf{Q}^T \mathbf{Q} = \mathbf{I}$，即其转置等于其逆：$\mathbf{Q}^{-1} = \mathbf{Q}^T$。正交矩阵的作用在于它保持向量的长度和角度不变，只进行旋转或反射。
+- **正交矩阵**（Orthogonal Matrix）：正交矩阵满足 $\mathbf{Q}^T \mathbf{Q} = \mathbf{I}$，即其转置等于其逆：$\mathbf{Q}^{-1} = \mathbf{Q}^T$。正交矩阵的作用在于它保持向量的长度和角度不变，只进行旋转或反射。
 
 ## 线性变换的几何直观
 
@@ -262,7 +262,7 @@ $$ \mathbf{h} = \mathbf{W}\mathbf{x} + \mathbf{b} $$
 
 ## 张量
 
-如同向量将标量从零阶扩展到一阶，矩阵将向量从一阶扩展到二阶，**张量（Tensor）** 更一般地扩展到了 $n$ 阶。张量是标量、向量、矩阵在高维空间的自然推广，可以描述任意维度的数据及其变换关系。一个 $n$ 阶张量包含 $n$ 个索引，每个索引对应一个维度。
+如同向量将标量从零阶扩展到一阶，矩阵将向量从一阶扩展到二阶，**张量**（Tensor）更一般地扩展到了 $n$ 阶。张量是标量、向量、矩阵在高维空间的自然推广，可以描述任意维度的数据及其变换关系。一个 $n$ 阶张量包含 $n$ 个索引，每个索引对应一个维度。
 
 | 阶数 | 名称 | 维度描述 | NumPy 表示 |
 |:----:|:-----|:---------|:----------|

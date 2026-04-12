@@ -2,7 +2,7 @@
 
 ## 引言：规则学习的直观性
 
-如果说线性模型是"数学家的方法"，那么**决策树（Decision Tree）**就是"普通人的方法"。
+如果说线性模型是"数学家的方法"，那么**决策树**（Decision Tree）就是"普通人的方法"。
 
 想象你在判断今天是否适合打网球。你会怎么想？
 
@@ -34,7 +34,7 @@
 
 ### 信息增益（Information Gain）
 
-**熵（Entropy）**衡量数据的不确定性：
+**熵**（Entropy）衡量数据的不确定性：
 
 $$H(D) = -\sum_{k=1}^{K} p_k \log_2 p_k$$
 
@@ -61,17 +61,17 @@ $$GainRatio(D, A) = \frac{IG(D, A)}{SplitInfo(A)}$$
 
 $$SplitInfo(A) = -\sum_{v} \frac{|D_v|}{|D|} \log_2 \frac{|D_v|}{|D|}$$
 
-### Gini指数
+### Gini 指数
 
-**Gini指数**衡量数据的"不纯度"：
+**Gini 指数**衡量数据的"不纯度"：
 
 $$Gini(D) = 1 - \sum_{k=1}^{K} p_k^2$$
 
-分裂后的Gini指数加权平均：
+分裂后的 Gini 指数加权平均：
 
 $$Gini(D, A) = \sum_{v} \frac{|D_v|}{|D|} Gini(D_v)$$
 
-**选择使Gini指数最小的特征进行分裂**。
+**选择使 Gini 指数最小的特征进行分裂**。
 
 ### 三种准则对比
 
@@ -79,11 +79,11 @@ $$Gini(D, A) = \sum_{v} \frac{|D_v|}{|D|} Gini(D_v)$$
 |------|------|------|
 | 信息增益 | ID3 | 偏向取值多的特征 |
 | 增益率 | C4.5 | 修正信息增益的偏差 |
-| Gini指数 | CART | 计算简单，常用 |
+| Gini 指数 | CART | 计算简单，常用 |
 
 ---
 
-## ID3算法
+## ID3 算法
 
 ### 算法流程
 
@@ -100,9 +100,9 @@ $$Gini(D, A) = \sum_{v} \frac{|D_v|}{|D|} Gini(D_v)$$
 
 ---
 
-## C4.5算法
+## C4.5 算法
 
-C4.5是ID3的改进版本：
+C4.5 是 ID3 的改进版本：
 
 ### 改进点
 
@@ -121,25 +121,25 @@ $$GainRatio(D, A, t) = \frac{IG(D, A, t)}{SplitInfo(A, t)}$$
 
 ---
 
-## CART算法
+## CART 算法
 
-**CART（Classification and Regression Trees）**是最常用的决策树算法。
+**CART**（Classification and Regression Trees）是最常用的决策树算法。
 
 ### 特点
 
 1. **二叉树**：每个节点只有两个分支
-2. **Gini指数**：使用Gini指数作为分裂准则
+2. **Gini 指数**：使用 Gini 指数作为分裂准则
 3. **支持回归**：可用于分类和回归
 
 ### 分类树
 
-选择使Gini指数最小的特征和分割点：
+选择使 Gini 指数最小的特征和分割点：
 
 $$(A^*, t^*) = \arg\min_{A, t} Gini(D, A, t)$$
 
 ### 回归树
 
-对于回归问题，使用**方差**代替Gini指数：
+对于回归问题，使用**方差**代替 Gini 指数：
 
 $$\text{Var}(D) = \frac{1}{|D|} \sum_{i \in D} (y_i - \bar{y})^2$$
 
@@ -147,7 +147,7 @@ $$\text{Var}(D) = \frac{1}{|D|} \sum_{i \in D} (y_i - \bar{y})^2$$
 
 ---
 
-## NumPy实现：手写CART决策树
+## NumPy 实现：手写 CART 决策树
 
 ```python
 import numpy as np
@@ -382,9 +382,9 @@ for i, (applicant, pred) in enumerate(zip(new_applicants, predictions)):
 
 本章介绍了决策树的核心原理：
 
-1. **分裂准则**：信息增益、增益率、Gini指数
-2. **ID3算法**：使用信息增益，只能处理离散特征
-3. **C4.5算法**：改进ID3，处理连续特征和缺失值
-4. **CART算法**：二叉树结构，使用Gini指数，支持分类和回归
+1. **分裂准则**：信息增益、增益率、Gini 指数
+2. **ID3 算法**：使用信息增益，只能处理离散特征
+3. **C4.5 算法**：改进 ID3，处理连续特征和缺失值
+4. **CART 算法**：二叉树结构，使用 Gini 指数，支持分类和回归
 
 决策树虽然直观易懂，但单棵树容易过拟合。下一章，我们将看到如何通过集成多棵树来提升性能——随机森林。
