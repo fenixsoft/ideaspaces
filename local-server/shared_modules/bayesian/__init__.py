@@ -5,4 +5,5 @@ from .bayesian_network import SimpleBayesianNetwork
 
 from .simple_bayesian_network import SimpleBayesianNetwork
 from .multinomial_naive_bayes import MultinomialNaiveBayes
-__all__ = ['SimpleBayesianNetwork', 'SimpleBayesianNetwork', 'MultinomialNaiveBayes']
+from .gaussian_mixture_model import GaussianMixtureModel
+__all__ = ['SimpleBayesianNetwork', 'SimpleBayesianNetwork', 'MultinomialNaiveBayes', 'GaussianMixtureModel']

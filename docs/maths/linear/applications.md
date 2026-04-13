@@ -347,7 +347,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 生成三维数据（有相关性）
-np.random.seed(42)
 n_samples = 200
 mean = [0, 0, 0]
 cov = [[3, 2, 1], [2, 2, 0.5], [1, 0.5, 1]]  # 三维协方差矩阵

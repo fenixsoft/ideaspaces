@@ -135,9 +135,6 @@ print(f"对角矩阵：\n{diag}")
 ```python runnable
 import numpy as np
 
-# 设置随机种子（保证可重复性）
-np.random.seed(42)
-
 rand_arr = np.random.rand(2, 3)  # 2×3 随机矩阵
 print(f"均匀分布：\n{rand_arr}")
 ```
@@ -148,8 +145,6 @@ print(f"均匀分布：\n{rand_arr}")
 
 ```python runnable
 import numpy as np
-
-np.random.seed(42)
 
 randn_arr = np.random.randn(2, 3)  # 均值 0，方差 1
 print(f"正态分布：\n{randn_arr}")
@@ -162,8 +157,6 @@ print(f"正态分布：\n{randn_arr}")
 ```python runnable
 import numpy as np
 
-np.random.seed(42)
-
 randint_arr = np.random.randint(0, 10, (2, 3))  # [0, 10) 范围整数
 print(f"随机整数：\n{randint_arr}")
 ```
@@ -174,8 +167,6 @@ print(f"随机整数：\n{randint_arr}")
 
 ```python runnable
 import numpy as np
-
-np.random.seed(42)
 
 normal_arr = np.random.normal(loc=0, scale=1, size=(2, 3))
 print(f"指定正态分布：\n{normal_arr}")
@@ -188,8 +179,6 @@ print(f"指定正态分布：\n{normal_arr}")
 ```python runnable
 import numpy as np
 
-np.random.seed(42)
-
 arr = np.array([1, 2, 3, 4, 5])
 np.random.shuffle(arr)
 print(f"打乱后：{arr}")
@@ -201,8 +190,6 @@ print(f"打乱后：{arr}")
 
 ```python runnable
 import numpy as np
-
-np.random.seed(42)
 
 choices = np.random.choice([1, 2, 3, 4, 5], size=3, replace=False)
 print(f"随机选择：{choices}")

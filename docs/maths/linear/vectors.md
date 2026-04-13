@@ -166,7 +166,7 @@ print(f"v1, v2, v4 线性无关：{is_linearly_independent([v1, v2, v4])}")  # F
 
 内积建立了代数与几何的桥梁。这个公式的含义是：通过代数计算可以得到向量间夹角（$\cos\theta = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}$）、向量长度（$\|\mathbf{v}\| = \sqrt{\mathbf{v} \cdot \mathbf{v}}$）这些几何量，也可以用代数表达式精确描述正交（$\mathbf{u} \cdot \mathbf{v} = 0$）、投影（$\text{proj}_u(v) = \frac{v \cdot u}{u \cdot u} u$）这样的几何概念。不夸张地说，内积让向量的"计算"与"看见"完全统一了起来。
 
-**投影**（Projection）是内积的另一种运算。向量 $\mathbf{u}$ 在向量 $\mathbf{v}$ 上的投影可表示为：$\text{proj}_{\mathbf{v}} \mathbf{u} = \frac{\mathbf{u} \cdot \mathbf{v}}{\mathbf{v} \cdot \mathbf{v}} \mathbf{v} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{v}\|^2} \mathbf{v}$。从几何意义上看，投影描述了向量 $\mathbf{u}$ 在向量 $\mathbf{v}$ 方向上的"影子" —— 它是 $\mathbf{u}$ 在 $\mathbf{v}$ 方向上的分量，可以形象地理解为：当一束垂直于 $\mathbf{v}$ 的光线照射 $\mathbf{u}$ 时，在 $\mathbf{v}$ 所在直线上投下的影子。投影的结果 $\text{proj}_{\mathbf{v}} \mathbf{u}$ 是一个与 $\mathbf{v}$ 同向（或反向）的向量，其模长反映了 $\mathbf{u}$ 在 $\mathbf{v}$ 方向上的"影响力"大小。投影在各种科学领域中都有着广泛的应用场景，譬如：
+**投影**（Projection）是内积的另一种运算。向量 $\mathbf{u}$ 在向量 $\mathbf{v}$ 上的投影可表示为 $\text{proj}_{\mathbf{v}} \mathbf{u} = \frac{\mathbf{u} \cdot \mathbf{v}}{\mathbf{v} \cdot \mathbf{v}} \mathbf{v} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{v}\|^2} \mathbf{v}$，其长度（标量）为 $\frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{v}\|} $。从几何意义上看，投影描述了向量 $\mathbf{u}$ 在向量 $\mathbf{v}$ 方向上的"影子"，它是 $\mathbf{u}$ 在 $\mathbf{v}$ 方向上的分量，可以形象地理解为：当一束垂直于 $\mathbf{v}$ 的光线照射 $\mathbf{u}$ 时，在 $\mathbf{v}$ 所在直线上投下的影子。投影的结果 $\text{proj}_{\mathbf{v}} \mathbf{u}$ 是一个与 $\mathbf{v}$ 同向（或反向）的向量，其模长反映了 $\mathbf{u}$ 在 $\mathbf{v}$ 方向上的"影响力"大小。投影在各种科学领域中都有着广泛的应用场景，譬如：
 
 - **数据降维**：在主成分分析中，数据点在主成分方向上的投影决定了该维度上的坐标值，通过保留高方差的投影维度实现降维
 - **信号处理**：将信号投影到特定基函数上，用于滤波、噪声消除或特征提取，如傅里叶变换本质上是将信号投影到不同频率的正弦波上
@@ -179,10 +179,10 @@ print(f"v1, v2, v4 线性无关：{is_linearly_independent([v1, v2, v4])}")  # F
 | 几何概念 | 代数表示 | 现实含义 |
 |---------|---------|---------|
 | 相加 | $\mathbf{u} + \mathbf{v} = (u_1+v_1, \ldots, u_n+v_n)$ | 数据的叠加效果，如两个方向的合力、多个特征的综合影响 |
-| 长度 | $\|\mathbf{v}\|_2 = \sqrt{v_1^2 + \cdots + v_n^2}$ | 数据的"规模"或"强度"，如信号的能量、向量的模长 |
-| 夹角 | $\cos\theta = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}$ | 数据间的相关性，夹角越小表示越相似，如推荐系统和语义搜索 |
+| 长度 | $\|\|\mathbf{v}\|\|_2 = \sqrt{v_1^2 + \cdots + v_n^2}$ | 数据的"规模"或"强度"，如信号的能量、向量的模长 |
+| 夹角 | $\cos\theta = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\|\mathbf{u}\|\| \|\|\mathbf{v}\|\|}$ | 数据间的相关性，夹角越小表示越相似，如推荐系统和语义搜索 |
 | 正交 | $\mathbf{u} \cdot \mathbf{v} = 0$ | 数据相互独立、毫无关联，如 [PCA 主成分分析](applications.md#主成分分析)中正交主成分代表不相关的特征 |
-| 投影 | $\text{proj}_{\mathbf{v}} \mathbf{u} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{v}\|^2} \mathbf{v}$ | 数据在某个方向上的"影子"，如降维和特征提取 |
+| 投影 | $\text{proj}_{\mathbf{v}} \mathbf{u} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\|\mathbf{v}\|\|^2} \mathbf{v}$ | 数据在某个方向上的"影子"，如降维和特征提取 |
 | [线性变换](matrices.md#线性变换的几何直观) | 矩阵乘法 $\mathbf{Ax}$ | 数据的转换、旋转或缩放，如神经网络中的权重变换 |
 
 面对更高维的场景，虽然我们无法直接“看见”四维、五维甚至更高维的空间，但线性代数的运算规则在任意维度都成立，这种抽象能力正是数学工具的强大之处。在处理机器学习问题时，我们经常面对高维向量。譬如 GloVe 词向量通常是 300 维，BERT 的句向量可达 768 维甚至更高。虽然无法可视化，但我们仍然可以应用内积、变换、投影等运算来寻找向量之间的关系。当然，高维空间也有一些反直觉的性质。譬如在高维空间中，大多数点都分布在“边角”附近，而不是中心区域，这对理解某些机器学习算法的行为有重要启示。

@@ -309,7 +309,6 @@ class SimpleNN:
         return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
 
 # 创建网络并训练
-np.random.seed(42)
 nn = SimpleNN(input_size=2, hidden_size=4, output_size=1)
 
 # 简单的 XOR 问题
@@ -664,7 +663,6 @@ plt.close()
     import matplotlib.pyplot as plt
 
     # 生成数据
-    np.random.seed(42)
     n_samples = 100
     X = 2 * np.random.rand(n_samples, 1)
     y = 4 + 3 * X + np.random.randn(n_samples, 1) * 0.5

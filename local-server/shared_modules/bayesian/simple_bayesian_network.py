@@ -6,7 +6,6 @@ class SimpleBayesianNetwork:
     简单贝叶斯网络实现
     支持离散变量和精确推断（枚举法）
     """
-    
     def __init__(self):
         self.nodes = {}  # 节点信息：{name: {'parents': [], 'values': []}}
         self.cpts = {}   # 条件概率表：{name: {parent_values: {value: prob}}}

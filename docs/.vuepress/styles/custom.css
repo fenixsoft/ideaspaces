@@ -218,3 +218,7 @@
   color: #888888;
   margin-bottom: 4px;
 }
+
+.edgeLabel p {
+    background-color: #fff !important;
+}

@@ -1,3 +1,5 @@
+from .bayesian.gaussian_mixture_model import GaussianMixtureModel
+from .svm.simple_s_v_m import SimpleSVM
 from .bayesian.simple_bayesian_network import SimpleBayesianNetwork
 from .bayesian.multinomial_naive_bayes import MultinomialNaiveBayes
 from .linear.ridge_regression import RidgeRegression

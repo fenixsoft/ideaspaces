@@ -101,9 +101,6 @@ NumPy 提供了以下函数实现这些操作：
 
 ```python runnable
 import numpy as np
-
-np.random.seed(42)
-
 # 随机选择
 data = np.array(['苹果', '香蕉', '橙子', '葡萄', '西瓜'])
 
@@ -474,8 +471,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 贝叶斯后验采样：估计硬币正面概率
-np.random.seed(42)
-
 # 真实参数
 true_p = 0.6
 n_flips = 50

@@ -72,9 +72,6 @@ $$E[(y - \hat{f}(x))^2] = \text{Bias}^2[\hat{f}(x)] + \text{Var}[\hat{f}(x)] + \
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 偏差-方差分解演示
-np.random.seed(42)
-
 # 真实函数
 def true_function(x):
     return np.sin(2 * np.pi * x)
@@ -162,8 +159,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 偏差-方差权衡可视化
-np.random.seed(42)
-
 degrees = range(1, 16)
 n_train = 50
 n_datasets = 50
@@ -321,8 +316,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 使用交叉验证选择多项式阶数
-np.random.seed(42)
-
 # 生成数据
 n_samples = 100
 X = np.random.uniform(0, 1, n_samples)
@@ -414,8 +407,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # AIC/BIC 模型选择示例
-np.random.seed(42)
-
 n = 100
 X = np.random.uniform(0, 1, n)
 y_true = np.sin(2 * np.pi * X)
@@ -543,9 +534,6 @@ import matplotlib.pyplot as plt
 
 # McNemar 检验的思想（简化版）
 # 比较两个模型是否有显著差异
-
-np.random.seed(42)
-
 n_test = 100
 
 # 模型 A 和 B 的预测
