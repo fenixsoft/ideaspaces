@@ -4,34 +4,87 @@
       <div v-if="visible" class="settings-overlay" @click.self="close">
         <div class="settings-modal">
           <div class="settings-header">
-            <h3>沙箱设置</h3>
+            <h3>设置</h3>
             <button class="close-btn" @click="close">&times;</button>
           </div>
 
+          <!-- Tab 页签 -->
+          <div class="settings-tabs">
+            <button
+              class="tab-btn"
+              :class="{ active: activeTab === 'sandbox' }"
+              @click="activeTab = 'sandbox'"
+            >
+              沙箱服务
+            </button>
+            <button
+              class="tab-btn"
+              :class="{ active: activeTab === 'highlight' }"
+              @click="activeTab = 'highlight'"
+            >
+              代码高亮
+            </button>
+          </div>
+
           <div class="settings-body">
-            <div class="form-group">
-              <label for="sandbox-endpoint">沙箱服务地址</label>
-              <input
-                id="sandbox-endpoint"
-                v-model="endpoint"
-                type="url"
-                placeholder="http://localhost:3001"
-                @input="resetStatus"
-              />
-              <p class="help-text">用于执行教程中的 Python 代码</p>
+            <!-- 沙箱服务配置 Tab -->
+            <div v-show="activeTab === 'sandbox'" class="tab-content">
+              <div class="form-group">
+                <label for="sandbox-endpoint">服务地址</label>
+                <input
+                  id="sandbox-endpoint"
+                  v-model="endpoint"
+                  type="url"
+                  placeholder="http://localhost:3001"
+                  @input="resetStatus"
+                />
+                <p class="help-text">用于执行教程中的 Python 代码</p>
+              </div>
+
+              <div class="connection-status">
+                <span class="status-label">连接状态:</span>
+                <span class="status-value" :class="statusClass">
+                  <span class="status-dot"></span>
+                  {{ statusText }}
+                </span>
+              </div>
             </div>
 
-            <div class="connection-status">
-              <span class="status-label">连接状态:</span>
-              <span class="status-value" :class="statusClass">
-                <span class="status-dot"></span>
-                {{ statusText }}
-              </span>
+            <!-- 代码高亮风格配置 Tab -->
+            <div v-show="activeTab === 'highlight'" class="tab-content">
+              <div class="form-group">
+                <label for="highlight-theme">选择风格</label>
+                <select id="highlight-theme" v-model="selectedTheme">
+                  <option
+                    v-for="theme in highlightThemes"
+                    :key="theme.id"
+                    :value="theme.id"
+                  >
+                    {{ theme.name }}
+                  </option>
+                </select>
+                <p class="help-text">设置全站代码块的显示风格</p>
+              </div>
+
+              <!-- 实际页面预览 - 使用 iframe -->
+              <div class="preview-section">
+                <label class="preview-label">效果预览</label>
+                <div class="preview-frame-container">
+                  <iframe
+                    ref="previewFrame"
+                    :src="previewUrl"
+                    class="preview-frame"
+                    sandbox="allow-same-origin allow-scripts"
+                    scrolling="no"
+                    @load="onPreviewLoad"
+                  ></iframe>
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="settings-footer">
-            <button class="btn btn-secondary" @click="testConnection">
+            <button v-if="activeTab === 'sandbox'" class="btn btn-secondary" @click="testConnection">
               {{ testing ? '检测中...' : '测试连接' }}
             </button>
             <button class="btn btn-primary" @click="save">
@@ -45,8 +98,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { ClientOnly } from 'vuepress/client'
+import { HIGHLIGHT_THEMES, DEFAULT_THEME } from '../config/highlightThemes.js'
+import { getSiteConfig, saveSiteConfig } from '../utils/configMigration.js'
 
 const props = defineProps({
   visible: {
@@ -57,48 +112,59 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'save'])
 
-// 配置状态
+// Tab 状态
+const activeTab = ref('sandbox')
+
+// 沙箱配置状态
 const endpoint = ref('')
-const connectionStatus = ref('unknown') // 'connected' | 'disconnected' | 'unknown' | 'testing'
+const connectionStatus = ref('unknown')
 const testing = ref(false)
 
-// 从 localStorage 加载配置
+// 高亮主题配置
+const highlightThemes = HIGHLIGHT_THEMES
+const selectedTheme = ref(DEFAULT_THEME)
+const previewFrame = ref(null)
+
+// 预览页面 URL（带 preview 参数，只显示内容）
+const previewUrl = computed(() => {
+  if (typeof window === 'undefined') return ''
+  const baseUrl = window.location.origin
+  return `${baseUrl}/settings-preview.html?preview=true&theme=${selectedTheme.value}`
+})
+
+// 从配置加载状态
 function loadConfig() {
-  try {
-    const config = JSON.parse(localStorage.getItem('sandbox-config') || '{}')
-    endpoint.value = config.endpoint || 'http://localhost:3001'
-  } catch {
-    endpoint.value = 'http://localhost:3001'
-  }
+  const config = getSiteConfig()
+  endpoint.value = config.sandboxEndpoint || 'http://localhost:3001'
+  selectedTheme.value = config.highlightTheme || DEFAULT_THEME
 }
 
-// 重置状态
+// 重置连接状态
 function resetStatus() {
   connectionStatus.value = 'unknown'
 }
 
 // 状态计算
-const statusClass = computed(() => {
-  return {
-    'status-connected': connectionStatus.value === 'connected',
-    'status-disconnected': connectionStatus.value === 'disconnected',
-    'status-testing': connectionStatus.value === 'testing',
-    'status-unknown': connectionStatus.value === 'unknown'
-  }
-})
+const statusClass = computed(() => ({
+  'status-connected': connectionStatus.value === 'connected',
+  'status-disconnected': connectionStatus.value === 'disconnected',
+  'status-testing': connectionStatus.value === 'testing',
+  'status-unknown': connectionStatus.value === 'unknown'
+}))
 
 const statusText = computed(() => {
   switch (connectionStatus.value) {
-    case 'connected':
-      return '已连接'
-    case 'disconnected':
-      return '未连接'
-    case 'testing':
-      return '检测中'
-    default:
-      return '未检测'
+    case 'connected': return '已连接'
+    case 'disconnected': return '未连接'
+    case 'testing': return '检测中'
+    default: return '未检测'
   }
 })
+
+// iframe 加载完成后的处理
+function onPreviewLoad() {
+  // iframe 加载完成，主题 CSS 会通过 CodeHighlightLoader 自动应用
+}
 
 // 测试连接
 async function testConnection() {
@@ -108,14 +174,9 @@ async function testConnection() {
   try {
     const response = await fetch(`${endpoint.value}/api/sandbox/health`, {
       method: 'GET',
-      signal: AbortSignal.timeout(5000) // 5秒超时
+      signal: AbortSignal.timeout(5000)
     })
-
-    if (response.ok) {
-      connectionStatus.value = 'connected'
-    } else {
-      connectionStatus.value = 'disconnected'
-    }
+    connectionStatus.value = response.ok ? 'connected' : 'disconnected'
   } catch {
     connectionStatus.value = 'disconnected'
   } finally {
@@ -126,14 +187,15 @@ async function testConnection() {
 // 保存配置
 function save() {
   const config = {
-    endpoint: endpoint.value.trim() || 'http://localhost:3001'
+    sandboxEndpoint: endpoint.value.trim() || 'http://localhost:3001',
+    highlightTheme: selectedTheme.value
   }
 
-  localStorage.setItem('sandbox-config', JSON.stringify(config))
+  saveSiteConfig(config)
 
-  // 更新全局配置
   if (typeof window !== 'undefined') {
-    window.__SANDBOX_CONFIG__ = config
+    window.__SITE_CONFIG__ = config
+    window.dispatchEvent(new CustomEvent('site-config-changed', { detail: config }))
   }
 
   emit('save', config)
@@ -145,13 +207,27 @@ function close() {
   emit('close')
 }
 
-// 监听 visible 变化，加载配置
+// 监听主题变化，立即更新 localStorage 用于 iframe 预览
+watch(selectedTheme, (newTheme) => {
+  if (typeof window !== 'undefined' && props.visible) {
+    // 立即更新 localStorage，让 iframe 加载时能读取新主题
+    const currentConfig = getSiteConfig()
+    currentConfig.highlightTheme = newTheme
+    localStorage.setItem('site-config', JSON.stringify(currentConfig))
+  }
+})
+
+// 监听 visible 变化
 watch(() => props.visible, (newVal) => {
   if (newVal) {
     loadConfig()
-    // 自动测试连接
     testConnection()
   }
+})
+
+// 初始化
+onMounted(() => {
+  loadConfig()
 })
 </script>
 
@@ -172,8 +248,10 @@ watch(() => props.visible, (newVal) => {
 .settings-modal {
   background: #fff;
   border-radius: 12px;
-  width: 480px;
+  width: 600px;
   max-width: 90vw;
+  max-height: 85vh;
+  overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
@@ -206,12 +284,48 @@ watch(() => props.visible, (newVal) => {
   color: #18181B;
 }
 
+.settings-tabs {
+  display: flex;
+  border-bottom: 1px solid #E4E4E7;
+  padding: 0 24px;
+}
+
+.tab-btn {
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #71717A;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.tab-btn:hover {
+  color: #18181B;
+}
+
+.tab-btn.active {
+  color: #2563EB;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #2563EB;
+}
+
 .settings-body {
   padding: 24px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
@@ -222,7 +336,8 @@ watch(() => props.visible, (newVal) => {
   color: #18181B;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 10px 14px;
   border: 1.5px solid #E4E4E7;
@@ -231,11 +346,22 @@ watch(() => props.visible, (newVal) => {
   color: #18181B;
   transition: border-color 0.2s;
   box-sizing: border-box;
+  background: #fff;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
   outline: none;
   border-color: #2563EB;
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717A' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
 }
 
 .help-text {
@@ -270,38 +396,41 @@ watch(() => props.visible, (newVal) => {
   background: #A1A1AA;
 }
 
-.status-connected .status-dot {
-  background: #22C55E;
-}
-
-.status-connected {
-  color: #22C55E;
-}
-
-.status-disconnected .status-dot {
-  background: #EF4444;
-}
-
-.status-disconnected {
-  color: #EF4444;
-}
-
-.status-testing .status-dot {
-  background: #F59E0B;
-  animation: pulse 1s infinite;
-}
-
-.status-testing {
-  color: #F59E0B;
-}
-
-.status-unknown {
-  color: #A1A1AA;
-}
+.status-connected .status-dot { background: #22C55E; }
+.status-connected { color: #22C55E; }
+.status-disconnected .status-dot { background: #EF4444; }
+.status-disconnected { color: #EF4444; }
+.status-testing .status-dot { background: #F59E0B; animation: pulse 1s infinite; }
+.status-testing { color: #F59E0B; }
+.status-unknown { color: #A1A1AA; }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+.preview-section {
+  margin-top: 16px;
+}
+
+.preview-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #18181B;
+}
+
+.preview-frame-container {
+  border-radius: 8px;
+  background: #FAFAFA;
+  overflow: hidden;
+}
+
+.preview-frame {
+  width: 100%;
+  height: 270px;
+  border: none;
+  display: block;
 }
 
 .settings-footer {

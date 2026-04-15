@@ -298,10 +298,11 @@ body {
   }
 
   // 代码块样式 - 与 pencil 设计稿一致
+  // 使用 CSS 变量支持高亮主题切换
   pre {
     margin: 1rem 0;
     padding: 0;
-    background: var(--code-bg);
+    background: var(--code-bg, #282C34);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -313,9 +314,23 @@ body {
       font-family: 'Fira Code', 'SF Mono', Monaco, Consolas, monospace;
       font-size: 14px;
       line-height: 1.6;
-      color: var(--code-text);
+      color: var(--code-text, #ABB2BF);
       overflow-x: auto;
     }
+  }
+
+  // 保护 runnable-code-block 样式不受 PrismJS 主题影响
+  // runnable-code-block 有自己的 UI 元素（工具栏、按钮等）
+  .runnable-code-block pre,
+  .runnable-code-block pre code {
+    background: transparent !important;
+    color: #ABB2BF !important;
+  }
+
+  .runnable-code-block .code-header,
+  .runnable-code-block .toolbar,
+  .runnable-code-block .output-area {
+    // 这些 UI 元素样式在 custom.css 中定义，不受 PrismJS 主题影响
   }
 
   // 表格样式

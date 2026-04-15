@@ -135,7 +135,7 @@ export default {
             children: [
               { text: '决策树', link: '/statistical-learning/decision-tree-ensemble/decision-tree' },
               { text: '随机森林', link: '/statistical-learning/decision-tree-ensemble/random-forest' },
-              { text: 'Boosting', link: '/statistical-learning/decision-tree-ensemble/boosting' },
+              { text: '提升方法（Boosting）', link: '/statistical-learning/decision-tree-ensemble/boosting' },
             ]
           },
           {

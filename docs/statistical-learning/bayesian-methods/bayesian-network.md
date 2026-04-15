@@ -10,7 +10,7 @@
 
 贝叶斯网络的图结构属于**有向无环图**（Directed Acyclic Graph, DAG），其中的**节点**（Node）表示随机变量，**有向边**（Directed Edge，如 $A \rightarrow B$）表示"A 直接影响 B"，**无环**（Acyclic）说明不存在循环路径，确保因果关系的合理性，不会出现倒果为因的情况。假设我们要建模吸烟、肺癌、剧烈咳嗽和呼吸困难之间的关系，得到的 DAG 应如下图所示：
 
-```mermaid
+```mermaid compact
 graph TD
     %% 定义节点样式
     classDef risk fill:#FFE4E1,stroke:#333,stroke-width:2px
@@ -313,7 +313,7 @@ plt.close()
 
 给定以下贝叶斯网络结构，分析各节点的条件独立性关系：
 
-   ```mermaid
+   ```mermaid compact
    graph TD
        %% 定义节点样式
        classDef weather fill:#FFE4B5,stroke:#333,stroke-width:2px

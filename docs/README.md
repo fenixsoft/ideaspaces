@@ -29,16 +29,16 @@ actions:
   - text: 开始阅读
     link: /contents.html
     type: primary
-  - text: 项目文档
-    link: /arch/design
+  - text: 部署沙箱
+    link: /boards.html
     type: secondary
 features:
-  - title: 📝 Markdown 写作
-    details: 使用 Markdown 格式撰写文章，支持代码高亮、流程图等丰富功能
-  - title: 💬 GitHub 评论
-    details: 基于 GitHub Issues 的评论系统，无需自建后端
-  - title: 🐍 代码沙箱
-    details: 本地部署支持 Python 代码在线执行，支持 GPU 加速
+  - title: 🧑‍💻 开发者与智能
+    details: 以开发者向人工智能转型的视角撰写，成体系的机器学习文章集
+  - title: 🏅 实践驱动
+    details: 由案例和代码驱动，通过动手实践理解人工智能的原理
+  - title: 💾 代码沙箱
+    details: 部署沙箱 Docker 后，文章中的 Python 代码支持在线修改与执行，支持 GPU 加速
 footer: CC-BY-4.0 Licensed | Copyright © 2026
 ---
 
@@ -46,22 +46,7 @@ footer: CC-BY-4.0 Licensed | Copyright © 2026
 
 ## 快速开始
 
-### 互联网访问
-
-直接浏览本站，阅读公开文章。
-
-### 本地运行
-
-```bash
-# 克隆仓库
-git clone https://github.com/fenixsoft/dmla.git
-
-# 安装依赖
-npm install
-
-# 启动开发服务器
-npm run local
-```
+TBD
 
 ## 协议
 
