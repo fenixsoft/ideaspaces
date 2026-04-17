@@ -195,25 +195,24 @@ jobs:
       - name: Tag and push images
         run: |
           VERSION="${{ needs.build-images.outputs.version }}"
+          DOCKERHUB_NAMESPACE="icyfenix"
+          IMAGE_NAME="dmla-sandbox"
 
           # Tag for Docker Hub
-          docker tag ${{ env.IMAGE_NAME }}:${{ matrix.type }} \
-            ${{ env.DOCKERHUB_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ matrix.type }}
-          docker tag ${{ env.IMAGE_NAME }}:${{ matrix.type }} \
-            ${{ env.DOCKERHUB_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ VERSION }}-${{ matrix.type }}
+          docker tag ${IMAGE_NAME}:${{ matrix.type }} \
+            ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:${{ matrix.type }}
+          docker tag ${IMAGE_NAME}:${{ matrix.type }} \
+            ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:${VERSION}-${{ matrix.type }}
 
           # Push stable tag
-          docker push ${{ env.DOCKERHUB_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ matrix.type }}
+          docker push ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:${{ matrix.type }}
 
           # Push version tag
-          docker push ${{ env.DOCKERHUB_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ VERSION }}-${{ matrix.type }}
+          docker push ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:${VERSION}-${{ matrix.type }}
 
           echo "✅ Pushed to Docker Hub:"
           echo "  - ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:${{ matrix.type }}"
-          echo "  - ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:${{ VERSION }}-${{ matrix.type }}"
-        env:
-          DOCKERHUB_NAMESPACE: icyfenix
-          IMAGE_NAME: dmla-sandbox
+          echo "  - ${DOCKERHUB_NAMESPACE}/${IMAGE_NAME}:${VERSION}-${{ matrix.type }}"
 
   # ─────────────────────────────────────────────────────────────
   # Job 4: 推送到腾讯云 TCR
@@ -253,17 +252,17 @@ jobs:
           docker tag ${IMAGE_NAME}:${{ matrix.type }} \
             ${TCR_REGISTRY}/${TCR_NS}/${IMAGE_NAME}:${{ matrix.type }}
           docker tag ${IMAGE_NAME}:${{ matrix.type }} \
-            ${TCR_REGISTRY}/${TCR_NS}/${IMAGE_NAME}:${{ VERSION }}-${{ matrix.type }}
+            ${TCR_REGISTRY}/${TCR_NS}/${IMAGE_NAME}:${VERSION}-${{ matrix.type }}
 
           # Push stable tag
           docker push ${TCR_REGISTRY}/${TCR_NS}/${IMAGE_NAME}:${{ matrix.type }}
 
           # Push version tag
-          docker push ${TCR_REGISTRY}/${TCR_NS}/${IMAGE_NAME}:${{ VERSION }}-${{ matrix.type }}
+          docker push ${TCR_REGISTRY}/${TCR_NS}/${IMAGE_NAME}:${VERSION}-${{ matrix.type }}
 
           echo "✅ Pushed to TCR:"
           echo "  - ${TCR_REGISTRY}/${TCR_NS}/${IMAGE_NAME}:${{ matrix.type }}"
-          echo "  - ${TCR_REGISTRY}/${TCR_NS}/${IMAGE_NAME}:${{ VERSION }}-${{ matrix.type }}"
+          echo "  - ${TCR_REGISTRY}/${TCR_NS}/${IMAGE_NAME}:${VERSION}-${{ matrix.type }}"
 
   # ─────────────────────────────────────────────────────────────
   # Job 5: 发布完成总结
