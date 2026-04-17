@@ -2,4 +2,5 @@
 # 包含聚类、降维等实现
 
 from .k_means import KMeans
-__all__ = [ 'KMeans']
+from .p_c_a import PCA
+__all__ = [ 'KMeans', 'PCA']
