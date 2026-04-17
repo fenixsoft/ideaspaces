@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "test": "npx jest"
+    "test": "node --experimental-vm-modules $(npm root)/jest/bin/jest.js"
   },
   "dependencies": {
     "enquirer": "^2.4.1",
