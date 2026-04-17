@@ -50,8 +50,8 @@ jobs:
 
       - name: Run tests
         run: |
-          cd packages/cli && npm test
-          cd ../install && npm test
+          npm test -w @icyfenix-dmla/cli
+          npm test -w @icyfenix-dmla/install
 
       - name: Get version from tag
         id: version
