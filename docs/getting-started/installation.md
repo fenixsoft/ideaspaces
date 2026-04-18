@@ -102,8 +102,8 @@ dmla update --registry acr
 ```
 
 镜像地址：
-- `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix/dmla-sandbox:cpu`
-- `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix/dmla-sandbox:gpu`
+- `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft/dmla-sandbox:cpu`
+- `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft/dmla-sandbox:gpu`
 
 ## 故障排除
 

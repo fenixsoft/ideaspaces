@@ -12,7 +12,7 @@ const CONFIG = {
   imageCpu: 'dmla-sandbox:cpu',
   imageGpu: 'dmla-sandbox:gpu',
   dockerhubRegistry: 'icyfenix',
-  acrRegistry: 'crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix',
+  acrRegistry: 'crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft',
   imageName: 'dmla-sandbox'
 }
 

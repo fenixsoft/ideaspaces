@@ -197,7 +197,7 @@ CDN_DOMAIN=your_domain.com
 
 **镜像仓库**：
 - Docker Hub: `icyfenix/dmla-sandbox`（全球用户）
-- 阿里云 ACR: `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix/dmla-sandbox`（国内加速）
+- 阿里云 ACR: `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft/dmla-sandbox`（国内加速）
 
 **Secrets 配置**：
 - `NPM_TOKEN`: npm 发布认证

@@ -44,7 +44,7 @@
 
 #### Scenario: ACR 选择
 - **WHEN** 用户选择阿里云 ACR
-- **THEN** 使用 `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix/dmla-sandbox` 作为镜像源
+- **THEN** 使用 `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft/dmla-sandbox` 作为镜像源
 - **AND** 拉取时不需要登录认证（公开镜像）
 
 #### Scenario: 自动选择

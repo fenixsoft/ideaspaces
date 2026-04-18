@@ -177,7 +177,7 @@ dmla --version
 
 ### 阿里云 ACR
 
-- 地址：`crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix/dmla-sandbox`
+- 地址：`crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft/dmla-sandbox`
 - 无需登录（公开镜像）
 - 国内访问更快
 

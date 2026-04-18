@@ -19,7 +19,7 @@ const CONFIG = {
   imageCpu: 'dmla-sandbox:cpu',
   imageGpu: 'dmla-sandbox:gpu',
   dockerhubRegistry: 'icyfenix',
-  acrRegistry: 'crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix',
+  acrRegistry: 'crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft',
   imageName: 'dmla-sandbox',
   defaultPort: 3001
 }
@@ -292,7 +292,7 @@ export async function runDoctor() {
   // 测试 ACR
   console.log(chalk.gray('   测试阿里云 ACR 连接...'))
   try {
-    execSync('docker pull crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix/dmla-sandbox:cpu --quiet', { timeout: 10000 })
+    execSync('docker pull crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft/dmla-sandbox:cpu --quiet', { timeout: 10000 })
     console.log(chalk.green('   ✅ ACR 连接正常'))
   } catch {
     console.log(chalk.yellow('   ⚠️ ACR 连接超时或受限'))

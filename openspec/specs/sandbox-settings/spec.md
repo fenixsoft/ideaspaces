@@ -36,7 +36,7 @@
 
 #### Scenario: 选择 ACR 仓库
 - **WHEN** 用户选择阿里云 ACR
-- **THEN** 镜像地址为 `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix/dmla-sandbox`
+- **THEN** 镜像地址为 `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft/dmla-sandbox`
 - **AND** 国内用户获得加速访问
 
 #### Scenario: 仓库配置持久化

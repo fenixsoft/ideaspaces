@@ -11,7 +11,7 @@
 
 #### Scenario: ACR 稳定版推送
 - **WHEN** 镜像构建完成
-- **THEN** 推送镜像到 ACR，格式为 `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/icyfenix/dmla-sandbox:cpu`
+- **THEN** 推送镜像到 ACR，格式为 `crpi-aani1ibpows293b8.cn-hangzhou.personal.cr.aliyuncs.com/fenixsoft/dmla-sandbox:cpu`
 - **AND** 推送 GPU 版本镜像
 
 #### Scenario: ACR 版本号推送
