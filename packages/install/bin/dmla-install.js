@@ -2,4 +2,5 @@
 /**
  * DMLA Install TUI 入口
  */
-import '../src/index.js'
+import { runInstallTUI } from '../src/index.js'
+runInstallTUI()

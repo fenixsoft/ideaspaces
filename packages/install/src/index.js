@@ -262,9 +262,3 @@ export async function runInstallTUI() {
   }
 }
 
-// 直接运行时执行主流程（通过检测是否为主模块）
-// ES Module 中使用 import.meta.url 检测
-const isMainModule = import.meta.url === `file://${process.argv[1].replace(/\\/g, '/')}`
-if (isMainModule) {
-  runInstallTUI()
-}
