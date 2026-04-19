@@ -100,7 +100,7 @@ program
 
     console.log(chalk.blue('🚀 启动 DMLA 沙箱服务...'))
     console.log(chalk.gray(`   端口: ${port}`))
-    console.log(chalk.gray(`   镜像: ${useGpu ? 'GPU' : 'CPU'}`))
+    console.log(chalk.gray(`   请求类型: ${useGpu ? 'GPU' : '自动选择'}`))
     if (sync) {
       console.log(chalk.yellow(`   模式: 同步（调试模式）`))
     }

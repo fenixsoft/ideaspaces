@@ -115,11 +115,11 @@ export async function runInstallTUI() {
       type: 'select',
       name: 'registry',
       message: '请选择镜像仓库',
-      initial: 2,  // 默认选择 'auto'
+      initial: 0,  // 默认选择 'auto'（第一项）
       choices: [
+        { name: 'auto', message: '自动选择 (根据网络延迟)' },
         { name: 'dockerhub', message: 'Docker Hub (全球访问)' },
-        { name: 'acr', message: '阿里云 ACR (国内加速)' },
-        { name: 'auto', message: '自动选择 (根据网络延迟)' }
+        { name: 'acr', message: '阿里云 ACR (国内加速)' }
       ]
     })
 
@@ -136,28 +136,35 @@ export async function runInstallTUI() {
     // 步骤 3: 选择镜像类型
     // ─────────────────────────────────────────────────────────────
     const choices = [
+      { name: 'auto', message: '自动选择 (根据环境)' },
       { name: 'all', message: '全部安装 (CPU + GPU)' },
       { name: 'cpu', message: '仅 CPU 版本 (~650MB)' },
-      { name: 'gpu', message: '仅 GPU 版本 (~5.62GB)' }
+      { name: 'gpu', message: '仅 GPU 版本 (~5.62GB)' },
+      { name: 'skip', message: '暂不拉取镜像 (仅安装 CLI)' }
     ]
-
-    if (env.gpu) {
-      choices.push({ name: 'gpu-recommended', message: `仅 GPU 版本 (推荐，已检测到 GPU)` })
-    }
 
     const typeChoice = await prompt({
       type: 'select',
       name: 'imageType',
       message: '请选择要安装的镜像',
-      initial: env.gpu ? 3 : 1,
+      initial: 0,  // 默认选择第一项（自动选择）
       choices
     })
 
     let imageTypes = []
+    let skipPull = false
     const selectedType = typeChoice.imageType
-    if (selectedType === 'all') imageTypes = ['cpu', 'gpu']
-    else if (selectedType === 'gpu-recommended') imageTypes = ['gpu']
-    else imageTypes = [selectedType]
+    if (selectedType === 'skip') {
+      skipPull = true
+    } else if (selectedType === 'auto') {
+      // 根据环境自动选择
+      imageTypes = env.gpu ? ['gpu'] : ['cpu']
+      console.log(chalk.gray(`   已选择: ${env.gpu ? 'GPU 版本' : 'CPU 版本'}`))
+    } else if (selectedType === 'all') {
+      imageTypes = ['cpu', 'gpu']
+    } else {
+      imageTypes = [selectedType]
+    }
 
     console.log()
 
@@ -200,61 +207,71 @@ export async function runInstallTUI() {
     // ─────────────────────────────────────────────────────────────
     // 步骤 5: 拉取镜像
     // ─────────────────────────────────────────────────────────────
-    console.log(chalk.bold('拉取 Docker 镜像'))
-    console.log()
+    let pullResults = {}
 
-    const pullResults = await pullImages(imageTypes, registry)
-
-    // 检查是否有失败的镜像
-    const failedImages = Object.entries(pullResults)
-      .filter(([type, result]) => !result.success)
-      .map(([type, result]) => ({ type, ...result }))
-
-    if (failedImages.length > 0) {
-      console.log(chalk.yellow('⚠️  部分镜像拉取失败'))
+    if (skipPull) {
+      console.log(chalk.bold('跳过镜像拉取'))
       console.log()
-
-      // 检查是否有可用的镜像
-      const availableImages = Object.entries(pullResults)
-        .filter(([type, result]) => result.success)
-        .map(([type]) => type)
-
-      if (availableImages.length > 0) {
-        console.log(chalk.green(`✔ 已成功拉取镜像: ${availableImages.join(', ')}`))
-        console.log(chalk.gray('   您可以使用这些镜像启动服务'))
-      }
-
-      console.log()
-      console.log(chalk.yellow('手动拉取镜像命令：'))
-      for (const failed of failedImages) {
-        console.log(chalk.cyan(`   docker pull ${failed.manualCommand}`))
-        console.log(chalk.gray(`   docker tag ${failed.manualCommand} dmla-sandbox:${failed.type}`))
-      }
-      console.log()
-
-      // 询问是否继续
-      const continueChoice = await prompt({
-        type: 'select',
-        name: 'action',
-        message: '是否继续安装 CLI？',
-        choices: [
-          { name: 'continue', message: '继续安装（稍后手动拉取镜像）' },
-          { name: 'exit', message: '退出安装' }
-        ]
-      })
-
-      if (continueChoice.action === 'exit') {
-        gracefulExit()
-        return
-      }
-
-      console.log(chalk.gray('继续安装...'))
+      console.log(chalk.gray('   将仅安装 CLI 工具，稍后可通过以下命令拉取镜像：'))
+      console.log(chalk.cyan('   dmla install'))
       console.log()
     } else {
-      // 全部成功
-      const successCount = Object.keys(pullResults).length
-      console.log(chalk.green(`✔ ${successCount} 个镜像已准备就绪`))
+      console.log(chalk.bold('拉取 Docker 镜像'))
       console.log()
+
+      pullResults = await pullImages(imageTypes, registry)
+
+      // 检查是否有失败的镜像
+      const failedImages = Object.entries(pullResults)
+        .filter(([type, result]) => !result.success)
+        .map(([type, result]) => ({ type, ...result }))
+
+      if (failedImages.length > 0) {
+        console.log(chalk.yellow('⚠️  部分镜像拉取失败'))
+        console.log()
+
+        // 检查是否有可用的镜像
+        const availableImages = Object.entries(pullResults)
+          .filter(([type, result]) => result.success)
+          .map(([type]) => type)
+
+        if (availableImages.length > 0) {
+          console.log(chalk.green(`✔ 已成功拉取镜像: ${availableImages.join(', ')}`))
+          console.log(chalk.gray('   您可以使用这些镜像启动服务'))
+        }
+
+        console.log()
+        console.log(chalk.yellow('手动拉取镜像命令：'))
+        for (const failed of failedImages) {
+          console.log(chalk.cyan(`   docker pull ${failed.manualCommand}`))
+          console.log(chalk.gray(`   docker tag ${failed.manualCommand} dmla-sandbox:${failed.type}`))
+        }
+        console.log()
+
+        // 询问是否继续
+        const continueChoice = await prompt({
+          type: 'select',
+          name: 'action',
+          message: '是否继续安装 CLI？',
+          choices: [
+            { name: 'continue', message: '继续安装（稍后手动拉取镜像）' },
+            { name: 'exit', message: '退出安装' }
+          ]
+        })
+
+        if (continueChoice.action === 'exit') {
+          gracefulExit()
+          return
+        }
+
+        console.log(chalk.gray('继续安装...'))
+        console.log()
+      } else {
+        // 全部成功
+        const successCount = Object.keys(pullResults).length
+        console.log(chalk.green(`✔ ${successCount} 个镜像已准备就绪`))
+        console.log()
+      }
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -272,20 +289,23 @@ export async function runInstallTUI() {
     console.log(chalk.bold('✔ 验证安装'))
     console.log()
 
-    const startNow = await prompt({
-      type: 'select',
-      name: 'start',
-      message: '安装完成！是否立即启动服务？',
-      choices: [
-        { name: 'yes', message: '是，立即启动' },
-        { name: 'no', message: '否，稍后手动启动' }
-      ]
-    })
+    // 如果跳过了镜像拉取，不询问是否启动服务
+    if (!skipPull) {
+      const startNow = await prompt({
+        type: 'select',
+        name: 'start',
+        message: '安装完成！是否立即启动服务？',
+        choices: [
+          { name: 'yes', message: '是，立即启动' },
+          { name: 'no', message: '否，稍后手动启动' }
+        ]
+      })
 
-    if (startNow.start === 'yes') {
-      // 根据安装的镜像类型决定是否使用 GPU
-      const useGpu = imageTypes.includes('gpu')
-      await verifyInstallation(port, useGpu)
+      if (startNow.start === 'yes') {
+        // 根据安装的镜像类型决定是否使用 GPU
+        const useGpu = imageTypes.includes('gpu')
+        await verifyInstallation(port, useGpu)
+      }
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -294,12 +314,9 @@ export async function runInstallTUI() {
     showBanner()
     console.log(chalk.green('DMLA Sandbox 安装成功'))
     console.log(chalk.gray('常用命令:'))
-    if (imageTypes.includes('gpu')) {
-      console.log(chalk.gray('  dmla start --gpu  启动 GPU 服务'))
-    } else {
-      console.log(chalk.gray('  dmla start        启动服务'))
-    }
+    console.log(chalk.gray('  dmla start        启动服务'))
     console.log(chalk.gray('  dmla status       查看状态'))
+    console.log(chalk.gray('  dmla install      拉取镜像'))
     console.log(chalk.gray('  dmla update       更新版本'))
     console.log(chalk.gray('  dmla doctor       环境诊断'))
     console.log()

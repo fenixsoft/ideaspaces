@@ -50,6 +50,41 @@ async function checkImageExists(type) {
 }
 
 /**
+ * 检查可用镜像并自动选择
+ * @returns {Object} { imageType: 'cpu'|'gpu', message: string }
+ */
+async function resolveImageType(useGpu) {
+  const cpuExists = await checkImageExists('cpu')
+  const gpuExists = await checkImageExists('gpu')
+
+  // 用户明确指定了 GPU
+  if (useGpu) {
+    if (gpuExists) {
+      return { imageType: 'gpu', message: 'GPU' }
+    }
+    // 用户想要 GPU 但 GPU 镜像不存在
+    if (cpuExists) {
+      console.log(chalk.yellow('⚠️ GPU 镜像不存在，将使用 CPU 镜像'))
+      return { imageType: 'cpu', message: 'CPU (降级)' }
+    }
+    return { imageType: null, message: '无可用镜像' }
+  }
+
+  // 用户未指定，自动选择
+  if (cpuExists) {
+    return { imageType: 'cpu', message: 'CPU' }
+  }
+
+  // CPU 镜像不存在
+  if (gpuExists) {
+    console.log(chalk.yellow('⚠️ CPU 镜像不存在，自动使用 GPU 镜像'))
+    return { imageType: 'gpu', message: 'GPU (自动)' }
+  }
+
+  return { imageType: null, message: '无可用镜像' }
+}
+
+/**
  * 检查 GPU 是否可用
  */
 async function checkGPUAvailable() {
@@ -156,7 +191,7 @@ function findServerPath() {
 /**
  * 同步启动服务（在当前进程运行，用于调试）
  * @param {number} port - 服务端口
- * @param {boolean} useGpu - 是否使用 GPU
+ * @param {boolean} useGpu - 是否使用 GPU（可选，自动检测）
  */
 export async function startServerSync(port, useGpu = false) {
   // 检查端口
@@ -167,14 +202,14 @@ export async function startServerSync(port, useGpu = false) {
     return
   }
 
-  // 检查镜像
-  const imageType = useGpu ? 'gpu' : 'cpu'
-  const imageExists = await checkImageExists(imageType)
-  if (!imageExists) {
-    console.log(chalk.red(`❌ 镜像 ${useGpu ? CONFIG.imageGpu : CONFIG.imageCpu} 不存在`))
+  // 智能选择镜像
+  const imageResolution = await resolveImageType(useGpu)
+  if (!imageResolution.imageType) {
+    console.log(chalk.red('❌ 无可用镜像'))
     console.log(chalk.yellow('💡 提示: 运行 dmla install 安装镜像'))
     return
   }
+  const resolvedUseGpu = imageResolution.imageType === 'gpu'
 
   // 检查服务是否已运行
   const alreadyRunning = await checkServiceRunning(port)
@@ -191,13 +226,14 @@ export async function startServerSync(port, useGpu = false) {
     return
   }
 
+  console.log(chalk.gray(`   镜像类型: ${imageResolution.message}`))
   console.log(chalk.gray('   同步模式启动...'))
   console.log(chalk.gray(`   服务入口: ${actualServerPath}`))
   console.log()
 
   // 设置环境变量
   process.env.PORT = port.toString()
-  process.env.USE_GPU = useGpu ? 'true' : 'false'
+  process.env.USE_GPU = resolvedUseGpu ? 'true' : 'false'
   process.env.DMLA_SYNC_MODE = 'true'  // 标记同步模式，让服务器在 import 时启动
 
   // 动态 import 服务器模块并直接运行
@@ -224,14 +260,14 @@ export async function startServer(port, useGpu = false) {
     return
   }
 
-  // 检查镜像
-  const imageType = useGpu ? 'gpu' : 'cpu'
-  const imageExists = await checkImageExists(imageType)
-  if (!imageExists) {
-    console.log(chalk.red(`❌ 镜像 ${useGpu ? CONFIG.imageGpu : CONFIG.imageCpu} 不存在`))
+  // 智能选择镜像
+  const imageResolution = await resolveImageType(useGpu)
+  if (!imageResolution.imageType) {
+    console.log(chalk.red('❌ 无可用镜像'))
     console.log(chalk.yellow('💡 提示: 运行 dmla install 安装镜像'))
     return
   }
+  const resolvedUseGpu = imageResolution.imageType === 'gpu'
 
   // 检查服务是否已运行
   const alreadyRunning = await checkServiceRunning(port)
@@ -241,6 +277,7 @@ export async function startServer(port, useGpu = false) {
   }
 
   // 启动服务
+  console.log(chalk.gray(`   镜像类型: ${imageResolution.message}`))
   console.log(chalk.gray('   正在启动...'))
 
   try {
@@ -269,7 +306,7 @@ export async function startServer(port, useGpu = false) {
     const env = {
       ...process.env,
       PORT: port.toString(),
-      USE_GPU: useGpu ? 'true' : 'false',
+      USE_GPU: resolvedUseGpu ? 'true' : 'false',
       DMLA_LOG_FILE: logFile  // 传递日志文件路径给服务端
     }
 
@@ -278,7 +315,7 @@ export async function startServer(port, useGpu = false) {
     fs.writeSync(logStream, `[${timestamp}] Server starting...\n`)
     fs.writeSync(logStream, `[${timestamp}] Server path: ${actualServerPath}\n`)
     fs.writeSync(logStream, `[${timestamp}] Port: ${port}\n`)
-    fs.writeSync(logStream, `[${timestamp}] GPU: ${useGpu}\n`)
+    fs.writeSync(logStream, `[${timestamp}] GPU: ${resolvedUseGpu} (${imageResolution.message})\n`)
 
     // 使用 spawn 启动 server 进程
     // 重要：stdio 必须是 'ignore' 或管道，不能是 'inherit'
