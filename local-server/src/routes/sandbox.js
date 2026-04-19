@@ -2,7 +2,9 @@
  * 沙箱 API 路由
  */
 import { Router } from 'express'
-import { runPythonCode, checkImageExists, checkGPUAvailable } from '../sandbox.js'
+import sandbox, { runPythonCode, checkImageExists, checkGPUAvailable } from '../sandbox.js'
+
+const { SANDBOX_CONFIG } = sandbox
 
 const router = Router()
 
@@ -74,7 +76,7 @@ router.post('/run', async (req, res) => {
       if (!gpuAvailable) {
         return res.status(503).json({
           success: false,
-          error: 'GPU 硬件不可用。请确保系统安装了 NVIDIA GPU 驱动和 nvidia-container-toolkit。\n\n诊断步骤：\n1. 运行 nvidia-smi 检查 GPU 状态\n2. 运行 docker run --rm --gpus all nvidia/cuda:11.8-base nvidia-smi 测试 Docker GPU 支持\n\n或使用 dmla doctor 进行环境诊断'
+          error: `GPU 硬件不可用。请确保系统安装了 NVIDIA GPU 驱动和 nvidia-container-toolkit。\n\n诊断步骤：\n1. 运行 nvidia-smi 检查 GPU 状态\n2. 运行 docker run --rm --gpus all ${SANDBOX_CONFIG.imageGpu} nvidia-smi 测试 Docker GPU 支持\n\n或使用 dmla doctor 进行环境诊断`
         })
       }
     }

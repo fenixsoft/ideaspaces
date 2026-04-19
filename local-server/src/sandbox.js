@@ -79,15 +79,15 @@ function shouldMountSharedModules() {
 
 /**
  * 检查 GPU 是否可用
- * 通过运行 nvidia-smi 命令检测 GPU 状态
+ * 使用已安装的 GPU 镜像运行 nvidia-smi 命令检测 GPU 状态
  */
 export async function checkGPUAvailable() {
   let container = null
 
   try {
-    // 创建容器运行 nvidia-smi 命令
+    // 使用已配置的 GPU 镜像检测，而非硬编码的 nvidia/cuda 镜像
     container = await docker.createContainer({
-      Image: 'nvidia/cuda:11.8-base',
+      Image: SANDBOX_CONFIG.imageGpu,
       Cmd: ['nvidia-smi', '-L'],
       HostConfig: {
         DeviceRequests: [{
@@ -376,5 +376,6 @@ export default {
   runPythonCode,
   checkGPUAvailable,
   checkImageExists,
-  pullImage
+  pullImage,
+  SANDBOX_CONFIG
 }

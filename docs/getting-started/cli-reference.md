@@ -185,8 +185,8 @@ dmla --version
 
 | 镜像 | 大小 | 说明 |
 |------|------|------|
-| `dmla-sandbox:cpu` | ~1.5GB | CPU 版本，无 GPU 支持 |
-| `dmla-sandbox:gpu` | ~2.5GB | GPU 版本，支持 CUDA 11.8 |
+| `dmla-sandbox:cpu` | ~650MB | CPU 版本，无 GPU 支持 |
+| `dmla-sandbox:gpu` | ~5.62GB | GPU 版本，支持 CUDA 11.8 |
 
 ## 端点说明
 

@@ -71,7 +71,7 @@
 #### Scenario: 镜像大小检查
 - **WHEN** 镜像构建完成
 - **THEN** 检查镜像大小在预期范围内
-- **AND** CPU 版本小于 1.5GB，GPU 版本小于 2.5GB
+- **AND** CPU 版本小于 1GB，GPU 版本小于 6GB
 
 ### Requirement: 发布失败回滚
 
