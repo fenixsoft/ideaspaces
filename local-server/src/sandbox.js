@@ -10,6 +10,15 @@ import fs from 'fs'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// 日志函数
+function log(message) {
+  const timestamp = new Date().toISOString()
+  console.log(`[${timestamp}] [Sandbox] ${message}`)
+}
+
+// 启动时记录
+log('Sandbox module initialized')
+
 // 检测运行模式并计算正确的路径
 // 开发模式: 从 local-server/src 运行，项目根目录在上两级
 // 独立模式: 从 packages/cli/src/server 运行，无 shared_modules 目录
@@ -131,8 +140,11 @@ export async function checkGPUAvailable() {
 export async function runPythonCode(code, useGpu = false) {
   const startTime = Date.now()
 
+  log(`runPythonCode called, useGpu=${useGpu}, code length=${code.length}`)
+
   // 选择镜像
   const image = useGpu ? SANDBOX_CONFIG.imageGpu : SANDBOX_CONFIG.imageCpu
+  log(`Using image: ${image}`)
 
   // 创建容器配置 - 使用 kernel_runner.py 执行代码
   const containerConfig = {
@@ -147,6 +159,8 @@ export async function runPythonCode(code, useGpu = false) {
       // matplotlib 使用 IPython Kernel 的 inline 后端，自动发送 display_data
     ]
   }
+
+  log('Container config created')
 
   // Volume Mount 配置 - 挂载共享模块
   const useMount = shouldMountSharedModules()
@@ -183,28 +197,36 @@ export async function runPythonCode(code, useGpu = false) {
 
   try {
     // 创建容器
+    log('Creating container...')
     container = await docker.createContainer(containerConfig)
+    log(`Container created: ${container.id}`)
 
     // 设置超时
     const timeoutPromise = new Promise((_, reject) => {
       timeoutId = setTimeout(() => {
+        log('Execution timeout triggered')
         reject(new Error('Execution timeout'))
       }, SANDBOX_CONFIG.timeout + 10000)  // 额外 10 秒用于清理
     })
 
     // 启动容器
+    log('Starting container...')
     await container.start()
+    log('Container started')
 
     // 等待执行完成
+    log('Waiting for container to finish...')
     const waitPromise = container.wait()
 
     // 竞速: 超时 vs 正常完成
     const result = await Promise.race([waitPromise, timeoutPromise])
+    log(`Container finished, result: ${JSON.stringify(result)}`)
 
     // 清除超时
     if (timeoutId) clearTimeout(timeoutId)
 
     // 获取输出
+    log('Getting container logs...')
     const logs = await container.logs({
       stdout: true,
       stderr: true
@@ -212,12 +234,15 @@ export async function runPythonCode(code, useGpu = false) {
 
     // 解析输出
     const rawOutput = parseDockerLogs(logs)
+    log(`Raw output length: ${rawOutput.length}`)
 
     // 解析 JSON 输出
     let parsedResult
     try {
       parsedResult = JSON.parse(rawOutput)
+      log('Output parsed successfully')
     } catch (parseError) {
+      log(`JSON parse error: ${parseError.message}`)
       // 如果 JSON 解析失败，返回原始输出作为错误
       const executionTime = (Date.now() - startTime) / 1000
       return {
@@ -241,6 +266,8 @@ export async function runPythonCode(code, useGpu = false) {
     }
 
   } catch (error) {
+    log(`Execution error: ${error.message}`)
+    log(`Error stack: ${error.stack}`)
     // 清除超时
     if (timeoutId) clearTimeout(timeoutId)
 
@@ -260,11 +287,13 @@ export async function runPythonCode(code, useGpu = false) {
 
   } finally {
     // 清理容器
+    log('Cleaning up container...')
     if (container) {
       try {
         await container.remove({ force: true })
+        log('Container removed')
       } catch (e) {
-        console.warn('Failed to remove container:', e.message)
+        log(`Container cleanup error: ${e.message}`)
       }
     }
   }

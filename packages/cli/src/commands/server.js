@@ -223,19 +223,60 @@ export async function startServer(port, useGpu = false) {
       return
     }
 
+    // 日志文件路径
+    const logDir = path.resolve(__dirname, '../../logs')
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true })
+    }
+    const logFile = path.join(logDir, 'server.log')
+    const errorLogFile = path.join(logDir, 'server-error.log')
+
+    console.log(chalk.gray(`   日志文件: ${logFile}`))
+
+    // 创建日志文件流
+    const logStream = fs.openSync(logFile, 'a')
+    const errorLogStream = fs.openSync(errorLogFile, 'a')
+
     const env = {
       ...process.env,
       PORT: port.toString(),
-      USE_GPU: useGpu ? 'true' : 'false'
+      USE_GPU: useGpu ? 'true' : 'false',
+      DMLA_LOG_FILE: logFile  // 传递日志文件路径给服务端
     }
 
+    // 写入启动日志
+    const timestamp = new Date().toISOString()
+    fs.writeSync(logStream, `[${timestamp}] Server starting...\n`)
+    fs.writeSync(logStream, `[${timestamp}] Server path: ${actualServerPath}\n`)
+    fs.writeSync(logStream, `[${timestamp}] Port: ${port}\n`)
+    fs.writeSync(logStream, `[${timestamp}] GPU: ${useGpu}\n`)
+
+    // 使用 spawn 启动 server 进程
+    // 重要：stdio 必须是 'ignore' 或管道，不能是 'inherit'
+    // 因为 'inherit' 会让子进程依赖父进程的 stdout，父进程退出后子进程也会退出
     const serverProcess = spawn('node', [actualServerPath], {
       env,
-      stdio: 'inherit',
-      detached: true
+      stdio: ['ignore', logStream, errorLogStream],  // stdin: ignore, stdout: log file, stderr: error log
+      detached: true,
+      windowsHide: true  // Windows 下隐藏窗口
+    })
+
+    // 监听子进程事件（调试用）
+    serverProcess.on('error', (err) => {
+      fs.writeSync(errorLogStream, `[${new Date().toISOString()}] Spawn error: ${err.message}\n`)
+    })
+
+    serverProcess.on('exit', (code, signal) => {
+      const msg = `[${new Date().toISOString()}] Process exited: code=${code}, signal=${signal}\n`
+      fs.writeSync(logStream, msg)
+      fs.writeSync(errorLogStream, msg)
     })
 
     serverProcess.unref()
+
+    // 关闭父进程中的文件描述符（子进程会保留自己的副本）
+    fs.closeSync(logStream)
+    fs.closeSync(errorLogStream)
 
     // 等待服务启动
     console.log(chalk.gray('   等待服务就绪...'))
@@ -247,15 +288,19 @@ export async function startServer(port, useGpu = false) {
       if (running) {
         console.log(chalk.green(`✅ 服务已启动: http://localhost:${port}`))
         console.log(chalk.gray(`   健康检查: http://localhost:${port}/api/health`))
+        console.log(chalk.gray(`   日志查看: ${logFile}`))
         return
       }
       await new Promise(resolve => setTimeout(resolve, 500))
       attempts++
     }
 
-    console.log(chalk.yellow('⚠️ 服务启动超时，请检查日志'))
+    console.log(chalk.yellow('⚠️ 服务启动超时'))
+    console.log(chalk.gray(`   请查看日志: ${logFile}`))
+    console.log(chalk.gray(`   或使用 --sync 模式调试`))
   } catch (error) {
     console.log(chalk.red(`❌ 启动失败: ${error.message}`))
+    console.log(chalk.gray(error.stack))
   }
 }
 
