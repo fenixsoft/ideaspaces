@@ -4,6 +4,8 @@
  */
 import express from 'express'
 import cors from 'cors'
+import { fileURLToPath } from 'url'
+import { resolve } from 'path'
 import sandboxRouter from './routes/sandbox.js'
 
 export const app = express()
@@ -30,8 +32,12 @@ app.use((err, req, res, next) => {
   })
 })
 
-// 仅在直接运行时启动服务器（测试时不启动）
-if (import.meta.url === `file://${process.argv[1]}`) {
+// 仅在直接运行时启动服务器（被 import 时不启动）
+// 使用路径比较，兼容 Windows 和 Unix 系统
+const __filename = fileURLToPath(import.meta.url)
+const entryPoint = resolve(process.argv[1] || '')
+
+if (__filename === entryPoint) {
   app.listen(PORT, () => {
     console.log(`🚀 DMLA 本地服务已启动`)
     console.log(`   API: http://localhost:${PORT}`)
