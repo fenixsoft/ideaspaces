@@ -198,7 +198,7 @@ export async function startServerSync(port, useGpu = false) {
   const portAvailable = await checkPortAvailable(port)
   if (!portAvailable) {
     console.log(chalk.red(`❌ 端口 ${port} 已被占用`))
-    console.log(chalk.yellow('💡 提示: 使用 --port 选项指定其他端口'))
+    console.log(chalk.yellow('提示: 使用 --port 选项指定其他端口'))
     return
   }
 
@@ -206,7 +206,7 @@ export async function startServerSync(port, useGpu = false) {
   const imageResolution = await resolveImageType(useGpu)
   if (!imageResolution.imageType) {
     console.log(chalk.red('❌ 无可用镜像'))
-    console.log(chalk.yellow('💡 提示: 运行 dmla install 安装镜像'))
+    console.log(chalk.yellow('提示: 运行 dmla install 安装镜像'))
     return
   }
   const resolvedUseGpu = imageResolution.imageType === 'gpu'
@@ -222,7 +222,7 @@ export async function startServerSync(port, useGpu = false) {
   const actualServerPath = findServerPath()
   if (!actualServerPath) {
     console.log(chalk.red('❌ 找不到服务入口文件'))
-    console.log(chalk.yellow('💡 提示: 确保正确安装了 @icyfenix-dmla/cli'))
+    console.log(chalk.yellow('提示: 确保正确安装了 @icyfenix-dmla/cli'))
     return
   }
 
@@ -256,7 +256,7 @@ export async function startServer(port, useGpu = false) {
   const portAvailable = await checkPortAvailable(port)
   if (!portAvailable) {
     console.log(chalk.red(`❌ 端口 ${port} 已被占用`))
-    console.log(chalk.yellow('💡 提示: 使用 --port 选项指定其他端口'))
+    console.log(chalk.yellow('提示: 使用 --port 选项指定其他端口'))
     return
   }
 
@@ -264,7 +264,7 @@ export async function startServer(port, useGpu = false) {
   const imageResolution = await resolveImageType(useGpu)
   if (!imageResolution.imageType) {
     console.log(chalk.red('❌ 无可用镜像'))
-    console.log(chalk.yellow('💡 提示: 运行 dmla install 安装镜像'))
+    console.log(chalk.yellow('提示: 运行 dmla install 安装镜像'))
     return
   }
   const resolvedUseGpu = imageResolution.imageType === 'gpu'
@@ -285,7 +285,7 @@ export async function startServer(port, useGpu = false) {
 
     if (!actualServerPath) {
       console.log(chalk.red('❌ 找不到服务入口文件'))
-      console.log(chalk.yellow('💡 提示: 确保正确安装了 @icyfenix-dmla/cli'))
+      console.log(chalk.yellow('提示: 确保正确安装了 @icyfenix-dmla/cli'))
       return
     }
 
@@ -445,7 +445,7 @@ export async function getStatus() {
   console.log()
 
   // 检查 npm 包版本
-  console.log(chalk.bold('📦 npm 包版本'))
+  console.log(chalk.bold('npm 包版本'))
   try {
     // __dirname 是 src/commands，需要向上两级到包根目录
     const pkgPath = path.resolve(__dirname, '../../package.json')
@@ -458,7 +458,7 @@ export async function getStatus() {
   console.log()
 
   // 检查镜像
-  console.log(chalk.bold('🖼️  Docker 镜像'))
+  console.log(chalk.bold('Docker 镜像'))
   const cpuExists = await checkImageExists('cpu')
   const gpuExists = await checkImageExists('gpu')
   console.log(chalk.gray(`   CPU: ${cpuExists ? chalk.green('已安装') : chalk.red('未安装')}`))
@@ -467,7 +467,7 @@ export async function getStatus() {
   console.log()
 
   // 检查 GPU
-  console.log(chalk.bold('🎮 GPU 状态'))
+  console.log(chalk.bold('GPU 状态'))
   const gpuAvailable = await checkGPUAvailable()
   if (gpuAvailable) {
     console.log(chalk.green('   GPU 可用'))
@@ -485,7 +485,7 @@ export async function getStatus() {
   console.log()
 
   // 检查服务
-  console.log(chalk.bold('🚀 服务状态'))
+  console.log(chalk.bold('服务状态'))
   const running = await checkServiceRunning(CONFIG.defaultPort)
   if (running) {
     console.log(chalk.green(`   服务运行中 (端口 ${CONFIG.defaultPort})`))

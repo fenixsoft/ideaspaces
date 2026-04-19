@@ -102,7 +102,7 @@ export async function pullImages(types, registry = 'dockerhub') {
       console.log()
 
       // 给用户手动拉取命令
-      console.log(chalk.yellow('💡 您可以手动拉取镜像：'))
+      console.log(chalk.yellow('您可以手动拉取镜像：'))
       console.log(chalk.cyan(`   docker pull ${remoteImage}`))
       console.log(chalk.gray(`   docker tag ${remoteImage} ${localImage}`))
       console.log()

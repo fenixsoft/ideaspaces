@@ -16,7 +16,7 @@ export async function installNpmPackage() {
     console.log(chalk.green('✔ npm 包安装完成'))
   } catch (error) {
     console.log(chalk.yellow('⚠️ npm 包安装失败'))
-    console.log(chalk.yellow('💡 请手动执行: npm install -g @icyfenix-dmla/cli'))
+    console.log(chalk.yellow('请手动执行: npm install -g @icyfenix-dmla/cli'))
   }
 
   // 验证命令可用

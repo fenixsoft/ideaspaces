@@ -79,14 +79,14 @@ export async function runInstallTUI() {
     // ─────────────────────────────────────────────────────────────
     // 步骤 1: 环境检测
     // ─────────────────────────────────────────────────────────────
-    console.log(chalk.bold('🔍 环境检测'))
+    console.log(chalk.bold('环境检测'))
     console.log()
 
     const env = await checkEnvironment()
 
     if (!env.docker) {
       console.log(chalk.red('❌ Docker 未安装或未运行'))
-      console.log(chalk.yellow('💡 请先安装 Docker: https://docs.docker.com/get-docker/'))
+      console.log(chalk.yellow('请先安装 Docker: https://docs.docker.com/get-docker/'))
       process.exit(1)
     }
 
@@ -94,7 +94,7 @@ export async function runInstallTUI() {
 
     if (!env.node) {
       console.log(chalk.red('❌ Node.js 未安装'))
-      console.log(chalk.yellow('💡 请先安装 Node.js: https://nodejs.org/'))
+      console.log(chalk.yellow('请先安装 Node.js: https://nodejs.org/'))
       process.exit(1)
     }
 
@@ -176,7 +176,7 @@ export async function runInstallTUI() {
     // ─────────────────────────────────────────────────────────────
     // 步骤 4: 配置端口
     // ─────────────────────────────────────────────────────────────
-    console.log(chalk.bold('🔌 配置服务端口'))
+    console.log(chalk.bold('配置服务端口'))
     console.log()
 
     const defaultPort = 3001
@@ -336,7 +336,7 @@ export async function runInstallTUI() {
     }
     console.log()
     console.log(chalk.red(`❌ 安装失败: ${error.message}`))
-    console.log(chalk.yellow('💡 请运行 dmla doctor 检查环境'))
+    console.log(chalk.yellow('请运行 dmla doctor 检查环境'))
     process.exit(1)
   }
 }

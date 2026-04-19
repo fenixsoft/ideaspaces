@@ -66,7 +66,7 @@ export async function installImages(types, registry = 'dockerhub') {
 
   console.log()
   console.log(chalk.green('🎉 镜像安装完成'))
-  console.log(chalk.yellow('💡 提示: 运行 dmla start 启动服务'))
+  console.log(chalk.yellow('提示: 运行 dmla start 启动服务'))
 }
 
 /**
@@ -112,7 +112,7 @@ export async function updateAll(registry = 'dockerhub') {
   console.log()
 
   // 更新 npm 包
-  console.log(chalk.bold('📦 更新 npm 包'))
+  console.log(chalk.bold('更新 npm 包'))
   try {
     console.log(chalk.gray('   执行 npm update -g @icyfenix-dmla/cli...'))
     execSync('npm update -g @icyfenix-dmla/cli', { stdio: 'inherit' })
@@ -124,7 +124,7 @@ export async function updateAll(registry = 'dockerhub') {
   console.log()
 
   // 检查并更新镜像
-  console.log(chalk.bold('🖼️  检查 Docker 镜像更新'))
+  console.log(chalk.bold('检查 Docker 镜像更新'))
   const registryUrl = getRegistryUrl(registry)
 
   for (const type of ['cpu', 'gpu']) {
@@ -201,7 +201,7 @@ export async function runDoctor() {
   // ───────────────────────────────────────────────────────────
   // 镜像检查
   // ───────────────────────────────────────────────────────────
-  console.log(chalk.bold('🖼️  Docker 镜像'))
+  console.log(chalk.bold('Docker 镜像'))
 
   const cpuImage = CONFIG.imageCpu
   const gpuImage = CONFIG.imageGpu
@@ -234,7 +234,7 @@ export async function runDoctor() {
   // ───────────────────────────────────────────────────────────
   // GPU 检查
   // ───────────────────────────────────────────────────────────
-  console.log(chalk.bold('🎮 GPU 驱动'))
+  console.log(chalk.bold('GPU 驱动'))
 
   try {
     const output = execSync('nvidia-smi -L', { timeout: 5000, encoding: 'utf8' })
@@ -261,7 +261,7 @@ export async function runDoctor() {
   // ───────────────────────────────────────────────────────────
   // 端口检查
   // ───────────────────────────────────────────────────────────
-  console.log(chalk.bold('🔌 端口可用性'))
+  console.log(chalk.bold('端口可用性'))
 
   const port = CONFIG.defaultPort
   const portAvailable = await checkPortAvailable(port)
@@ -310,11 +310,11 @@ export async function runDoctor() {
       console.log(chalk.red(`   ${i + 1}. ${issue}`))
     })
     console.log()
-    console.log(chalk.yellow('💡 请根据上述提示解决问题后再次运行 dmla doctor'))
+    console.log(chalk.yellow('请根据上述提示解决问题后再次运行 dmla doctor'))
   } else {
     console.log(chalk.bold.green('✅ 所有检查通过，环境正常'))
     console.log()
-    console.log(chalk.gray('💡 运行 dmla start 启动服务'))
+    console.log(chalk.gray('运行 dmla start 启动服务'))
   }
 }
 

@@ -98,7 +98,7 @@ program
     const useGpu = options.gpu
     const sync = options.sync
 
-    console.log(chalk.blue('🚀 启动 DMLA 沙箱服务...'))
+    console.log(chalk.blue('启动 DMLA 沙箱服务...'))
     console.log(chalk.gray(`   端口: ${port}`))
     console.log(chalk.gray(`   请求类型: ${useGpu ? 'GPU' : '自动选择'}`))
     if (sync) {
@@ -119,7 +119,7 @@ program
   .command('stop')
   .description('停止运行中的沙箱服务')
   .action(async () => {
-    console.log(chalk.blue('🛑 停止 DMLA 沙箱服务...'))
+    console.log(chalk.blue('停止 DMLA 沙箱服务...'))
     await stopServer()
   })
 
@@ -130,7 +130,7 @@ program
   .command('status')
   .description('查看服务状态')
   .action(async () => {
-    console.log(chalk.blue('📊 DMLA 沙箱服务状态'))
+    console.log(chalk.blue('DMLA 沙箱服务状态'))
     await getStatus()
   })
 
@@ -152,7 +152,7 @@ program
   .description('更新 npm 包和 Docker 镜像')
   .option('-r, --registry <type>', '镜像仓库 (dockerhub/acr)', 'dockerhub')
   .action(async (options) => {
-    console.log(chalk.blue('🔄 更新 DMLA...'))
+    console.log(chalk.blue('更新 DMLA...'))
     await updateAll(options.registry)
   })
 
@@ -163,7 +163,7 @@ program
   .command('doctor')
   .description('诊断安装环境')
   .action(async () => {
-    console.log(chalk.blue('🔍 DMLA 环境诊断'))
+    console.log(chalk.blue('DMLA 环境诊断'))
     await runDoctor()
   })
 
