@@ -274,14 +274,32 @@ export async function runPythonCode(code, useGpu = false) {
     log(`Stdout length: ${stdout.length}`)
     log(`Stderr length: ${stderr.length}`)
 
-    // stderr 可能包含 CUDA banner 等信息，记录用于调试
+    // stderr 可能包含调试信息
     if (stderr.length > 0) {
       log(`Stderr content preview: ${stderr.substring(0, 500)}`)
     }
 
-    // 使用 stdout 解析 JSON
-    const rawOutput = stdout
-    log(`Stdout content preview: ${rawOutput.substring(0, 200)}`)
+    // stdout 可能包含 CUDA banner + JSON，需要提取 JSON 部分
+    // 找到第一个 '{' 作为 JSON 开始
+    const jsonStart = stdout.indexOf('{')
+    if (jsonStart === -1) {
+      log(`No JSON found in stdout`)
+      const executionTime = (Date.now() - startTime) / 1000
+      return {
+        success: false,
+        outputs: [{
+          type: 'error',
+          ename: 'OutputParseError',
+          evalue: 'No JSON output found',
+          traceback: [stdout.substring(0, 1000)]
+        }],
+        executionTime,
+        gpuUsed: useGpu
+      }
+    }
+
+    const rawOutput = stdout.substring(jsonStart)
+    log(`JSON extracted from position ${jsonStart}, length: ${rawOutput.length}`)
 
     // 解析 JSON 输出
     let parsedResult
