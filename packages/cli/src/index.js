@@ -4,11 +4,18 @@
  */
 import { program } from 'commander'
 import chalk from 'chalk'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import fs from 'fs'
 import { startServer, startServerSync, stopServer, getStatus } from './commands/server.js'
 import { updateAll, runDoctor } from './commands/manage.js'
 import { runInstallTUI } from '@icyfenix-dmla/install'
 
-const VERSION = '0.0.0' // 将在发布时由 workflow 更新
+// 从 package.json 读取版本号
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const pkgPath = path.resolve(__dirname, '../package.json')
+const VERSION = JSON.parse(fs.readFileSync(pkgPath, 'utf8')).version
 
 program
   .name('dmla')
