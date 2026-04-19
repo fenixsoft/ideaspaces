@@ -381,7 +381,8 @@ export async function getStatus() {
   // 检查 npm 包版本
   console.log(chalk.bold('📦 npm 包版本'))
   try {
-    const pkgPath = path.resolve(__dirname, '../package.json')
+    // __dirname 是 src/commands，需要向上两级到包根目录
+    const pkgPath = path.resolve(__dirname, '../../package.json')
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
     console.log(chalk.gray(`   @icyfenix-dmla/cli: ${pkg.version}`))
   } catch {
