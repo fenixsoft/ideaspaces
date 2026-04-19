@@ -2,7 +2,7 @@
  * DMLA CLI 入口
  * 沙箱服务命令行管理工具
  */
-import { program } from 'commander'
+import { program, Help } from 'commander'
 import chalk from 'chalk'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -17,10 +17,72 @@ const __dirname = path.dirname(__filename)
 const pkgPath = path.resolve(__dirname, '../package.json')
 const VERSION = JSON.parse(fs.readFileSync(pkgPath, 'utf8')).version
 
+// 重写 Help 类的方法以输出中文标题
+Help.prototype.padWidth = function(cmd, helper) {
+  return 20
+}
+
+// 重写帮助信息格式化方法
+Help.prototype.formatHelp = function(cmd, helper) {
+  const indent = '  '
+  const itemIndent = '  '
+
+  let output = []
+
+  // 用法（中文）
+  output.push('用法:')
+  output.push(indent + helper.commandUsage(cmd))
+
+  // 说明（中文）
+  if (cmd.description()) {
+    output.push('')
+    output.push('说明:')
+    output.push(indent + cmd.description())
+  }
+
+  // 参数（中文）
+  const args = helper.visibleArguments(cmd)
+  if (args.length > 0) {
+    output.push('')
+    output.push('参数:')
+    args.forEach(arg => {
+      output.push(itemIndent + arg.name())
+    })
+  }
+
+  // 选项（中文）
+  const options = helper.visibleOptions(cmd)
+  if (options.length > 0) {
+    output.push('')
+    output.push('选项:')
+    options.forEach(opt => {
+      const term = helper.optionTerm(opt)
+      const description = helper.optionDescription(opt)
+      output.push(itemIndent + term.padEnd(20) + description)
+    })
+  }
+
+  // 命令（中文）
+  const commands = helper.visibleCommands(cmd)
+  if (commands.length > 0) {
+    output.push('')
+    output.push('命令:')
+    commands.forEach(subcmd => {
+      const term = helper.subcommandTerm(subcmd)
+      const description = helper.subcommandDescription(subcmd)
+      output.push(itemIndent + term.padEnd(20) + description)
+    })
+  }
+
+  return output.join('\n')
+}
+
 program
   .name('dmla')
   .description('DMLA 沙箱服务命令行管理工具')
-  .version(VERSION)
+  .version(VERSION, '-v, --version', '显示版本号')
+  .helpOption('-h, --help', '显示帮助信息')
+  .addHelpCommand('help [command]', '显示命令帮助信息')
 
 // ─────────────────────────────────────────────────────────────
 // start 命令
