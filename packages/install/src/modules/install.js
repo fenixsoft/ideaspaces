@@ -35,9 +35,32 @@ export async function installNpmPackage() {
 export async function verifyInstallation(port = 3001) {
   console.log(chalk.gray('启动服务...'))
 
-  // 启动服务
-  const serverProcess = spawn('dmla', ['start', '--port', port.toString()], {
-    stdio: 'inherit'
+  // 检查 dmla 命令是否可用
+  let dmlaAvailable = false
+  try {
+    execSync('dmla --version', { encoding: 'utf8' })
+    dmlaAvailable = true
+  } catch {
+    // dmla 命令暂不可用，使用 npx 启动
+    console.log(chalk.gray('dmla 命令暂不可用，使用 npx 启动...'))
+  }
+
+  // 启动服务（优先使用 dmla，否则用 npx）
+  const cmd = dmlaAvailable ? 'dmla' : 'npx'
+  const args = dmlaAvailable
+    ? ['start', '--port', port.toString()]
+    : ['@icyfenix-dmla/cli', 'start', '--port', port.toString()]
+
+  const serverProcess = spawn(cmd, args, {
+    stdio: 'inherit',
+    shell: true  // Windows 需要 shell: true
+  })
+
+  // 处理启动错误
+  serverProcess.on('error', (err) => {
+    console.log(chalk.yellow('⚠️ 服务启动失败'))
+    console.log(chalk.yellow(`💡 请手动执行: npx @icyfenix-dmla/cli start --port ${port}`))
+    return false
   })
 
   // 等待服务就绪
