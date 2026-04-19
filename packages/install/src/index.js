@@ -147,8 +147,8 @@ export async function runInstallTUI() {
       const choices = [
         { name: 'auto', message: '自动选择 (根据环境)' },
         { name: 'all', message: '全部安装 (CPU + GPU)' },
-        { name: 'cpu', message: '仅 CPU 版本 (~650MB)' },
-        { name: 'gpu', message: '仅 GPU 版本 (~5.62GB)' }
+        { name: 'cpu', message: '仅 CPU 版本 (~ 650MB)' },
+        { name: 'gpu', message: '仅 GPU 版本 (~ 5.62GB)' }
       ]
 
       const typeChoice = await prompt({

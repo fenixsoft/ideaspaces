@@ -21,8 +21,8 @@ informations:
     alt: License
   - src: https://img.shields.io/github/actions/workflow/status/fenixsoft/dmla/deploy.yml
     alt: GitHub Actions Workflow Status
-  - src: https://img.shields.io/docker/pulls/icyfenix/bookstore?color=aquamarine
-    alt: Docker Pulls
+  - src: https://img.shields.io/npm/v/%40icyfenix-dmla%2Fcli?color=aquamarine
+    alt: NPM Version
   - src: https://img.shields.io/badge/author-IcyFenix-chocolate
     alt: Author
 actions:
@@ -54,7 +54,7 @@ TBD
 
 - **代码沙箱**：本文档内包含大量的代码实践，用于演示机器学习算法以及进行模型训练。对于第一部分数学基础和第二部分经典统计学习算法，只需纯 CPU 环境即可运行。对于深度学习及之后的内容，需要有 GPU 支持（目前是 Pytorch with CUDA 11.8）。可通过如下命令一键完成沙箱环境构建。租赁 GPU 云主机可在 10 元成本内完成所有训练实践，更多详情请参见[构建沙箱环境](sandbox.md)。
   ```shell
-  npx @icyfenix-dmla/install
+  npx @icyfenix-dmla/install@latest
   ```
 
 - **离线运行**：

@@ -10,9 +10,9 @@
 
 确保你的系统：
 
-- 已经[部署](https://docs.docker.com/engine/install)好了 Docker 环境。
-- 已经[部署](https://nodejs.org/en/download)好了 NodeJS 22.x+ 环境。
-- 可选：如需使用 GPU 训练，应具备 Nvidia GPU 且已经[安装](https://www.nvidia.com/en-us/drivers/) 了 Nvidia 驱动。
+- 已经部署好了 [Docker 环境](https://docs.docker.com/engine/install)。
+- 已经部署好了 [NodeJS 22.x+ 环境](https://nodejs.org/en/download)。
+- 可选：如需使用 GPU 训练，应具备 Nvidia GPU 且已经安装了 [Nvidia 驱动](https://www.nvidia.com/en-us/drivers/) 。
 - 其余依赖（如 Jupyter Notebook 环境、Python、Numpy、Pytorch、CUDA 等）均通过 Docker 镜像来使用，不需要单独安装。
 
 ## 快速开始
@@ -21,13 +21,13 @@
 - 如果你使用的是互联网上部署的文档（[https://ai.icyfenix.cn](https://ai.icyfenix.cn)），可以在本地运行如下命令，使用`DMLA-CLI`部署沙箱环境，让网站上的代码能够在你本地执行：
 
     ``` shell
-    npx @icyfenix-dmla/install
+    npx @icyfenix-dmla/install@latest
     ```
 
     部署后，使用使用如下命令启动沙箱服务：
     ``` bash
     # 启动服务
-    dmla start                 # 默认端口 3001
+    dmla start                 # 默认端口 3001，CPU 模式
     dmla start --port 3002     # 自定义端口
     dmla start --gpu           # GPU 模式
 
@@ -42,7 +42,7 @@
 
     # 更新
     dmla update                # 更新 npm 包和镜像
-    dmla update --registry acr
+    dmla update --registry acr # 使用阿里云 ACR 拉取镜像
 
     # 环境诊断
     dmla doctor
@@ -70,7 +70,7 @@
 
 ## 相关事项
 
-- 本文档的沙箱服务与代码基于 Linux 软件环境 / x86_64 + Nvidia 硬件环境上测试通过，Windows、WSL、MacOS 等不同的软硬件环境有可能需要额外的处理。
+- 本文档的沙箱服务与代码基于 Linux 软件环境 / x86_64 + Nvidia 硬件环境上测试通过，支持跨平台运行，但 Windows、WSL、MacOS 等不同的软硬件环境有可能需要额外的处理。
 - 对于第一部分数学基础和第二部分经典统计学习算法，只需纯 CPU 环境即可运行。
 - 对于深度学习及之后的内容，需要有 GPU 异构计算环境的支持（目前是 Pytorch with CUDA 11.8）。
 - 沙箱环境默认端口为 3001，如果你选择了其他端口，或者非本机的沙箱（如云服务），请点击文档右上角设置图标 <a href="javascript:document.getElementsByTagName('button')[0].click()"><svg data-v-9eec72c3="" class="settings-icon" style="width:18px; height:18px; color:#000" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle data-v-9eec72c3="" cx="12" cy="12" r="3"></circle><path data-v-9eec72c3="" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></a> 手动填入沙箱地址。

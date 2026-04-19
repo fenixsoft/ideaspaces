@@ -22,7 +22,7 @@
 
 ### Requirement: 触发路径限定
 
-系统 SHALL 仅在特定路径变化时触发自动打 Tag。
+系统 SHALL 仅在 Docker 相关特定路径变化时触发自动打 Tag。
 
 #### Scenario: Dockerfile 变化触发
 - **WHEN** `local-server/Dockerfile.sandbox` 或 `Dockerfile.sandbox.cpu` 文件变更
@@ -37,7 +37,7 @@
 - **THEN** 触发自动打 Tag workflow
 
 #### Scenario: 其他路径不触发
-- **WHEN** docs、.vuepress、README.md 或其他非触发路径变更
+- **WHEN** docs、packages、README.md 或其他非触发路径变更
 - **THEN** 不触发自动打 Tag workflow
 
 #### Scenario: 主分支限定
@@ -46,17 +46,17 @@
 
 ### Requirement: Tag 推送触发发布
 
-系统 SHALL 在 Tag 推送时触发 npm 和 Docker 发布流程。
+系统 SHALL 在 Docker Tag 推送时触发 Docker 镜像发布流程（不再触发 npm 发布）。
 
 #### Scenario: Tag 推送事件
 - **WHEN** Tag 推送到 GitHub 仓库
-- **THEN** publish workflow 自动触发
-- **AND** 执行 npm 发布和 Docker 镜像构建推送
+- **THEN** publish-docker workflow 自动触发
+- **AND** 仅执行 Docker 镜像构建和推送
 
 #### Scenario: 版本号传递
 - **WHEN** Tag 为 `2026.4.17-1503`
-- **THEN** npm 包版本设置为 `2026.4.17-1503`
-- **AND** Docker 镜像版本 tag 为 `2026.4.17-1503-cpu` 和 `2026.4.17-1503-gpu`
+- **THEN** Docker 镜像版本 tag 为 `2026.4.17-1503-cpu` 和 `2026.4.17-1503-gpu`
+- **AND** 不影响 npm 包版本
 
 ### Requirement: workflow 并发控制
 

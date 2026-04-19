@@ -165,7 +165,7 @@ export default {
         ]
       },
       {
-        text: '大语言模型实践',
+        text: '大语言模型的迸发',
         collapsible: false,
       },
       {
