@@ -48,6 +48,11 @@ const DEFAULT_SHARED_MODULES_PATH = PROJECT_ROOT
   ? path.join(PROJECT_ROOT, 'local-server', 'shared_modules')
   : null
 
+// kernel_runner.py 路径（开发模式下可用）
+const DEFAULT_KERNEL_RUNNER_PATH = PROJECT_ROOT
+  ? path.join(PROJECT_ROOT, 'local-server', 'src', 'kernel_runner.py')
+  : null
+
 const docker = new Docker()
 
 // 沙箱配置
@@ -71,10 +76,29 @@ function getSharedModulesPath() {
 }
 
 /**
+ * 获取 kernel_runner.py 路径
+ */
+function getKernelRunnerPath() {
+  // 优先使用环境变量指定的路径
+  if (process.env.KERNEL_RUNNER_PATH) {
+    return process.env.KERNEL_RUNNER_PATH
+  }
+  // 开发模式下的默认路径
+  return DEFAULT_KERNEL_RUNNER_PATH
+}
+
+/**
  * 检查是否启用 Volume Mount
  */
 function shouldMountSharedModules() {
   return process.env.MOUNT_SHARED_MODULES !== 'false'
+}
+
+/**
+ * 检查是否挂载本地 kernel_runner.py（开发模式）
+ */
+function shouldMountKernelRunner() {
+  return process.env.MOUNT_KERNEL_RUNNER !== 'false' && PROJECT_ROOT !== null
 }
 
 /**
@@ -162,25 +186,38 @@ export async function runPythonCode(code, useGpu = false) {
 
   log('Container config created')
 
-  // Volume Mount 配置 - 挂载共享模块
+  // Volume Mount 配置
   const useMount = shouldMountSharedModules()
   const sharedModulesPath = getSharedModulesPath()
+  const mountKernelRunner = shouldMountKernelRunner()
+  const kernelRunnerPath = getKernelRunnerPath()
 
-  if (useMount && sharedModulesPath) {
-    // 检查共享模块目录是否存在
-    if (fs.existsSync(sharedModulesPath)) {
-      containerConfig.HostConfig.Binds = [
-        `${sharedModulesPath}:/usr/local/lib/python3.11/site-packages/shared:ro`
-      ]
-      console.log(`[Sandbox] Volume Mount 已启用: ${sharedModulesPath}`)
-    } else {
-      console.warn(`[Sandbox] 警告: 共享模块目录不存在: ${sharedModulesPath}`)
-      console.warn('[Sandbox] 提示: 运行 npm run extract:shared 生成共享模块')
-    }
-  } else if (!sharedModulesPath) {
-    console.log('[Sandbox] 独立安装模式，无共享模块目录')
-  } else {
-    console.log('[Sandbox] Volume Mount 已禁用 (MOUNT_SHARED_MODULES=false)')
+  // 收集所有需要挂载的路径
+  const binds = []
+
+  // 挂载共享模块
+  if (useMount && sharedModulesPath && fs.existsSync(sharedModulesPath)) {
+    binds.push(`${sharedModulesPath}:/usr/local/lib/python3.11/site-packages/shared:ro`)
+    console.log(`[Sandbox] 共享模块 Volume Mount: ${sharedModulesPath}`)
+  } else if (useMount && sharedModulesPath) {
+    console.warn(`[Sandbox] 警告: 共享模块目录不存在: ${sharedModulesPath}`)
+  }
+
+  // 挂载 kernel_runner.py（开发模式调试）
+  if (mountKernelRunner && kernelRunnerPath && fs.existsSync(kernelRunnerPath)) {
+    binds.push(`${kernelRunnerPath}:/workspace/kernel_runner.py:ro`)
+    console.log(`[Sandbox] kernel_runner.py Volume Mount: ${kernelRunnerPath}`)
+  } else if (mountKernelRunner && kernelRunnerPath) {
+    console.warn(`[Sandbox] 警告: kernel_runner.py 不存在: ${kernelRunnerPath}`)
+  }
+
+  // 设置 Binds
+  if (binds.length > 0) {
+    containerConfig.HostConfig.Binds = binds
+  }
+
+  if (!PROJECT_ROOT) {
+    console.log('[Sandbox] 独立安装模式，无 Volume Mount')
   }
 
   // GPU 配置
