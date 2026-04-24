@@ -35,6 +35,13 @@
   --code-gpu-btn: #2563EB;
 }
 
+// ==================== 锚点跳转滚动偏移 ====================
+// 解决锚点跳转时元素被顶部导航栏遮挡的问题
+// 设置在 html 元素上会影响所有锚点跳转（包括 Vue Router 处理的跳转）
+html {
+  scroll-padding-top: 70px;
+}
+
 // ==================== 全局样式 ====================
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;

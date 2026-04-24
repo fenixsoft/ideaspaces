@@ -149,7 +149,7 @@ export default {
         ]
       },
       {
-        text: '深度学习时代',
+        text: '神经网络与深度学习',
         collapsible: false,
         children: [
           {
@@ -161,8 +161,7 @@ export default {
               { text: '多层感知机', link: '/deep-learning/neural-network-structure/mlp' },
               { text: '前向传播', link: '/deep-learning/neural-network-structure/forward-propagation' },
               { text: '反向传播', link: '/deep-learning/neural-network-structure/backpropagation' },
-              { text: '激活函数', link: '/deep-learning/neural-network-structure/activation-functions' },
-              { text: '损失函数', link: '/deep-learning/neural-network-structure/loss-functions' },
+              { text: '激活函数与损失函数', link: '/deep-learning/neural-network-structure/activation-functions' },
             ]
           },
         ]
@@ -178,6 +177,9 @@ export default {
       {
         text: '经典论文阅读',
         collapsible: false,
+        children: [
+              { text: '临时格式测试页面', link: '/test.md' },
+        ]
       },
     ]
   }),
