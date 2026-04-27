@@ -284,12 +284,16 @@ class SimpleNN:
         m = y_true.shape[0]  # 样本数
 
         # 输出层误差
-        dZ2 = self.cache['A2'] - y_true  # 交叉熵损失 + sigmoid 的简化形式
+        # 对于交叉熵损失 L = -[y*log(â) + (1-y)*log(1-â)] 配合 sigmoid 输出
+        # 梯度推导：∂L/∂z = â - y（sigmoid 导数恰好与交叉熵损失相互抵消）
+        dZ2 = self.cache['A2'] - y_true
         dW2 = np.dot(self.cache['A1'].T, dZ2) / m
         db2 = np.sum(dZ2, axis=0, keepdims=True) / m
 
         # 隐藏层误差（链式法则）
+        # 误差从输出层反向传递：∂L/∂a1 = ∂L/∂z2 · W2.T
         dA1 = np.dot(dZ2, self.W2.T)
+        # 再通过激活函数：∂L/∂z1 = ∂L/∂a1 · sigmoid'(z1)
         dZ1 = dA1 * sigmoid_derivative(self.cache['Z1'])
         dW1 = np.dot(self.cache['X'].T, dZ1) / m
         db1 = np.sum(dZ1, axis=0, keepdims=True) / m
@@ -352,7 +356,7 @@ for i, (x_i, y_i, pred) in enumerate(zip(X, y, y_pred)):
 
 ### SGD（随机梯度下降）
 
-**随机梯度下降**（Stochastic Gradient Descent, SGD）每次只用一个样本（或一小批样本）计算梯度，而不是全部样本。
+**随机梯度下降**（Stochastic Gradient Descent, SGD）每次只用一个随机样本计算梯度；**小批量梯度下降**（Mini-Batch GD，MBGD）则使用一小批样本。两者常被统称为 SGD，实践中 MBGD 更常用。
 
 优点：
 - 计算效率高
@@ -463,10 +467,10 @@ print(f"最优解: (1, 1)")
 
 **Adam**（Adaptive Moment Estimation）结合了 Momentum 和 RMSprop 的优点：
 
-$$\mathbf{m}_t = \beta_1 \mathbf{m}_{t-1} + (1 - \beta_1) \nabla L$$
-$$\mathbf{v}_t = \beta_2 \mathbf{v}_{t-1} + (1 - \beta_2) (\nabla L)^2$$
-$$\hat{\mathbf{m}}_t = \frac{\mathbf{m}_t}{1 - \beta_1^t}, \quad \hat{\mathbf{v}}_t = \frac{\mathbf{v}_t}{1 - \beta_2^t}$$
-$$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \frac{\eta}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon} \hat{\mathbf{m}}_t$$
+$$\mathbf{m}_t = \beta_1 \mathbf{m}_{t-1} + (1 - \beta_1) \nabla L \quad \text{（一阶矩估计，梯度的指数移动平均）}$$
+$$\mathbf{v}_t = \beta_2 \mathbf{v}_{t-1} + (1 - \beta_2) (\nabla L)^2 \quad \text{（二阶矩估计，梯度平方的指数移动平均）}$$
+$$\hat{\mathbf{m}}_t = \frac{\mathbf{m}_t}{1 - \beta_1^t}, \quad \hat{\mathbf{v}}_t = \frac{\mathbf{v}_t}{1 - \beta_2^t} \quad \text{（偏差校正）}$$
+$$\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \frac{\eta}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon} \hat{\mathbf{m}}_t \quad \text{（自适应学习率更新）}$$
 
 Adam 为每个参数维护独立的学习率，自适应调整。
 
@@ -520,9 +524,9 @@ print(f"Adam 最终位置: ({adam_hist[-1, 0]:.4f}, {adam_hist[-1, 1]:.4f})")
 
 | 损失函数 | 公式 | 梯度 | 适用场景 |
 |---------|------|------|---------|
-| 均方误差 (MSE) | $L = \frac{1}{n}\sum(y - \hat{y})^2$ | $\nabla L = \frac{2}{n}(\hat{y} - y)$ | 回归 |
-| 交叉熵 | $L = -\sum y \log(\hat{y})$ | $\nabla L = \hat{y} - y$（配合 softmax） | 分类 |
-| Hinge Loss | $L = \max(0, 1 - y \cdot \hat{y})$ | 分段线性 | SVM |
+| 均方误差 (MSE) | $L = \frac{1}{n}\sum(y_i - \hat{y}_i)^2$ | $\frac{\partial L}{\partial \hat{y}_i} = \frac{2}{n}(\hat{y}_i - y_i)$ | 回归 |
+| 交叉熵 | $L = -\sum y_i \log(\hat{y}_i)$ | $\frac{\partial L}{\partial z_i} = \hat{y}_i - y_i$（配合 softmax） | 分类 |
+| Hinge Loss | $L = \max(0, 1 - y_i \cdot \hat{y}_i)$ | 分段线性（$\hat{y}_i < y_i$ 时为 $-y_i$） | SVM |
 
 ### 梯度特性考量
 
@@ -598,9 +602,9 @@ plt.close()
 训练过程中逐步减小学习率，可以兼顾收敛速度和精度。
 
 常见策略：
-- **步衰减**：每 $k$ 步学习率乘以 $\gamma$
-- **指数衰减**：$\eta_t = \eta_0 \cdot \gamma^t$
-- **余弦退火**：$\eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})(1 + \cos(\frac{t}{T}\pi))$
+- **步衰减**：每 $k$ 步学习率乘以衰减因子 $\gamma$（$\eta_t = \eta_0 \cdot \gamma^{\lfloor t/k \rfloor}$）
+- **指数衰减**：$\eta_t = \eta_0 \cdot \gamma^t$（$\eta_0$ 为初始学习率，$\gamma$ 为衰减率）
+- **余弦退火**：$\eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})(1 + \cos(\frac{t}{T}\pi))$（$T$ 为总训练步数）
 
 ```python runnable
 import numpy as np

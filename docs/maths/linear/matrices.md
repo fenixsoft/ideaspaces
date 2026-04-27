@@ -85,7 +85,7 @@ $$\mathbf{A} = \begin{pmatrix}
 29 & 40 & 51
 \end{pmatrix}$$
 
-- **矩阵外积**（Outer Product）：向量外积是矩阵乘法的特例，它将一个列向量与一个行向量相乘，得到一个矩阵。设 $\mathbf{u}$ 是 $m$ 维列向量，$\mathbf{v}$ 是 $n$ 维列向量，则它们的外积 $\mathbf{u} \mathbf{v}^T$ 是一个 $m \times n$ 矩阵：$(\mathbf{u} \mathbf{v}^T)_{ij} = u_i \cdot v_j$。外积的每一行都是向量 $\mathbf{v}^T$ 的标量倍数，因此外积矩阵的秩始终为 1。外积在机器学习中有广泛应用，如协方差矩阵计算、主成分分析、低秩矩阵近似等。以下是一个 $3 \times 1$ 列向量与 $1 \times 2$ 行向量外积的具体示例，结果为 $3 \times 2$ 矩阵：
+- **矩阵外积**（Outer Product）：向量外积是矩阵乘法的特例，它将一个列向量与一个行向量相乘，得到一个矩阵。设 $\mathbf{u}$ 是 $m$ 维列向量，$\mathbf{v}$ 是 $n$ 维列向量，则它们的外积 $\mathbf{u} \mathbf{v}^T$ 是一个 $m \times n$ 矩阵：$(\mathbf{u} \mathbf{v}^T)_{ij} = u_i \cdot v_j$。外积的每一行都是向量 $\mathbf{v}^T$ 的标量倍数，因此外积矩阵的秩当两个向量都非零时为 1。外积在机器学习中有广泛应用，如协方差矩阵计算、主成分分析、低秩矩阵近似等。以下是一个 $3 \times 1$ 列向量与 $1 \times 2$ 行向量外积的具体示例，结果为 $3 \times 2$ 矩阵：
 
 $$\mathbf{u} = \begin{pmatrix}
 1 \\
@@ -121,7 +121,7 @@ $$\mathbf{u} = \begin{pmatrix}
     - $(c\mathbf{A})^T = c\mathbf{A}^T$
     - $(\mathbf{AB})^T = \mathbf{B}^T \mathbf{A}^T$（乘积的转置等于转置的反向乘积）
 
-    尤其是第 4 条性质，是后续学习误差方向传播算法时的理论依据，$(\mathbf{AB})^T = \mathbf{B}^T\mathbf{A}^T$ 确保了反向传播时梯度能够正确地"逆流"回每一层，保持维度匹配，这是自动微分和深度学习框架（PyTorch、TensorFlow）能够高效计算梯度的数学基础。
+    尤其是第四条性质，是后续学习误差反向传播算法的理论依据，$(\mathbf{AB})^T = \mathbf{B}^T\mathbf{A}^T$ 确保了反向传播时梯度能够正确地"逆流"回每一层，保持维度匹配，这是自动微分和深度学习框架（PyTorch、TensorFlow）能够高效计算梯度的数学基础。
 
     以下是一个 $3 \times 3$ 矩阵与其转置的具体示例，可以看到，原矩阵的第一行 $(1, 2, 3)$ 变成了转置矩阵的第一列，第二行 $(4, 5, 6)$ 变成了第二列，第三行 $(7, 8, 9)$ 变成了第三列，实现了行列互换。
 

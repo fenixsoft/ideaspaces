@@ -1,6 +1,6 @@
 # 统计推断
 
-在[上一章](probability-basics.md)里，我们学习了概率分布的描述方法，给定分布参数，计算出相应的概率。但在实际应用中，人们还面临着另一类相反的问题：给定观测数据，如何推断分布的参数？这就是**统计推断**（Statistical Inference）的要解决的问题。
+在[上一章](probability-basics.md)里，我们学习了概率分布的描述方法，给定分布参数，计算出相应的概率。但在实际应用中，人们还面临着另一类相反的问题：给定观测数据，如何推断分布的参数？这就是**统计推断**（Statistical Inference）要解决的问题。
 
 统计推断是机器学习中模型训练的理论基础。当我们训练一个模型时，本质上就是在做统计推断：从有限的训练数据推断模型参数，然后用这些参数预测新数据。本章将介绍**点估计**和**区间估计**两类主要的推断方法，以及**频率学派**和**贝叶斯学派**两种统计哲学。
 
@@ -157,11 +157,11 @@ $$\hat{\theta}_{MAP} = \arg\max_{\theta} P(\theta|X)$$
 
 $$P(\theta|X) = \frac{P(X|\theta)P(\theta)}{P(X)}$$
 
-由于 $P(X)$ 是实际数据本身的观察的结果，它与 $\theta$ 无关，在最大化时可以忽略掉，因此，MAP 等价于：
+由于 $P(X)$ 是实际数据本身的观测结果，它与 $\theta$ 无关，在最大化时可以忽略掉，因此，MAP 等价于：
 
 $$\hat{\theta}_{MAP} = \arg\max_{\theta} P(X|\theta)P(\theta)$$
 
-即最大化**似然 × 先验**。与 MLE 相比，MAP 多了一个因子 $P(\theta)$，这就是先验知识的能够发挥作用的原因。
+即最大化**似然 × 先验**。与 MLE 相比，MAP 多了一个因子 $P(\theta)$，这就是先验知识能够发挥作用的原因。
 
 现在，已经学习了 MLE 和 MAP 两种估计方法，我们可以做一些比较，以便明确它们各自的使用场景：MLE 和 MAP 代表两种不同的统计哲学。当先验分布是均匀分布（即对所有参数值一视同仁）时，$P(\theta)$ 就是一个常数，此时 MAP 与 MLE 将给出相同的估计。当样本量很大，如趋于无穷时，数据的信息量远超先验，先验的影响被"淹没"（如观察到大量的实测数据都与先验不一致，那说明先验需要被修正了），此时 MAP 与 MLE 的估计结果也趋于一致。所以这些场景都没有必要选用 MAP，MAP 的使用场景主要体现在数据较少、先验知识有价值的情况下。
 
@@ -231,7 +231,7 @@ axes[0].grid(alpha=0.3)
 
 # 先验
 axes[1].plot(p_values, prior, 'g-', linewidth=2)
-axes[1].axvline(0.5, color='r', linestyle='--', label='先验均值： 0.5')
+axes[1].axvline(0.5, color='r', linestyle='--', label='先验均值：0.5')
 axes[1].set_xlabel('p')
 axes[1].set_ylabel('先验密度')
 axes[1].set_title(f'先验分布 Beta({alpha}, {beta})')
@@ -241,7 +241,7 @@ axes[1].grid(alpha=0.3)
 # 后验
 axes[2].plot(p_values, posterior, 'purple', linewidth=2)
 axes[2].axvline(p_map, color='r', linestyle='--', label=f'MAP: {p_map:.2f}')
-axes[2].axvline(true_p, color='g', linestyle=':', label=f'真实值： {true_p}')
+axes[2].axvline(true_p, color='g', linestyle=':', label=f'真实值：{true_p}')
 axes[2].set_xlabel('p')
 axes[2].set_ylabel('后验密度（归一化）')
 axes[2].set_title('后验分布')
