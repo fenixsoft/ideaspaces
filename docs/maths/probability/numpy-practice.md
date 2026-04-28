@@ -71,7 +71,7 @@ import numpy as np
 print("不设置随机种子:")
 for i in range(3):
     samples = np.random.rand(5)
-    print(f"  第 {i+1} 次： {samples}")
+    print(f"  第 {i+1} 次：{samples}")
 
 print()
 
@@ -80,7 +80,7 @@ print("设置随机种子 (seed=42):")
 for i in range(3):
     np.random.seed(42)
     samples = np.random.rand(5)
-    print(f"  第 {i+1} 次： {samples}")
+    print(f"  第 {i+1} 次：{samples}")
 ```
 
 ## 随机选择与打乱
@@ -119,9 +119,9 @@ print("加权选择:", weighted_choices)
 
 # 随机打乱
 arr = np.arange(10)
-print(f"\n 原始数组： {arr}")
+print(f"\n原始数组：{arr}")
 np.random.shuffle(arr)
-print(f"打乱后： {arr}")
+print(f"打乱后：{arr}")
 ```
 
 ## 分布的可视化
@@ -198,27 +198,27 @@ import numpy as np
 data = np.random.normal(100, 15, 1000)  # 模拟考试成绩
 
 print("=== 描述性统计 ===")
-print(f"样本量： {len(data)}")
-print(f"最小值： {np.min(data):.2f}")
-print(f"最大值： {np.max(data):.2f}")
-print(f"范围： {np.ptp(data):.2f}")  # peak-to-peak
+print(f"样本量：{len(data)}")
+print(f"最小值：{np.min(data):.2f}")
+print(f"最大值：{np.max(data):.2f}")
+print(f"范围：{np.ptp(data):.2f}")  # peak-to-peak
 print()
-print(f"均值： {np.mean(data):.2f}")
-print(f"中位数： {np.median(data):.2f}")
+print(f"均值：{np.mean(data):.2f}")
+print(f"中位数：{np.median(data):.2f}")
 print()
-print(f"方差： {np.var(data):.2f}")
-print(f"标准差： {np.std(data):.2f}")
+print(f"方差：{np.var(data):.2f}")
+print(f"标准差：{np.std(data):.2f}")
 print()
 
 # 分位数
 percentiles = [25, 50, 75]
 for p in percentiles:
-    print(f"{p}% 分位数： {np.percentile(data, p):.2f}")
+    print(f"{p}% 分位数：{np.percentile(data, p):.2f}")
 
 # 四分位距
 q1, q3 = np.percentile(data, [25, 75])
 iqr = q3 - q1
-print(f"\n 四分位距 (IQR): {iqr:.2f}")
+print(f"\n四分位距 (IQR): {iqr:.2f}")
 
 # 偏度和峰度（手动计算）
 mean = np.mean(data)
@@ -226,8 +226,8 @@ std = np.std(data)
 skewness = np.mean(((data - mean) / std) ** 3)
 kurtosis = np.mean(((data - mean) / std) ** 4) - 3
 
-print(f"\n 偏度： {skewness:.4f} (正态分布为 0)")
-print(f"峰度： {kurtosis:.4f} (正态分布为 0)")
+print(f"\n偏度：{skewness:.4f} (正态分布为 0)")
+print(f"峰度：{kurtosis:.4f} (正态分布为 0)")
 ```
 
 ## 协方差与相关系数
@@ -291,9 +291,9 @@ plt.close()
 
 ## 蒙特卡洛方法
 
-许多实际问题难以用解析方法精确求解，譬如，积分计算中函数可能没有闭式表达，概率估计中事件组合可能过于复杂，优化问题中目标函数可能不可导，等等。**蒙特卡洛方法**（Monte Carlo Method）为这类问题提供了一条近似求解的路径。
+许多实际问题难以用解析方法精确求解，譬如积分计算中函数可能没有闭式表达，概率估计中事件组合可能过于复杂，优化问题中目标函数可能不可导，等等。**蒙特卡洛方法**（Monte Carlo Method）为这类问题提供了一条近似求解的路径。
 
-蒙特卡洛方法得名于摩纳哥的蒙特卡洛赌场，随机性是该方法的核心。蒙特卡洛方法通过大量随机采样，将复杂问题转化为大量简单样本的统计聚合。其工作原理建立在两个数学基础之上：[大数定律](https://en.wikipedia.org/wiki/Law_of_large_numbers)保证当样本量趋于无穷时，样本均值会收敛于期望值（即真值）；[中心极限定理](https://en.wikipedia.org/wiki/Central_limit_theorem)保证收敛的误差分布近似正态，使估计误差可量化、可预测。具体而言，用样本均值估计积分值、用成功频率估计概率、用随机试验统计近似解析结果，采样数量越大，估计精度越高。
+蒙特卡洛方法得名于摩纳哥的蒙特卡洛赌场，随机性是该方法的核心。该方法通过大量随机采样，将复杂问题转化为大量简单样本的统计聚合。其工作原理建立在两个数学基础之上：[大数定律](https://en.wikipedia.org/wiki/Law_of_large_numbers)保证当样本量趋于无穷时，样本均值会收敛于期望值（即真值）；[中心极限定理](https://en.wikipedia.org/wiki/Central_limit_theorem)保证收敛的误差分布近似正态，使估计误差可量化、可预测。具体而言，用样本均值估计积分值、用成功频率估计概率、用随机试验统计近似解析结果，采样数量越大，估计精度越高。
 
 - 以下代码演示蒙特卡洛方法计算积分 $\int_a^b f(x) dx \approx \frac{b-a}{N} \sum_{i=1}^N f(x_i)$，其中 $x_i$ 是 $[a, b]$ 上的均匀随机采样：
 
@@ -318,7 +318,7 @@ plt.close()
         estimates.append(estimate)
         error = abs(estimate - true_value)
         print(f"n = {n:6d}: 估计值 = {estimate:.6f}, 误差 = {error:.6f}")
-    print(f"\n 真实值： {true_value:.6f}")
+    print(f"\n真实值：{true_value:.6f}")
 
     # 可视化收敛过程
     n_range = np.arange(100, 10001, 100)
@@ -358,11 +358,11 @@ plt.close()
     pi_estimate = 4 * np.sum(inside) / n
     error = abs(pi_estimate - np.pi)
 
-    print(f"采样点数： {n}")
-    print(f"落在圆内的点数： {np.sum(inside)}")
-    print(f"π 估计值： {pi_estimate:.6f}")
-    print(f"真实值： {np.pi:.6f}")
-    print(f"误差： {error:.6f}")
+    print(f"采样点数：{n}")
+    print(f"落在圆内的点数：{np.sum(inside)}")
+    print(f"π 估计值：{pi_estimate:.6f}")
+    print(f"真实值：{np.pi:.6f}")
+    print(f"误差：{error:.6f}")
 
     # 可视化
     plt.figure(figsize=(8, 8))
@@ -393,7 +393,7 @@ plt.close()
         inside = x**2 + y**2 <= 1
         estimates.append(4 * np.sum(inside) / n_samples)
 
-    print("\n 收敛过程:")
+    print("\n收敛过程:")
     for n_samples, est in zip(sample_sizes, estimates):
         print(f"  n = {n_samples:6d}: π ≈ {est:.6f}, 误差 = {abs(est - np.pi):.6f}")
     ```
@@ -418,14 +418,14 @@ plt.close()
     n_samples = 100000
     prob_estimate = estimate_probability(n_samples)
 
-    # 理论值（S ~ N(0, 3)，所以 S/sqrt(3) ~ N(0,1)）
+    # 理论值（三个独立 N(0,1) 变量之和 S 服从 N(0, 3)，标准化后 S/√3 ~ N(0,1)）
     from math import erf, sqrt
     z = 3 / sqrt(3)
     prob_theory = 0.5 * (1 - erf(z / sqrt(2)))
     print(f"P(X + Y + Z > 3) 的估计")
-    print(f"  Monte Carlo 估计： {prob_estimate:.6f}")
-    print(f"  理论值： {prob_theory:.6f}")
-    print(f"  误差： {abs(prob_estimate - prob_theory):.6f}")
+    print(f"  Monte Carlo 估计：{prob_estimate:.6f}")
+    print(f"  理论值：{prob_theory:.6f}")
+    print(f"  误差：{abs(prob_estimate - prob_theory):.6f}")
 
     # 可视化 S 的分布
     n = 100000
@@ -479,8 +479,8 @@ n_flips = 50
 flips = np.random.binomial(1, true_p, n_flips)
 n_heads = flips.sum()
 
-print(f"观测数据： {n_flips} 次抛掷, {n_heads} 次正面")
-print(f"MLE 估计： p̂ = {n_heads/n_flips:.3f}")
+print(f"观测数据：{n_flips} 次抛掷, {n_heads} 次正面")
+print(f"MLE 估计（最大似然估计）： p̂ = {n_heads/n_flips:.3f}")
 print()
 
 # 使用拒绝采样从后验分布采样
@@ -502,9 +502,9 @@ posterior_samples = sample_beta(alpha_post, beta_post, 10000)
 
 # 后验统计量
 print("后验分布统计:")
-print(f"  后验均值： {posterior_samples.mean():.4f}")
-print(f"  后验标准差： {posterior_samples.std():.4f}")
-print(f"  95% 可信区间： [{np.percentile(posterior_samples, 2.5):.4f}, {np.percentile(posterior_samples, 97.5):.4f}]")
+print(f"  后验均值：{posterior_samples.mean():.4f}")
+print(f"  后验标准差：{posterior_samples.std():.4f}")
+print(f"  95% 可信区间：[{np.percentile(posterior_samples, 2.5):.4f}, {np.percentile(posterior_samples, 97.5):.4f}]")
 
 # 可视化
 plt.figure(figsize=(10, 5))
@@ -546,9 +546,9 @@ plt.close()
    
    true_value = 1/3
    
-   print(f"Monte Carlo 估计： {estimate:.6f}")
-   print(f"真实值： {true_value:.6f}")
-   print(f"误差： {abs(estimate - true_value):.6f}")
+   print(f"Monte Carlo 估计：{estimate:.6f}")
+   print(f"真实值：{true_value:.6f}")
+   print(f"误差：{abs(estimate - true_value):.6f}")
    ```
 
    </details>
@@ -576,8 +576,8 @@ plt.close()
    theoretical_mean = 0.5
    theoretical_std = np.sqrt(1 / (12 * sample_size))
    
-   print(f"样本均值的均值： {sample_means.mean():.4f} (理论： {theoretical_mean})")
-   print(f"样本均值的标准差： {sample_means.std():.4f} (理论： {theoretical_std:.4f})")
+   print(f"样本均值的均值：{sample_means.mean():.4f} (理论：{theoretical_mean})")
+   print(f"样本均值的标准差：{sample_means.std():.4f} (理论：{theoretical_std:.4f})")
    
    # 可视化
    plt.hist(sample_means, bins=50, density=True, alpha=0.7)
